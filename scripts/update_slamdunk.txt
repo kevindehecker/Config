@@ -1,0 +1,21 @@
+1. untar kalamos-1.0.0-rc5.tar.gz, which can be found at https://svn.lr.tudelft.nl/MAVLAB/NDA/Parrot/SLAMdunk
+2.1. If necessary, backup the calibration by tarring /factory on the SLAMdunk and copying that to another computer. Existing backups can be found in the svn
+2.2. Flash SLAMdunk, detailed instructions are in the README in this package
+3. In case the power switch is fixed, the following instructions are required:
+<...>
+3.1) flash version 1.0.0-rc5
+
+3.2) slamdunk@slamdunk:~$ sudo sh -c 'echo "deb https://plf.parrot.com/slamdunk trusty multiverse" > /etc/apt/sources.list.d/parrot_slamdunk.list'
+
+3.3) type commands:
+sudo apt-get update
+sudo apt-get dist-upgrade
+3.4) type command:
+sudo sh -c "echo manual > /etc/init/powerd.override"
+3.5) type command:
+sudo reboot
+4. Revert calibration:
+sudo mount -o remount,rw /factory
+sudo copy die files naar factory
+sudo ./fix_factory,sh
+
