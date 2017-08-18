@@ -9,17 +9,14 @@
 #  Target: ARM cortex-m4f
 #
 # Features:
-# - GNU C (4.9.1)
-# -  with newlib (2.1.0)
-# - GNU C++ (4.9.1, implements: C++14, C++11)
-# -  with libstdc++ (4.9.1)
-# - GDB (7.8)
+# - GNU C 
+# -  with newlib 
+# - GNU C++  implements: C++14, C++11)
+# -  with libstdc++ 
+# - GDB
 
 ###
 # Prerequisites:
-# - Ubuntu 14.04 GNU/Linux.
-#
-# - It may depend on newlib-2.1.0.patch. Run from stm32/build-ARM-toolchain directory.
 #
 # - Before running this script make sure that:
 #    - You install dependencies:
