@@ -1,6 +1,6 @@
 # dump
 # Betaflight / SPRACINGF3 3.1.7 Apr  3 2017 / 22:27:23 (e1c4b5c)
-name -
+name BangHrrr
 resource BEEPER 1 C15
 resource MOTOR 1 A06
 resource MOTOR 2 A07
@@ -281,7 +281,7 @@ rxfail 17 h
 set task_statistics = ON
 set mid_rc = 1500
 set min_check = 1100
-set max_check = 1900
+set max_check = 1880
 set rssi_channel = 0
 set rssi_scale = 30
 set rc_interp = AUTO
@@ -323,8 +323,8 @@ set beeper_inversion = ON
 set beeper_od = OFF
 set serialrx_provider = SPEK1024
 set sbus_inversion = ON
-set spektrum_sat_bind = 5
-set spektrum_sat_bind_autorst = 0
+set spektrum_sat_bind = 9
+set spektrum_sat_bind_autorst = 1
 set tlm_switch = OFF
 set tlm_inversion = ON
 set sport_halfduplex = ON
@@ -381,7 +381,7 @@ set servo_center_pulse = 1500
 set tri_unarmed_servo = ON
 set servo_lowpass_hz = 400
 set servo_lowpass = OFF
-set servo_pwm_rate = 50
+set servo_pwm_rate = 400
 set gimbal_mode = NORMAL
 set channel_forwarding_start = 4
 set airmode_start_throttle = 1350
@@ -431,7 +431,7 @@ set gps_nav_i = 33
 set gps_nav_d = 83
 set pidsum_limit =  0.500
 set pidsum_limit_yaw =  0.500
-set d_lowpass_type = BIQUAD
+set d_lowpass_type = PT1
 set d_lowpass = 130
 set d_notch_hz = 130
 set d_notch_cut = 90
@@ -464,7 +464,7 @@ set p_vel = 55
 set i_vel = 55
 set d_vel = 75
 set level_sensitivity = 60
-set level_limit = 125
+set level_limit = 150
 rateprofile 0
 rateprofile 0
 
