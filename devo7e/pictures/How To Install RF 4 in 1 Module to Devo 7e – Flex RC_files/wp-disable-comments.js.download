@@ -1,0 +1,2 @@
+function wpdcWrapper($){var wpdc={init:function(){wpdc.prefix='wpdc_';wpdc.templateURL=$('#template-url').val();wpdc.ajaxPostURL=$('#ajax-post-url').val();wpdc.registerEventHandlers();},registerEventHandlers:function(){}};$(document).ready(wpdc.init);}
+wpdcWrapper(jQuery);
