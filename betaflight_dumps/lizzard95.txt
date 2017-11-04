@@ -225,11 +225,11 @@ mode_color 6 8 0
 mode_color 6 9 0
 mode_color 6 10 0
 mode_color 7 0 3
-aux 0 0 0 1400 2100
-aux 1 27 1 1525 2050
-aux 2 1 1 1150 1500
-aux 3 12 2 1550 2100
-aux 4 0 0 900 900
+aux 0 0 1 1400 2100
+aux 1 1 0 1225 1550
+aux 2 2 0 1600 2100
+aux 3 13 2 1600 2100
+aux 4 15 2 1275 1600
 aux 5 0 0 900 900
 aux 6 0 0 900 900
 aux 7 0 0 900 900
@@ -319,7 +319,7 @@ set beeper_od = OFF
 set serialrx_provider = SPEK2048
 set sbus_inversion = ON
 set spektrum_sat_bind = 0
-set spektrum_sat_bind_autorst = 1
+set spektrum_sat_bind_autorst = 0
 set tlm_switch = OFF
 set tlm_inversion = ON
 set sport_halfduplex = ON
@@ -427,8 +427,8 @@ set osd_throttle_pos = 129
 set osd_vtx_channel_pos = 200
 set osd_crosshairs = 2048
 set osd_horizon_pos = 2248
-set osd_current_pos = 97
-set osd_mah_drawn_pos = 111
+set osd_current_pos = 2145
+set osd_mah_drawn_pos = 2159
 set osd_craft_name_pos = 2434
 set osd_gps_speed_pos = 66
 set osd_gps_sats_pos = 1410
@@ -487,8 +487,8 @@ set level_limit = 55
 rateprofile 0
 rateprofile 0
 
-set rc_rate = 100
-set rc_rate_yaw = 100
+set rc_rate = 172
+set rc_rate_yaw = 171
 set rc_expo = 0
 set rc_yaw_expo = 0
 set thr_mid = 50
@@ -498,5 +498,3 @@ set pitch_srate = 70
 set yaw_srate = 70
 set tpa_rate = 10
 set tpa_breakpoint = 1650
-
-# 
