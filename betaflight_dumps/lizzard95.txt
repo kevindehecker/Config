@@ -226,7 +226,7 @@ mode_color 6 9 0
 mode_color 6 10 0
 mode_color 7 0 3
 aux 0 0 1 1400 2100
-aux 1 1 0 1225 1550
+aux 1 1 0 900 1250
 aux 2 2 0 1600 2100
 aux 3 13 2 1600 2100
 aux 4 15 2 1275 1600
@@ -498,3 +498,5 @@ set pitch_srate = 70
 set yaw_srate = 70
 set tpa_rate = 10
 set tpa_breakpoint = 1650
+
+# 
