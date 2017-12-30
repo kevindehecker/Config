@@ -1,0 +1,29 @@
+Sat Dec 30 10:55:22 2017
++-----------------------------------------------------------------------------+
+| NVIDIA-SMI 381.22                 Driver Version: 381.22                    |
+|-------------------------------+----------------------+----------------------+
+| GPU  Name        Persistence-M| Bus-Id        Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp  Perf  Pwr:Usage/Cap|         Memory-Usage | GPU-Util  Compute M. |
+|===============================+======================+======================|
+|   0  GeForce GTX 108...  Off  | 0000:01:00.0      On |                  N/A |
+| 97%   83C    P0   177W / 280W |   4675MiB / 11169MiB |    100%      Default |
++-------------------------------+----------------------+----------------------+
+|   1  GeForce GTX 108...  Off  | 0000:02:00.0     Off |                  N/A |
+| 57%   76C    P2   269W / 280W |    780MiB / 11172MiB |     97%      Default |
++-------------------------------+----------------------+----------------------+
+
++-----------------------------------------------------------------------------+
+| Processes:                                                       GPU Memory |
+|  GPU       PID  Type  Process name                               Usage      |
+|=============================================================================|
+|    0      1026    G   /usr/lib/xorg/Xorg                              70MiB |
+|    0     30556  C+G   .../outdoor_lite/Binaries/Linux/outdoor_lite   515MiB |
+|    0     30590  C+G   .../outdoor_lite/Binaries/Linux/outdoor_lite   515MiB |
+|    0     30622  C+G   .../outdoor_lite/Binaries/Linux/outdoor_lite   515MiB |
+|    0     30653  C+G   .../outdoor_lite/Binaries/Linux/outdoor_lite   987MiB |
+|    0     30687  C+G   .../outdoor_lite/Binaries/Linux/outdoor_lite   513MiB |
+|    0     30722  C+G   .../outdoor_lite/Binaries/Linux/outdoor_lite   515MiB |
+|    0     30760  C+G   .../outdoor_lite/Binaries/Linux/outdoor_lite   515MiB |
+|    0     30797  C+G   .../outdoor_lite/Binaries/Linux/outdoor_lite   515MiB |
+|    1     19895    C   ./ccminer                                      769MiB |
++-----------------------------------------------------------------------------+
