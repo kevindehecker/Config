@@ -16,14 +16,14 @@ Sat Dec 30 10:55:22 2017
 | Processes:                                                       GPU Memory |
 |  GPU       PID  Type  Process name                               Usage      |
 |=============================================================================|
-|    0      1026    G   /usr/lib/xorg/Xorg                              70MiB |
-|    0     30556  C+G   .../outdoor_lite/Binaries/Linux/outdoor_lite   515MiB |
-|    0     30590  C+G   .../outdoor_lite/Binaries/Linux/outdoor_lite   515MiB |
-|    0     30622  C+G   .../outdoor_lite/Binaries/Linux/outdoor_lite   515MiB |
-|    0     30653  C+G   .../outdoor_lite/Binaries/Linux/outdoor_lite   987MiB |
-|    0     30687  C+G   .../outdoor_lite/Binaries/Linux/outdoor_lite   513MiB |
-|    0     30722  C+G   .../outdoor_lite/Binaries/Linux/outdoor_lite   515MiB |
-|    0     30760  C+G   .../outdoor_lite/Binaries/Linux/outdoor_lite   515MiB |
-|    0     30797  C+G   .../outdoor_lite/Binaries/Linux/outdoor_lite   515MiB |
-|    1     19895    C   ./ccminer                                      769MiB |
+|    0      12    G   /usr/lib/xorg/Xorg                              70MiB |
+|    0     2  C+G   .../outdoor_lite/Binaries/Linux/outdoor_lite   515MiB |
+|    0     4  C+G   .../outdoor_lite/Binaries/Linux/outdoor_lite   515MiB |
+|    0     11  C+G   .../outdoor_lite/Binaries/Linux/outdoor_lite   515MiB |
+|    0     12  C+G   .../outdoor_lite/Binaries/Linux/outdoor_lite   987MiB |
+|    0     6  C+G   .../outdoor_lite/Binaries/Linux/outdoor_lite   513MiB |
+|    0     7  C+G   .../outdoor_lite/Binaries/Linux/outdoor_lite   515MiB |
+|    0     8  C+G   .../outdoor_lite/Binaries/Linux/outdoor_lite   515MiB |
+|    0     10540  C+G   .../outdoor_lite/Binaries/Linux/outdoor_lite   515MiB |
+|    1     10    C   ./ccminer                                      769MiB |
 +-----------------------------------------------------------------------------+

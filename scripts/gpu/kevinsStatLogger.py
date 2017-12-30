@@ -7,61 +7,82 @@ import os
 from subprocess import Popen
 import sys
 import signal
+import subprocess
 
 PROCNAME = "/home/kevin/claymore/ethdcrminer64 -epool eu1.ethermine.org:4444 -ewal 0x56A3c9144B5F23A6075EF95751c840F836c9a325.MV -epsw x"
+PROCNAME_SHORT = "./ccminer"
 INTERVAL = 10
-NGPUS = 4
+NGPUS = 2
 
-state = 0
 
-gpu_mem_usages = [NGPUS]
+users = []
 
-for i in range (0:3)
-	gpu_mem_usages[i] = []
+mining_pids = []
+mining_started = [False] * NGPUS
 
-#filters output
-import subprocess
-proc = subprocess.Popen(['python','fake_utility.py'],stdout=subprocess.PIPE)
 while True:
-  line = proc.stdout.readline()
-  if line != '':
-    #the real code does filtering here
-    
-		if line.startswith("+-----"): #start and end of the output, reset state
-			state=0
+	proc = subprocess.Popen(['python','fake_utility.py'],stdout=subprocess.PIPE) #TODO: change to nvidia-smi util
 
-		if state==0:
-			if line.startswith("| Processes:"):
-				state =1
-		elif state==1:
-			if line.startswith("|========"):
-				state =2
-		elif state==2:
-			gpu_id = line[1:].strip()
-			gpu_id = gpu_id[0:1]
-			print ("gpu id:" , gpu_id)
-			
+	state = 0
+	gpu_mem_usages = [0] * NGPUS
+	gpu_is_used = [False] * NGPUS
+	gpu_is_mining = [False] * NGPUS
 
+	for i in range (0,NGPUS):
+		gpu_mem_usages[i] = []
 
+	while True:
+		line = proc.stdout.readline()
+		if line != '':    	    
+			if line.startswith("+-----"): #start and end of the output, reset state
+				state=0
+			if state==0:
+				if line.startswith("| Processes:"):
+					state =1
+			elif state==1:
+				if line.startswith("|========"):
+					state =2
+			elif state==2:
+				ls = line.split()
+				
+				gpu_id = int(ls[1])
+				process_id = int(ls[2])
+				p = psutil.Process(process_id)
+				process_type = ls[3]
+				process_name = ls[4]
+				process_user = p.username()
+				process_cpu = p.cpu_percent()
+				mem_text = ls[5]
+				process_mem = mem_text[0:len(mem_text)-3] #currently assuming it is always in MiB
+				print (gpu_id,": ", process_name,process_user,process_cpu, process_mem)
+				
+				if process_user not in users:
+					users.append(process_user)
 
-  else:
-    break
+				if process_name != "/usr/lib/xorg/Xorg" and process_name != PROCNAME_SHORT:
+					gpu_is_used[gpu_id] = True
+				if process_name == PROCNAME_SHORT:
+					gpu_is_mining[gpu_id] = True
+	 	else: #end of smi output
+			break
 
-exit()
+	print("used: ", gpu_is_used)
+	print("mining: ", gpu_is_mining)
+	print(users)
 
-#started = False
-#while True:
-        #v = psutil.cpu_percent(INTERVAL)
-        #print("Deamon loop " , str(v))
-        #if v < 5 and not started:
-                #started = True
-                #print("Starting")
-                #pro = Popen(PROCNAME,shell=True,preexec_fn=os.setsid)
-                #print("STARTED")
-        #elif v > 10 and started:
-                #started = False
-                #print("Stopping")
-                #os.killpg(os.getpgid(pro.pid), signal.SIGTERM)
+	for i in range(0,NGPUS):
+		if not gpu_is_used[i]and not gpu_is_mining[i]:
+			#start miner on this gpu
+			print("Starting miner on GPU", i)
+            pro = Popen(PROCNAME,shell=True,preexec_fn=os.setsid)
+            mining_pids[i] = pro
+			mining_started[i] = True
+		elif gpu_is_used[i] and gpu_is_mining[i]:
+			#stop miner on this gpu
+			print("Stopping miner on GPU", i)
+            os.killpg(os.getpgid(mining_pids[i].pid), signal.SIGTERM)
+			mining_started[i] = False
+		else:
+			print("Nothing to do for GPU", i)
 
-
-        #time.sleep(INTERVAL)
+	time.sleep(INTERVAL)
