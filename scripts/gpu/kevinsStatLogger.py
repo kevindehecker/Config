@@ -9,7 +9,7 @@ import sys
 import signal
 import subprocess
 
-PROCNAME = "/home/kevin/ccminer/ccminer -a x17 -o stratum+tcp://yiimp.eu:3737 -u D9uarTgV9p7cywXfv8eMjnxtqxbCMMDbrq -d1"
+PROCNAME = "/home/kevin/ccminer/ccminer -a x17 -o stratum+tcp://yiimp.eu:3737 -u D9uarTgV9p7cywXfv8eMjnxtqxbCMMDbrq -d"
 PROCNAME_SHORT = "/home/kevin/ccminer/ccminer"
 INTERVAL = 60
 NGPUS = 2
@@ -74,7 +74,7 @@ while True:
 		if not gpu_is_used[i]and not gpu_is_mining[i]:
 			#start miner on this gpu
 			print("Starting miner on GPU", i)
-			pro = Popen(PROCNAME,shell=True,preexec_fn=os.setsid)
+			pro = Popen(PROCNAME + str(gpu_id),shell=True,preexec_fn=os.setsid)
 			mining_pids[i] = pro
 			mining_started[i] = True
 		elif gpu_is_used[i] and gpu_is_mining[i]:
