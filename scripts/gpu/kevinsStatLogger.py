@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2
 
 from __future__ import print_function
 import psutil
@@ -11,17 +11,17 @@ import subprocess
 
 PROCNAME = "/home/kevin/ccminer/ccminer -a x17 -o stratum+tcp://yiimp.eu:3737 -u D9uarTgV9p7cywXfv8eMjnxtqxbCMMDbrq -d1"
 PROCNAME_SHORT = "/home/kevin/ccminer/ccminer"
-INTERVAL = 10
+INTERVAL = 60
 NGPUS = 2
 
 
 users = []
 
-mining_pids = []
+mining_pids = [psutil.Process] * NGPUS
 mining_started = [False] * NGPUS
 
 while True:
-	proc = subprocess.Popen(['python','fake_utility.py'],stdout=subprocess.PIPE) #TODO: change to nvidia-smi util
+	proc = subprocess.Popen(['nvidia-smi'],stdout=subprocess.PIPE) #TODO: change to nvidia-smi util
 
 	state = 0
 	gpu_mem_usages = [0] * NGPUS
