@@ -74,7 +74,7 @@ while True:
 		if not gpu_is_used[i]and not gpu_is_mining[i]:
 			#start miner on this gpu
 			print("Starting miner on GPU", i)
-			pro = Popen(PROCNAME + str(gpu_id),shell=True,preexec_fn=os.setsid)
+			pro = Popen(PROCNAME + str(i),shell=True,preexec_fn=os.setsid)
 			mining_pids[i] = pro
 			mining_started[i] = True
 		elif gpu_is_used[i] and gpu_is_mining[i]:
