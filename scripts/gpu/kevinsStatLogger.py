@@ -63,7 +63,7 @@ while True:
 					gpu_is_used[gpu_id] = True
 				if process_name == PROCNAME_SHORT:
 					gpu_is_mining[gpu_id] = True
-	 	else: #end of smi output
+		else: #end of smi output
 			break
 
 	print("used: ", gpu_is_used)
@@ -74,13 +74,13 @@ while True:
 		if not gpu_is_used[i]and not gpu_is_mining[i]:
 			#start miner on this gpu
 			print("Starting miner on GPU", i)
-            pro = Popen(PROCNAME,shell=True,preexec_fn=os.setsid)
-            mining_pids[i] = pro
+			pro = Popen(PROCNAME,shell=True,preexec_fn=os.setsid)
+			mining_pids[i] = pro
 			mining_started[i] = True
 		elif gpu_is_used[i] and gpu_is_mining[i]:
 			#stop miner on this gpu
 			print("Stopping miner on GPU", i)
-            os.killpg(os.getpgid(mining_pids[i].pid), signal.SIGTERM)
+			os.killpg(os.getpgid(mining_pids[i].pid), signal.SIGTERM)
 			mining_started[i] = False
 		else:
 			print("Nothing to do for GPU", i)
