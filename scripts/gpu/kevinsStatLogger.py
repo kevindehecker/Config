@@ -9,8 +9,8 @@ import sys
 import signal
 import subprocess
 
-PROCNAME = "/home/kevin/claymore/ethdcrminer64 -epool eu1.ethermine.org:4444 -ewal 0x56A3c9144B5F23A6075EF95751c840F836c9a325.MV -epsw x"
-PROCNAME_SHORT = "./ccminer"
+PROCNAME = "/home/kevin/ccminer/ccminer -a x17 -o stratum+tcp://yiimp.eu:3737 -u D9uarTgV9p7cywXfv8eMjnxtqxbCMMDbrq -d1"
+PROCNAME_SHORT = "/home/kevin/ccminer/ccminer"
 INTERVAL = 10
 NGPUS = 2
 
