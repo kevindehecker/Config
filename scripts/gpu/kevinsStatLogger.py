@@ -93,7 +93,7 @@ while True: # loops INTERVAL
 		else: #end of smi output
 			break
 
-	print("GPU used:   ", gpu_is_used)
+	print("GPU is used:   ", gpu_is_used, ", was used: ", gpu_was_used)
 	print("GPU mining: ", gpu_is_mining)
 	print("GPU users: ",  users)
 
