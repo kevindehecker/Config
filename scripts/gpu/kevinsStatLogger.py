@@ -14,7 +14,7 @@ import subprocess
 
 MINER_PROC_NAME = "/home/kevin/ccminer/ccminer -a x17 -o stratum+tcp://yiimp.eu:3737 -u D9uarTgV9p7cywXfv8eMjnxtqxbCMMDbrq -d"
 MINER_PROC_NAME_SHORT = "/home/kevin/ccminer/ccminer"
-INTERVAL = 10
+INTERVAL = 60
 NGPUS = 2
 
 
@@ -26,8 +26,8 @@ mining_started = [False] * NGPUS
 
 while True:
 	time_str =time.strftime("%I:%M:%S") + ' ' + time.strftime("%d/%m/%Y")
-	#proc = subprocess.Popen(['nvidia-smi'],stdout=subprocess.PIPE) 
-	proc = subprocess.Popen(['python', 'fake_utility.py'],stdout=subprocess.PIPE) #TMP
+	proc = subprocess.Popen(['nvidia-smi'],stdout=subprocess.PIPE) 
+	#proc = subprocess.Popen(['python', 'fake_utility.py'],stdout=subprocess.PIPE) #TMP
 
 	state = 0
 	gpu_mem_usages = [0] * NGPUS
@@ -63,7 +63,7 @@ while True:
 				
 				gpu_id = int(ls[1])
 				process_id = int(ls[2])
-				p = psutil.Process(832)
+				p = psutil.Process(process_id)
 				process_type = ls[3]
 				process_name = ls[4]
 				process_user = p.username()
