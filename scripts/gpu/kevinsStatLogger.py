@@ -24,6 +24,8 @@ gpu_users = [0] * NGPUS
 mining_pids = [psutil.Process] * NGPUS
 mining_started = [False] * NGPUS
 
+gpu_was_used = [False] * NGPUS
+
 while True: # loops INTERVAL
 	time_str =time.strftime("%I:%M:%S") + ' ' + time.strftime("%d/%m/%Y")
 	proc = subprocess.Popen(['nvidia-smi'],stdout=subprocess.PIPE) 
@@ -99,7 +101,7 @@ while True: # loops INTERVAL
 		f.write(time_str + ';' + str(gpu_is_used) + ';' + str(gpu_is_mining) + ';' + str(gpu_users) + '\n')
 
 	for i in range(0,NGPUS):
-		if not gpu_is_used[i]and not gpu_is_mining[i]:
+		if not gpu_is_used[i]and not gpu_was_used[i] and not gpu_is_mining[i]:
 			#start miner on this gpu			
 			pro = Popen(MINER_PROC_NAME + str(i),shell=True,preexec_fn=os.setsid)
 			mining_pids[i] = pro
@@ -116,6 +118,9 @@ while True: # loops INTERVAL
 				Popen("killall ccminer",shell=True,preexec_fn=os.setsid)
 		else:
 			print(time_str + ": nothing to do for GPU", i)
+
+
+	gpu_was_used = gpu_is_used
 
 	#log CPU usage:
 	mem =psutil.virtual_memory()
