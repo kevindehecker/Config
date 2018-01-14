@@ -108,8 +108,12 @@ while True: # loops INTERVAL
 		elif gpu_is_used[i] and gpu_is_mining[i]:
 			#stop miner on this gpu
 			print(time_str + ": stopping miner " + str(mining_pids[i].pid) + " on GPU", i)
-			os.killpg(os.getpgid(mining_pids[i].pid), signal.SIGTERM)
-			mining_started[i] = False
+			try:
+				os.killpg(os.getpgid(mining_pids[i].pid), signal.SIGTERM)
+				mining_started[i] = False
+			except:
+				print(time_str + ": Failed to stop miner " + str(mining_pids[i].pid) + " on GPU", i + ". Killing all ccminer.")
+				Popen("killall ccminer",shell=True,preexec_fn=os.setsid)
 		else:
 			print(time_str + ": nothing to do for GPU", i)
 
