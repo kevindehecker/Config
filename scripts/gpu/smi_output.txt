@@ -1,4 +1,4 @@
-Sat Dec 30 10:55:22 2017
+Sun Jan 14 11:46:56 2018
 +-----------------------------------------------------------------------------+
 | NVIDIA-SMI 381.22                 Driver Version: 381.22                    |
 |-------------------------------+----------------------+----------------------+
@@ -6,24 +6,26 @@ Sat Dec 30 10:55:22 2017
 | Fan  Temp  Perf  Pwr:Usage/Cap|         Memory-Usage | GPU-Util  Compute M. |
 |===============================+======================+======================|
 |   0  GeForce GTX 108...  Off  | 0000:01:00.0      On |                  N/A |
-| 97%   83C    P0   177W / 280W |   4675MiB / 11169MiB |    100%      Default |
+| 95%   83C    P2   196W / 280W |  10910MiB / 11169MiB |    100%      Default |
 +-------------------------------+----------------------+----------------------+
 |   1  GeForce GTX 108...  Off  | 0000:02:00.0     Off |                  N/A |
-| 57%   76C    P2   269W / 280W |    780MiB / 11172MiB |     97%      Default |
+| 56%   75C    P2   264W / 280W |   9929MiB / 11172MiB |     98%      Default |
 +-------------------------------+----------------------+----------------------+
 
 +-----------------------------------------------------------------------------+
 | Processes:                                                       GPU Memory |
 |  GPU       PID  Type  Process name                               Usage      |
 |=============================================================================|
-|    0      12    G   /usr/lib/xorg/Xorg                              70MiB |
-|    0     2  C+G   .../outdoor_lite/Binaries/Linux/outdoor_lite   515MiB |
-|    0     4  C+G   .../outdoor_lite/Binaries/Linux/outdoor_lite   515MiB |
-|    0     11  C+G   .../outdoor_lite/Binaries/Linux/outdoor_lite   515MiB |
-|    0     12  C+G   .../outdoor_lite/Binaries/Linux/outdoor_lite   987MiB |
-|    0     6  C+G   .../outdoor_lite/Binaries/Linux/outdoor_lite   513MiB |
-|    0     7  C+G   .../outdoor_lite/Binaries/Linux/outdoor_lite   515MiB |
-|    0     8  C+G   .../outdoor_lite/Binaries/Linux/outdoor_lite   515MiB |
-|    0     10540  C+G   .../outdoor_lite/Binaries/Linux/outdoor_lite   515MiB |
-|    1     10    C   ./ccminer                                      769MiB |
+|    0      1026    G   /usr/lib/xorg/Xorg                              70MiB |
+|    0     26007    C   python2                                       6251MiB |
+|    0     26027  C+G   .../outdoor_lite/Binaries/Linux/outdoor_lite   513MiB |
+|    0     26068  C+G   .../outdoor_lite/Binaries/Linux/outdoor_lite   515MiB |
+|    0     26103  C+G   .../outdoor_lite/Binaries/Linux/outdoor_lite   515MiB |
+|    0     26155  C+G   .../outdoor_lite/Binaries/Linux/outdoor_lite   983MiB |
+|    0     26253  C+G   .../outdoor_lite/Binaries/Linux/outdoor_lite   513MiB |
+|    0     26326  C+G   .../outdoor_lite/Binaries/Linux/outdoor_lite   511MiB |
+|    0     26813  C+G   .../outdoor_lite/Binaries/Linux/outdoor_lite   513MiB |
+|    0     26863  C+G   .../outdoor_lite/Binaries/Linux/outdoor_lite   511MiB |
+|    1     25680    C   /home/kevin/ccminer/ccminer                    769MiB |
+|    1     26007    C   python2                                       9149MiB |
 +-----------------------------------------------------------------------------+

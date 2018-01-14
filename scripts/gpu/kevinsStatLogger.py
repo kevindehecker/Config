@@ -24,7 +24,7 @@ gpu_users = [0] * NGPUS
 mining_pids = [psutil.Process] * NGPUS
 mining_started = [False] * NGPUS
 
-while True:
+while True: # loops INTERVAL
 	time_str =time.strftime("%I:%M:%S") + ' ' + time.strftime("%d/%m/%Y")
 	proc = subprocess.Popen(['nvidia-smi'],stdout=subprocess.PIPE) 
 	#proc = subprocess.Popen(['python', 'fake_utility.py'],stdout=subprocess.PIPE) #TMP
@@ -39,7 +39,7 @@ while True:
 		gpu_users[i] = []
 
 	gpu_overview_id = 0
-	while True:
+	while True: # read SMI output
 		line = proc.stdout.readline()
 		if line != '':
 
@@ -79,8 +79,15 @@ while True:
 
 				if process_name != "/usr/lib/xorg/Xorg" and process_name != MINER_PROC_NAME_SHORT:
 					gpu_is_used[gpu_id] = True
-				if process_name == MINER_PROC_NAME_SHORT:
+				elif process_name == MINER_PROC_NAME_SHORT and gpu_is_mining[gpu_id]:
+					#multiple miner instances... Weird!?!? Kill it immidiately.
+					print("Failure state: multiple miners detected on the same GPU" + str(gpu_id) + ". Attempting to kill pid: " + str(process_id))
+					os.killpg(os.getpgid(process_id), signal.SIGTERM)
+				elif process_name == MINER_PROC_NAME_SHORT:
 					gpu_is_mining[gpu_id] = True
+					if mining_pids[gpu_id].pid != process_id:
+						print("Unrecognized miner detected on gpu" + str(gpu_id) + ". Attempting to kill pid: " + str(process_id))
+						os.killpg(os.getpgid(process_id), signal.SIGTERM)
 		else: #end of smi output
 			break
 
@@ -93,14 +100,14 @@ while True:
 
 	for i in range(0,NGPUS):
 		if not gpu_is_used[i]and not gpu_is_mining[i]:
-			#start miner on this gpu
-			print(time_str + ": starting miner on GPU", i)
+			#start miner on this gpu			
 			pro = Popen(MINER_PROC_NAME + str(i),shell=True,preexec_fn=os.setsid)
 			mining_pids[i] = pro
+			print(time_str + ": started miner " + str(pro) + " on GPU", i)
 			mining_started[i] = True
 		elif gpu_is_used[i] and gpu_is_mining[i]:
 			#stop miner on this gpu
-			print(time_str + ": stopping miner on GPU", i)
+			print(time_str + ": stopping miner " + str(mining_pids[i].pid) + " on GPU", i)
 			os.killpg(os.getpgid(mining_pids[i].pid), signal.SIGTERM)
 			mining_started[i] = False
 		else:
