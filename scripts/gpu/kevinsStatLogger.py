@@ -88,7 +88,7 @@ while True: # loops INTERVAL
 				elif process_name == MINER_PROC_NAME_SHORT:
 					gpu_is_mining[gpu_id] = True
 					if mining_pids[gpu_id].pid != process_id:
-						print("Unrecognized miner detected on gpu" + str(gpu_id) + ". Attempting to kill pid: " + str(process_id))
+						print("Unrecognized miner detected on gpu" + str(gpu_id) + ". Known PID: " + str(mining_pids[0].pid) + " & " + str(mining_pids[1].pid)  + ". Attempting to kill pid: " + str(process_id))
 						os.killpg(os.getpgid(process_id), signal.SIGTERM)
 		else: #end of smi output
 			break
@@ -103,9 +103,9 @@ while True: # loops INTERVAL
 	for i in range(0,NGPUS):
 		if not gpu_is_used[i]and not gpu_was_used[i] and not gpu_is_mining[i]:
 			#start miner on this gpu			
-			pro = Popen(MINER_PROC_NAME + str(i),shell=True,preexec_fn=os.setsid)
+			pro = Popen("exec " + MINER_PROC_NAME + str(i),shell=True,preexec_fn=os.setsid)
 			mining_pids[i] = pro
-			print(time_str + ": started miner " + str(pro) + " on GPU", i)
+			print(time_str + ": started miner " + str(pro.pid) + " on GPU", i)
 			mining_started[i] = True
 		elif gpu_is_used[i] and gpu_is_mining[i]:
 			#stop miner on this gpu
