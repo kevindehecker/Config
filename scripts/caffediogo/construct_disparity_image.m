@@ -1,15 +1,22 @@
-function D = construct_disparity_image(velo_img, disps, W, H)
-% function D = construct_disparity_image(velo_img, disps, W, H)
+function D = construct_disparity_image(velo_img, disps, W, H, new_W, new_H)
+% function D = construct_disparity_image(velo_img, disps, W, H, new_W, new_H)
 % velo_img(1) = x, (2) = y
 
 % k is used in a nearest neighbor sense for the interpolation
 k = 1;
 max_dist = 1;
 
-D = zeros(H, W);
+% correct for new, probably smaller, image coordinates:
+ratio_W = new_W / W;
+ratio_H = new_H / H;
+velo_img(:,1) = velo_img(:,1) * ratio_W;
+velo_img(:,2) = velo_img(:,2) * ratio_H;
+
+% fill the disparity matrix:
+D = zeros(new_H, new_W);
 n_points = size(velo_img,1);
-for x = 1:W
-    for y = 1:H
+for x = 1:new_W
+    for y = 1:new_H
         dists = sqrt(sum((velo_img - repmat([x,y], [n_points, 1])).^2, 2));
         [min_dist, i] = min(dists);
         if(min_dist <= max_dist)

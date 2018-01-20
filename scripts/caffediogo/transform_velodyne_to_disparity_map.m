@@ -1,4 +1,4 @@
-function run_demoVelodyne (base_dir_file,calib_dir_file)
+function transform_velodyne_to_disparity_map (base_dir_file,calib_dir_file)
 % KITTI RAW DATA DEVELOPMENT KIT
 % 
 % Demonstrates projection of the velodyne points into the image plane
@@ -6,6 +6,14 @@ function run_demoVelodyne (base_dir_file,calib_dir_file)
 % Input arguments:
 % base_dir .... absolute path to sequence base directory (ends with _sync)
 % calib_dir ... absolute path to directory that contains calibration files
+
+
+if(nargin < 1)
+    base_dir_file = 'base_dirs.txt';
+end
+if(nargin < 1)
+    calib_dir_file = 'calib_dirs.txt';
+end
 
 graphics = false;
 
@@ -24,8 +32,14 @@ cam       = 2; % 0-based index
 
 for d = 1:length(base_dirs)
 
+    fprintf('\nDir %d / %d\n', d, length(base_dirs));
+    
     calib_dir = calib_dirs{d};
     base_dir = base_dirs{d};
+    
+    if(~exist([base_dir '/GT_disp'], 'dir'))
+        mkdir([base_dir '/GT_disp']);
+    end
     
     % load calibration
     calib = loadCalibrationCamToCam(fullfile(calib_dir,'calib_cam_to_cam.txt'));
@@ -43,6 +57,8 @@ for d = 1:length(base_dirs)
     
     for frame = 0:length(im_names)-1
 
+        fprintf('.');
+        
         % load and display image
         img = imread(sprintf('%s/image_%02d/data/%010d.png',base_dir,cam,frame));
         if(graphics)
@@ -53,7 +69,7 @@ for d = 1:length(base_dirs)
         % load velodyne points
         fid = fopen(sprintf('%s/velodyne_points/data/%010d.bin',base_dir,frame),'rb');
         velo = fread(fid,[4 inf],'single')';
-        step = 1; % original script has 5
+        step = 5; % original script has 5
         velo = velo(1:step:end,:); % remove every 5th point for display speed
         fclose(fid);
 
@@ -76,9 +92,13 @@ for d = 1:length(base_dirs)
         disps = (64.0*5) ./velo(:,1);
         W = size(img, 2);
         H = size(img, 1);
+        % output dimensions of the disparity map --> should correspond to
+        % output deep neural network!
+        new_W = W;
+        new_H = H;
         k = 3;
         max_dist = 1;
-        disp_image = construct_disparity_image(velo_img, disps, W, H);
+        disp_image = construct_disparity_image(velo_img, disps, W, H, new_W, new_H);
         
         if(graphics)
             figure();
@@ -87,7 +107,8 @@ for d = 1:length(base_dirs)
         end
         
         % write the image in the right place:
-        im_name = sprintf('%s/GT_disp/%010d.png',base_dir,cam,frame);
+        disp_image = uint8(disp_image);
+        im_name = sprintf('%s/GT_disp/%010d.png',base_dir,frame);
         imwrite(disp_image, im_name);
         
     end

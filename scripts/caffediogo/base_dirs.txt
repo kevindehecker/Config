@@ -1,0 +1,4 @@
+/home/guido/KITTI/2011_09_26/2011_09_26_drive_0001_sync/
+/home/guido/KITTI/2011_09_26/2011_09_26_drive_0002_sync/
+/home/guido/KITTI/2011_09_26/2011_09_26_drive_0005_sync/
+/home/guido/KITTI/2011_09_26/2011_09_26_drive_0009_sync/

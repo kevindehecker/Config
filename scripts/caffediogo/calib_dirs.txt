@@ -1,0 +1,4 @@
+/home/guido/KITTI/2011_09_26/
+/home/guido/KITTI/2011_09_26/
+/home/guido/KITTI/2011_09_26/
+/home/guido/KITTI/2011_09_26/
