@@ -69,7 +69,7 @@ for d = 1:length(base_dirs)
         % load velodyne points
         fid = fopen(sprintf('%s/velodyne_points/data/%010d.bin',base_dir,frame),'rb');
         velo = fread(fid,[4 inf],'single')';
-        step = 5; % original script has 5
+        step = 1; % original script has 5
         velo = velo(1:step:end,:); % remove every 5th point for display speed
         fclose(fid);
 
