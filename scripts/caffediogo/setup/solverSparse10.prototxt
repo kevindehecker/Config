@@ -1,0 +1,19 @@
+net: "./net_trainSparse10.prototxt"
+test_iter: 1
+test_interval: 5000
+base_lr: 0.000000025
+gamma: 0.5
+stepsize: 100000
+momentum: 0.9
+weight_decay: 0.005
+lr_policy: "fixed"
+display: 100
+max_iter: 50000
+snapshot: 5000
+snapshot_prefix: "../cheapSparse10/run"
+solver_mode: GPU
+
+#slowSSL 0.000000025
+
+#0.00000025
+#base_lr: 0.000025
