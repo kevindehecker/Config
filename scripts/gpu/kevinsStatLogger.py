@@ -62,34 +62,36 @@ while True: # loops INTERVAL
 					state =2
 			elif state==2:
 				ls = line.split()
-				
-				gpu_id = int(ls[1])
-				process_id = int(ls[2])
-				p = psutil.Process(process_id)
-				process_type = ls[3]
-				process_name = ls[4]
-				process_user = p.username()
-				process_cpu = p.cpu_percent(interval=0.01)
-				mem_text = ls[5]
-				process_mem = mem_text[0:len(mem_text)-3] #currently assuming this is always in MiB
-#				print (gpu_id,": ", process_name,process_user,process_cpu, process_mem)
-				
-				if process_user not in users:
-					users.append(process_user)
-				if process_user not in gpu_users[gpu_id]:
-					gpu_users[gpu_id].append(process_user)
+				try:
+					gpu_id = int(ls[1])
+					process_id = int(ls[2])
+					p = psutil.Process(process_id)
+					process_type = ls[3]
+					process_name = ls[4]
+					process_user = p.username()
+					process_cpu = p.cpu_percent(interval=0.01)
+					mem_text = ls[5]
+					process_mem = mem_text[0:len(mem_text)-3] #currently assuming this is always in MiB
+	#				print (gpu_id,": ", process_name,process_user,process_cpu, process_mem)
+					
+					if process_user not in users:
+						users.append(process_user)
+					if process_user not in gpu_users[gpu_id]:
+						gpu_users[gpu_id].append(process_user)
 
-				if process_name != "/usr/lib/xorg/Xorg" and process_name != MINER_PROC_NAME_SHORT:
-					gpu_is_used[gpu_id] = True
-				elif process_name == MINER_PROC_NAME_SHORT and gpu_is_mining[gpu_id]:
-					#multiple miner instances... Weird!?!? Kill it immidiately.
-					print("Failure state: multiple miners detected on the same GPU" + str(gpu_id) + ". Attempting to kill pid: " + str(process_id))
-					os.killpg(os.getpgid(process_id), signal.SIGTERM)
-				elif process_name == MINER_PROC_NAME_SHORT:
-					gpu_is_mining[gpu_id] = True
-					if mining_pids[gpu_id].pid != process_id:
-						print("Unrecognized miner detected on gpu" + str(gpu_id) + ". Known PID: " + str(mining_pids[0].pid) + " & " + str(mining_pids[1].pid)  + ". Attempting to kill pid: " + str(process_id))
+					if process_name != "/usr/lib/xorg/Xorg" and process_name != MINER_PROC_NAME_SHORT:
+						gpu_is_used[gpu_id] = True
+					elif process_name == MINER_PROC_NAME_SHORT and gpu_is_mining[gpu_id]:
+						#multiple miner instances... Weird!?!? Kill it immidiately.
+						print("Failure state: multiple miners detected on the same GPU" + str(gpu_id) + ". Attempting to kill pid: " + str(process_id))
 						os.killpg(os.getpgid(process_id), signal.SIGTERM)
+					elif process_name == MINER_PROC_NAME_SHORT:
+						gpu_is_mining[gpu_id] = True
+						if mining_pids[gpu_id].pid != process_id:
+							print("Unrecognized miner detected on gpu" + str(gpu_id) + ". Known PID: " + str(mining_pids[0].pid) + " & " + str(mining_pids[1].pid)  + ". Attempting to kill pid: " + str(process_id))
+							os.killpg(os.getpgid(process_id), signal.SIGTERM)
+				except ValueError:
+					print("Error with line: ", line)
 		else: #end of smi output
 			break
 
