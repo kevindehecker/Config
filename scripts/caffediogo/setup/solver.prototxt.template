@@ -10,7 +10,6 @@ lr_policy: "fixed"
 display: 100
 max_iter: 50000
 snapshot: 5000
-snapshot_prefix: "/data/kevin/kitti/cheapSparse10_3/run"
 solver_mode: GPU
 
 #slowSSL 0.000000025
