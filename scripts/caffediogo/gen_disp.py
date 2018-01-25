@@ -13,15 +13,14 @@ def show_disparity_maps():
     num_disp = 64; # must be divisible by 16 (http://docs.opencv.org/java/org/opencv/calib3d/StereoSGBM.html)
     
     # get a list of all bmp-files in a directory:
-    image_set = 'KITTI'; # 'race', 'pole', 'middlebury'    
+    image_set = 'KITTI'; #'tmp'; #'KITTI'; # 'race', 'pole', 'middlebury'    
 
-    if(image_set == 'middlebury'):
+    if(image_set == 'middlebury' or image_set == 'tmp'):
         
-        imgL = cv2.imread('./middlebury/im2.png');
-        imgR = cv2.imread('./middlebury/im6.png');
+        imgL = cv2.imread('./tmp/0000000000_left.png');#('./middlebury/im2.png');
+        imgR = cv2.imread('./tmp/0000000000_right.png'); #('./middlebury/im6.png');
         
-         # calculate the disparities:
-        num_disp = 64;
+        # calculate the disparities:
         disp = calculate_disparities(imgL, imgR, window_size, min_disp, num_disp);
 
         # gradient for certainty:
@@ -30,8 +29,8 @@ def show_disparity_maps():
         ret,thresh1 = cv2.threshold(sobelX,70,255,cv2.THRESH_BINARY)
 
         # show the output
-        # show_disparity_map(imgL, imgR, disp, min_disp, num_disp, thresh1);
-        write_images(imgL, imgR, disp, min_disp, num_disp, thresh1);
+        show_disparity_map(imgL, imgR, disp, min_disp, num_disp, thresh1);
+        # write_images(imgL, imgR, disp, min_disp, num_disp, thresh1);
     elif(image_set == 'KITTI'):
 
         SHOW = False;
@@ -60,6 +59,12 @@ def show_disparity_maps():
             im = images_left[idx];
             imgL = cv2.imread(im);
             imgR = cv2.imread(images_right[idx]);
+
+            # check if the two images correspond:
+            num_diff = diff_letters(im, images_right[idx]);
+            if(num_diff != 1):
+              print('Element in the list: {}. Names: {} <=> {}'.format(idx, im, images_right[idx]));
+              pdb.set_trace();
 
             # calculate the disparities:
             disp = calculate_disparities(imgL, imgR, window_size, min_disp, num_disp);
