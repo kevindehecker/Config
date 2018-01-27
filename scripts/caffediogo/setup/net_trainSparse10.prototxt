@@ -7,7 +7,7 @@ layer{
     phase: TRAIN
   }
   image_data_param {
-    source: "/data/kevin/kitti/raw_data/2011_09_26/train_images2_labeled.txt"
+    source: "/data/kevin/kitti/raw_data/2011_09_26/train_images2_shuffled.txt"
     batch_size:  32
     new_height : 218
 	new_width : 298
@@ -22,7 +22,7 @@ layer {
     phase: TRAIN
   }
   image_data_param {
-    source: "/data/kevin/kitti/raw_data/2011_09_26/train_disp_labeled.txt"
+    source: "/data/kevin/kitti/raw_data/2011_09_26/train_disp_shuffled.txt"
     batch_size: 32
     new_height : 54
     new_width  : 74
@@ -40,7 +40,7 @@ layer {
     phase: TRAIN
   }
   image_data_param {
-    source: "/data/kevin/kitti/raw_data/2011_09_26/train_conf_labeled.txt"
+    source: "/data/kevin/kitti/raw_data/2011_09_26/train_conf_shuffled.txt"
     is_color: false    
     batch_size : 32
     new_height : 54
@@ -57,7 +57,7 @@ layer {
     phase: TEST
   }
   image_data_param {
-    source: "/data/kevin/kitti/raw_data/2011_09_26/val_images2_labeled.txt"
+    source: "/data/kevin/kitti/raw_data/2011_09_26/val_images2_shuffled.txt"
     batch_size: 32
     new_height : 218
 	new_width : 298
@@ -72,7 +72,7 @@ layer {
     phase: TEST
   }
   image_data_param {
-    source: "/data/kevin/kitti/raw_data/2011_09_26/val_disp_labeled.txt"
+    source: "/data/kevin/kitti/raw_data/2011_09_26/val_disp_shuffled.txt"
     batch_size: 32
     new_height : 54
     new_width  : 74
