@@ -56,3 +56,6 @@ awk '{printf("%s %d\n",$0,0)}' /data/kevin/kitti/raw_data/2011_09_26/train_image
 awk '{printf("%s %d\n",$0,0)}' /data/kevin/kitti/raw_data/2011_09_26/train_images2.txt > /data/kevin/kitti/raw_data/2011_09_26/train_images2_labeled.txt
 awk '{printf("%s %d\n",$0,0)}' /data/kevin/kitti/raw_data/2011_09_26/train_disp.txt > /data/kevin/kitti/raw_data/2011_09_26/train_disp_labeled.txt
 awk '{printf("%s %d\n",$0,0)}' /data/kevin/kitti/raw_data/2011_09_26/train_conf.txt > /data/kevin/kitti/raw_data/2011_09_26/train_conf_labeled.txt
+
+./shuffle.py /data/kevin/kitti/raw_data/2011_09_26/
+
