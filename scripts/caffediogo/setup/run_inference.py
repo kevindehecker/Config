@@ -24,12 +24,12 @@ input_images = [x.strip() for x in input_images]
 for idx, imf in enumerate(input_images):
 	print("{} / {}".format(idx, len(input_images)));
 	im = Image.open(imf)
-	im = im.resize((298, 218), Image.NEAREST)
+	im = im.resize((512, 160), Image.NEAREST)
 	nim = np.array(im)
-	nim = nim.reshape(1,3,218,298)
+	nim = nim.reshape(1,3,512,160)
 	net.blobs['inputData'].data[...] = nim
 	out = net.forward()
-	mat = out['fine_depthReLU'][0]
+	mat = out['coarse_depth'][0]
 	mat = mat * 255
 	#print(mat,mat.shape)
 	mat = (mat[0,:,:]).astype('uint8')
@@ -70,8 +70,8 @@ for idx, imf in enumerate(input_images):
 	vis = np.concatenate((im2, imd), axis=0)
 
 
-	img_w = 74
-	img_h = 54
+	img_w = 128
+	img_h = 40
 	background = Image.new('RGBA', (1242, 375), (0, 0, 0, 255))
 	bg_w, bg_h = background.size
 	offset = ((bg_w - img_w) / 2, (bg_h - img_h) / 2)
