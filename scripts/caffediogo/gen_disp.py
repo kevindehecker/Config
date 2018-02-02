@@ -15,6 +15,10 @@ def show_disparity_maps():
     min_disp = 1;
     num_disp = 64; # must be divisible by 16 (http://docs.opencv.org/java/org/opencv/calib3d/StereoSGBM.html)
 
+    TARGET_H = 40;
+    TARGET_W = 128;
+
+
     WRITE = True;
     im_step = 1;
 
@@ -57,6 +61,7 @@ def show_disparity_maps():
         blur = cv2.GaussianBlur(grey,(11,11),0)
         sobelX = cv2.Sobel(blur,cv2.CV_64F,1,0,ksize=5);
         ret,thresh1 = cv2.threshold(sobelX,175,255,cv2.THRESH_BINARY);
+        thresh1 = cv2.resize(thresh1, (TARGET_W, TARGET_H), interpolation=cv2.INTER_NEAREST);
 
         base_name = os.path.basename(im);
         file_name, ext = os.path.splitext(base_name);
