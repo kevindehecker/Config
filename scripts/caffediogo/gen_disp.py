@@ -8,6 +8,9 @@ import pdb
 import os
 import sys
 
+def diff_letters(a,b):
+    return sum ( a[i] != b[i] for i in range(len(a)) )
+
 def show_disparity_maps():
 
     # parameters for the stereo matching:
