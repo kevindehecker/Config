@@ -12,10 +12,11 @@ import sys
 import signal
 import subprocess
 
+DISABLE_MINING = sys.argv[1]
 MINER_PROC_NAME = "/home/kevin/ccminer/ccminer -a x17 -o stratum+tcp://yiimp.eu:3737 -u D9uarTgV9p7cywXfv8eMjnxtqxbCMMDbrq -d"
 MINER_PROC_NAME_SHORT = "/home/kevin/ccminer/ccminer"
 INTERVAL = 60
-NGPUS = 2
+NGPUS = int(sys.argv[2])
 
 
 users = []
@@ -102,24 +103,25 @@ while True: # loops INTERVAL
 	with open('general.txt', 'a') as f:
 		f.write(time_str + ';' + str(gpu_is_used) + ';' + str(gpu_is_mining) + ';' + str(gpu_users) + '\n')
 
-	for i in range(0,NGPUS):
-		if not gpu_is_used[i]and not gpu_was_used[i] and not gpu_is_mining[i]:
-			#start miner on this gpu			
-			pro = Popen("exec " + MINER_PROC_NAME + str(i),shell=True,preexec_fn=os.setsid)
-			mining_pids[i] = pro
-			print(time_str + ": started miner " + str(pro.pid) + " on GPU", i)
-			mining_started[i] = True
-		elif gpu_is_used[i] and gpu_is_mining[i]:
-			#stop miner on this gpu
-			print(time_str + ": stopping miner " + str(mining_pids[i].pid) + " on GPU", i)
-			try:
-				os.killpg(os.getpgid(mining_pids[i].pid), signal.SIGTERM)
-				mining_started[i] = False
-			except:
-				print(time_str + ": Failed to stop miner " + str(mining_pids[i].pid) + " on GPU", i + ". Killing all ccminer.")
-				Popen("killall ccminer",shell=True,preexec_fn=os.setsid)
-		else:
-			print(time_str + ": nothing to do for GPU", i)
+	if not DISABLE_MINING:
+		for i in range(0,NGPUS):
+			if not gpu_is_used[i]and not gpu_was_used[i] and not gpu_is_mining[i]:
+				#start miner on this gpu			
+				pro = Popen("exec " + MINER_PROC_NAME + str(i),shell=True,preexec_fn=os.setsid)
+				mining_pids[i] = pro
+				print(time_str + ": started miner " + str(pro.pid) + " on GPU", i)
+				mining_started[i] = True
+			elif gpu_is_used[i] and gpu_is_mining[i]:
+				#stop miner on this gpu
+				print(time_str + ": stopping miner " + str(mining_pids[i].pid) + " on GPU", i)
+				try:
+					os.killpg(os.getpgid(mining_pids[i].pid), signal.SIGTERM)
+					mining_started[i] = False
+				except:
+					print(time_str + ": Failed to stop miner " + str(mining_pids[i].pid) + " on GPU", i + ". Killing all ccminer.")
+					Popen("killall ccminer",shell=True,preexec_fn=os.setsid)
+			else:
+				print(time_str + ": nothing to do for GPU", i)
 
 
 	gpu_was_used = gpu_is_used
