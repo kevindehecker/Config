@@ -30,6 +30,10 @@ for idx, imf in enumerate(input_images):
 	net.blobs['inputData'].data[...] = nim
 	out = net.forward()
 	mat = out['coarse_depth'][0]
+	a = np.asarray(mat)
+	if np.mean(a) > 0:
+		print(np.mean(a))
+	#print(mat)
 	mat = mat * 255
 	#print(mat,mat.shape)
 	mat = (mat[0,:,:]).astype('uint8')
@@ -40,11 +44,10 @@ for idx, imf in enumerate(input_images):
 	dir_name = os.path.dirname(dir_name);
 	dir_name = os.path.dirname(dir_name);
 	dir_name = dir_name;
-#	print(dir_name)
 
 	if not os.path.exists(dir_name  + "/monocular/"): 
 		os.makedirs(dir_name  + "/monocular/")
-	print(dir_name + "/monocular/" + file_name + "_monocular.png")
+	#print(dir_name + "/monocular/" + file_name + "_monocular.png")
 	mat = cv2.applyColorMap(mat, cv2.COLORMAP_JET)
 	cv2.imwrite(dir_name + "/monocular/" + file_name + "_monocular.png",mat)
 	imm = mat
@@ -52,20 +55,11 @@ for idx, imf in enumerate(input_images):
 	#pdb.set_trace()
 	if not os.path.exists(dir_name  + "/combined/"):
 		os.makedirs(dir_name  + "/combined/")
-	print(dir_name + "/disp/" + file_name + "_disparity.png")
+	#print(dir_name + "/disp/" + file_name + "_disparity.png")
 	imd = cv2.imread(dir_name + "/disp/" + file_name + "_disparity.png")
-	#imd = Image.open(dir_name + "/disp/" + file_name + "_disparity.png")
-
 	imd = cv2.applyColorMap(imd, cv2.COLORMAP_JET)	
-
 	im2 =  cv2.imread(dir_name + "/image_02/data/" + file_name + ".png")
 
-	#pdb.set_trace()
-
-	#print(im2.size)
-	#print(imd.size)
-
-	#imd = cv2.cvtColor( imd, cv2.COLOR_GRAY2RGB )
 
 	vis = np.concatenate((im2, imd), axis=0)
 
@@ -81,7 +75,5 @@ for idx, imf in enumerate(input_images):
 	background.save("tmp.png")
 	background =  cv2.imread("tmp.png")
 
-	#print(vis.size)
-	#print(background.size)
 	vis = np.concatenate((vis, background), axis=0)
 	cv2.imwrite(dir_name + "/combined/" + file_name + ".png",vis)
