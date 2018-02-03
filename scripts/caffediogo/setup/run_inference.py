@@ -47,7 +47,7 @@ for idx, imf in enumerate(input_images):
 
 	if not os.path.exists(dir_name  + "/monocular/"): 
 		os.makedirs(dir_name  + "/monocular/")
-	#print(dir_name + "/monocular/" + file_name + "_monocular.png")
+	print(dir_name + "/monocular/" + file_name + "_monocular.png")
 	mat = cv2.applyColorMap(mat, cv2.COLORMAP_JET)
 	cv2.imwrite(dir_name + "/monocular/" + file_name + "_monocular.png",mat)
 	imm = mat

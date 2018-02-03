@@ -21,8 +21,6 @@ def show_disparity_maps():
     TARGET_H = 40;
     TARGET_W = 128;
 
-
-    WRITE = True;
     im_step = 1;
 
     fname_left =  sys.argv[1] #"/data/kevin/kitti/raw_data/2011_09_26/images2.txt";
@@ -47,7 +45,6 @@ def show_disparity_maps():
         im = images_left[idx];
         print(im)
         imgL = cv2.imread(im);
-        #print(images_right[idx])
         imgR = cv2.imread(images_right[idx]);
 
         # check if the two images correspond:
@@ -58,13 +55,16 @@ def show_disparity_maps():
 
         # calculate the disparities:
         disp = calculate_disparities(imgL, imgR, window_size, min_disp, num_disp);
+        disp = cv2.resize(disp, (TARGET_W, TARGET_H), interpolation=cv2.INTER_NEAREST);
 
         # gradient for certainty:
         grey = cv2.cvtColor(imgL, cv2.COLOR_RGB2GRAY);
         blur = cv2.GaussianBlur(grey,(11,11),0)
         sobelX = cv2.Sobel(blur,cv2.CV_64F,1,0,ksize=5);
         ret,thresh1 = cv2.threshold(sobelX,175,255,cv2.THRESH_BINARY);
+	cv2.rectangle(thresh1, (0, 0), (num_disp, thresh1.shape[1]), 0, 2)
         thresh1 = cv2.resize(thresh1, (TARGET_W, TARGET_H), interpolation=cv2.INTER_NEAREST);
+
 
         base_name = os.path.basename(im);
         file_name, ext = os.path.splitext(base_name);
@@ -73,11 +73,9 @@ def show_disparity_maps():
         dir_name = os.path.dirname(dir_name);
         dir_name = dir_name;
 
-        if(WRITE):
-          # write the output:
-          write_images(dir_name, file_name, imgL, imgR, disp, min_disp, num_disp, thresh1);
+        write_images(dir_name, file_name, disp, thresh1);
 
-def write_images(dir_name, file_name, imgL, imgR, disp, min_disp, num_disp, confidence):
+def write_images(dir_name, file_name, disp, confidence):
     # write all images:
 
     if not os.path.exists(dir_name  + "/disp/"): 
@@ -109,6 +107,5 @@ def calculate_disparities(imgL, imgR, window_size, min_disp, num_disp):
     stereo = cv2.StereoSGBM_create(minDisparity=min_disp, numDisparities = num_disp, blockSize = window_size, preFilterCap=0, P1= 4 * 3 * window_size ** 2, P2 = 16 * 3 * window_size ** 2, disp12MaxDiff = 2)
     disp = stereo.compute(imgL, imgR).astype(np.float32) / 16.0
     return disp
-
 
 show_disparity_maps()

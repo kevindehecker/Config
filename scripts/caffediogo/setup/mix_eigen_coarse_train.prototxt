@@ -26,8 +26,8 @@ layer {
     source: "/data/kevin/kitti/raw_data/2011_09_26/train_disp_labeled.txt"
     batch_size: 240
     is_color: false
-    new_height : 40
-	new_width : 128
+    new_height : 0
+	new_width : 0
   }
 }
 layer {
@@ -42,8 +42,8 @@ layer {
     source: "/data/kevin/kitti/raw_data/2011_09_26/train_conf_labeled.txt"
     batch_size: 240
 	 is_color: false
-    new_height : 40
-	new_width : 128
+    new_height : 0
+	new_width : 0
   }
 }
 layer {
@@ -73,8 +73,8 @@ layer {
     source: "/data/kevin/kitti/raw_data/2011_09_26/val_disp_labeled.txt"
     batch_size: 80
 	 is_color: false
-    new_height : 40
-	new_width : 128
+    new_height : 0
+	new_width : 0
   }
 }
 layer {
@@ -89,8 +89,8 @@ layer {
     source: "/data/kevin/kitti/raw_data/2011_09_26/val_conf_labeled.txt"
     batch_size: 80
 	 is_color: false
-    new_height : 40
-	new_width : 128
+    new_height : 0
+	new_width : 0
   }
 }
 
