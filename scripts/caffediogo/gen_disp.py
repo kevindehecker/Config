@@ -11,7 +11,7 @@ import sys
 def diff_letters(a,b):
     return sum ( a[i] != b[i] for i in range(len(a)) )
 
-def show_disparity_maps():
+def generate_maps():
 
     # parameters for the stereo matching:
     window_size = 9;
@@ -23,8 +23,8 @@ def show_disparity_maps():
 
     im_step = 1;
 
-    fname_left =  sys.argv[1] #"/data/kevin/kitti/raw_data/2011_09_26/images2.txt";
-    fname_right = sys.argv[2] #"/data/kevin/kitti/raw_data/2011_09_26/images3.txt";
+    fname_left =  sys.argv[1] #"/data/kevin/kitti/raw_data/2011_09_26/train_images2.txt";
+    fname_right = sys.argv[2] #"/data/kevin/kitti/raw_data/2011_09_26/train_images3.txt"; and also for val
     with open(fname_left) as f:
         images_left = f.readlines()
     # you may also want to remove whitespace characters like `\n` at the end of each line
@@ -55,16 +55,19 @@ def show_disparity_maps():
 
         # calculate the disparities:
         disp = calculate_disparities(imgL, imgR, window_size, min_disp, num_disp);
+        ret,thresh0 = cv2.threshold(disp,0,255,cv2.THRESH_BINARY);
         disp = cv2.resize(disp, (TARGET_W, TARGET_H), interpolation=cv2.INTER_NEAREST);
+
 
         # gradient for certainty:
         grey = cv2.cvtColor(imgL, cv2.COLOR_RGB2GRAY);
         blur = cv2.GaussianBlur(grey,(11,11),0)
         sobelX = cv2.Sobel(blur,cv2.CV_64F,1,0,ksize=5);
         ret,thresh1 = cv2.threshold(sobelX,175,255,cv2.THRESH_BINARY);
-	cv2.rectangle(thresh1, (0, 0), (num_disp, thresh1.shape[1]), 0, 2)
-        thresh1 = cv2.resize(thresh1, (TARGET_W, TARGET_H), interpolation=cv2.INTER_NEAREST);
 
+        #mask out unknown pixels in disp map
+	thresh1 = cv2.bitwise_and(thresh0.astype(np.uint8),thresh1.astype(np.uint8))
+        thresh1 = cv2.resize(thresh1, (TARGET_W, TARGET_H), interpolation=cv2.INTER_NEAREST);
 
         base_name = os.path.basename(im);
         file_name, ext = os.path.splitext(base_name);
@@ -108,4 +111,4 @@ def calculate_disparities(imgL, imgR, window_size, min_disp, num_disp):
     disp = stereo.compute(imgL, imgR).astype(np.float32) / 16.0
     return disp
 
-show_disparity_maps()
+generate_maps()
