@@ -1,5 +1,5 @@
 set -ex
-snapdir=/data/kevin/kitti/coarse2/
+snapdir=/data/kevin/kitti/coarse7/
 
 mkdir -p $snapdir
 

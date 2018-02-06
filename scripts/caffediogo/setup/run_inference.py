@@ -31,11 +31,10 @@ for idx, imf in enumerate(input_images):
 	out = net.forward()
 	mat = out['coarse_depth'][0]
 	a = np.asarray(mat)
-	if np.mean(a) > 0:
-		print(np.mean(a))
 	#print(mat)
 	mat = mat * 255
-	#print(mat,mat.shape)
+        #print(mat.shape)
+	print(mat[0,30:35,30:35])
 	mat = (mat[0,:,:]).astype('uint8')
 
 	base_name = os.path.basename(imf);
@@ -52,28 +51,33 @@ for idx, imf in enumerate(input_images):
 	cv2.imwrite(dir_name + "/monocular/" + file_name + "_monocular.png",mat)
 	imm = mat
 
+	im2 =  cv2.imread(dir_name + "/image_02/data/" + file_name + ".png")
+
 	#pdb.set_trace()
 	if not os.path.exists(dir_name  + "/combined/"):
 		os.makedirs(dir_name  + "/combined/")
 	#print(dir_name + "/disp/" + file_name + "_disparity.png")
 	imd = cv2.imread(dir_name + "/disp/" + file_name + "_disparity.png")
-	imd = cv2.applyColorMap(imd, cv2.COLORMAP_JET)	
-	im2 =  cv2.imread(dir_name + "/image_02/data/" + file_name + ".png")
-
+	imd = cv2.applyColorMap(imd, cv2.COLORMAP_JET)
+	imd = cv2.resize(imd,(im2.shape[1], im2.shape[0]), interpolation = cv2.INTER_CUBIC)
 
 	vis = np.concatenate((im2, imd), axis=0)
 
+	imm =  cv2.imread(dir_name + "/monocular/" + file_name + "_monocular.png")
+	imm = cv2.resize(imm,(im2.shape[1], im2.shape[0]), interpolation = cv2.INTER_CUBIC)
+	vis = np.concatenate((vis, imm), axis=0)
 
-	img_w = 128
-	img_h = 40
-	background = Image.new('RGBA', (1242, 375), (0, 0, 0, 255))
-	bg_w, bg_h = background.size
-	offset = ((bg_w - img_w) / 2, (bg_h - img_h) / 2)
 
-	imm = Image.open(dir_name + "/monocular/" + file_name + "_monocular.png")
-	background.paste(imm, offset)
-	background.save("tmp.png")
-	background =  cv2.imread("tmp.png")
+	#img_w = 128
+	#img_h = 40
+	#background = Image.new('RGBA', (1242, 375), (0, 0, 0, 255))
+	#bg_w, bg_h = background.size
+	#offset = ((bg_w - img_w) / 2, (bg_h - img_h) / 2)
 
-	vis = np.concatenate((vis, background), axis=0)
+	#imm = Image.open(dir_name + "/monocular/" + file_name + "_monocular.png")
+	#background.paste(imm, offset)
+	#background.save("tmp.png")
+	#background =  cv2.imread("tmp.png")
+
+	#vis = np.concatenate((vis, background), axis=0)
 	cv2.imwrite(dir_name + "/combined/" + file_name + ".png",vis)
