@@ -57,7 +57,7 @@ def generate_maps():
         disp = calculate_disparities(imgL, imgR, window_size, min_disp, num_disp);
         ret,thresh0 = cv2.threshold(disp,0,255,cv2.THRESH_BINARY);
         disp = cv2.resize(disp, (TARGET_W, TARGET_H), interpolation=cv2.INTER_NEAREST);
-	#disp[:] = 255;
+        #disp[:] = 255;
 
         # gradient for certainty:
         grey = cv2.cvtColor(imgL, cv2.COLOR_RGB2GRAY);
@@ -66,9 +66,11 @@ def generate_maps():
         ret,thresh1 = cv2.threshold(sobelX,175,255,cv2.THRESH_BINARY);
 
         #mask out unknown pixels in disp map
-	thresh1 = cv2.bitwise_and(thresh0.astype(np.uint8),thresh1.astype(np.uint8))
+        # thresh 0 is for uncertain disparities (e.g., left band in left image + bad matches)
+        # thresh 1 is for detecting high texture regions
+        thresh1 = cv2.bitwise_and(thresh0.astype(np.uint8),thresh1.astype(np.uint8))
         thresh1 = cv2.resize(thresh1, (TARGET_W, TARGET_H), interpolation=cv2.INTER_NEAREST);
-        thresh1[:] = 255;
+        # thresh1[:] = 255;
 
         base_name = os.path.basename(im);
         file_name, ext = os.path.splitext(base_name);
