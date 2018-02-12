@@ -51,7 +51,7 @@ if(graphics):
 depth_stereo = evaluation_utils.convert_disps_to_depths_kitti(stereo);
 depth_mono = evaluation_utils.convert_disps_to_depths_kitti(mono);
 depth_GT = evaluation_utils.convert_disps_to_depths_kitti(GT);
-depth_fusion = merge.merge_Diogo(depth_stereo, depth_mono, image, graphics = True);
+depth_fusion = merge.merge_Diogo(depth_stereo, depth_mono, image, graphics = False);
 
 if(graphics):
     fig, axes = plt.subplots(nrows=2, ncols=2);
@@ -66,8 +66,7 @@ if(graphics):
     fig.colorbar(cf, ax=axes[1,0])
     axes[1,1].imshow(depth_fusion);
     axes[1,1].set_title('Fusion depth');
-
-
+    fig.colorbar(cf, ax=axes[1,1])
 
 abs_rel, sq_rel, rmse, rmse_log, a1, a2, a3 = evaluation_utils.compute_errors(depth_GT[:], depth_stereo[:]);
 print('Performance:\tabs_rel,sq_rel,rmse,rmse_log,a1,a2,a3.');

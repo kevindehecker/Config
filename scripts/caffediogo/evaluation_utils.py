@@ -45,7 +45,7 @@ width_to_focal[1241] = 718.856
 width_to_focal[1224] = 707.0493
 width_to_focal[1238] = 718.3351
 
-def convert_disps_to_depths_kitti(disparity_map, target_width = 1242, target_height = 375, mask = True):
+def convert_disps_to_depths_kitti(disparity_map, target_width = 1242, target_height = 375, mask = True, limit_depth = 80.0):
     # this way of converting only works when the stereo vision was performed on the original image size:
     disparity_map = disparity_map.astype(float);
     if(mask):
@@ -61,7 +61,7 @@ def convert_disps_to_depths_kitti(disparity_map, target_width = 1242, target_hei
     if(mask):
         depth_map = np.multiply(depth_map, 1-M);
     
-    depth_map[depth_map > 80.0] = 80.0;
+    depth_map[depth_map > limit_depth] = limit_depth;
     return depth_map;
 
 def load_velodyne_points(file_name):
