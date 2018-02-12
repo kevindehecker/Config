@@ -46,20 +46,16 @@ def merge_Diogo(stereo_map, mono_map, image, graphics = False):
     if(graphics):
         fig, axes = plt.subplots(nrows=1, ncols=3)
         axes[0].imshow(mono_map);
-        axes[0].title('Mono');
-        axes[0].colorbar();
+        axes[0].set_title('Mono');
         axes[1].imshow(stereo_map);
-        axes[1].title('Stereo');
-        axes[1].colorbar();
+        axes[1].set_title('Stereo');
         axes[2].imshow(fusion);
-        axes[2].title('Fusion');
-        axes[2].colorbar();
+        axes[2].set_title('Fusion');
         
         fig, axes = plt.subplots(nrows=1, ncols=2)
         axes[0].imshow(image);
-        axes[0].title('Image');
+        axes[0].set_title('Image');
         axes[1].imshow(stereo_confidence);
-        axes[1].colorbar();
     
     return fusion;
     
@@ -85,8 +81,8 @@ def determine_stereo_confidence(stereo_map, image, blur_window = 11, gradient_th
 def determine_mono_scale(stereo_map, mono_map):
     
     # Diogo's original method (TODO: make more robust to outliers):
-    max_stereo = max(stereo_map[:]);
-    max_mono = max(mono_map[:]);
+    max_stereo = np.max(stereo_map[:]);
+    max_mono = np.max(mono_map[:]);
     mono_scale = max_stereo / max_mono;
     return mono_scale;
 
@@ -94,8 +90,8 @@ def get_Diogo_weight_map(stereo_map, mono_map):
     
     # get the weight map:    
     # first normalize both maps:
-    Ns = stereo_map / max(stereo_map[:]);
-    Nm = mono_map / max(mono_map[:]);
+    Ns = stereo_map / np.max(stereo_map[:]);
+    Nm = mono_map / np.max(mono_map[:]);
     
     # Then the weight map for when stereo is bigger, b, or smaller, s
     Wsb = np.divide(Nm, Ns);

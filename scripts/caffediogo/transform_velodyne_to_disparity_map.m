@@ -32,7 +32,7 @@ calib_dirs = calib_dirs{1};
 
 cam       = 2; % 0-based index
 
-for d = 3:4 %1:length(base_dirs)
+for d = 1:length(base_dirs)
 
     fprintf('\nDir %d / %d\n', d, length(base_dirs));
     

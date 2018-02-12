@@ -12,8 +12,14 @@ import pandas as pd
 import os
 import cv2
 from collections import Counter
+import pdb
 
 def compute_errors(gt, pred):
+    
+    inds = gt > 0;
+    gt = gt[inds];
+    pred = pred[inds];
+    
     thresh = np.maximum((gt / pred), (pred / gt))
     a1 = (thresh < 1.25   ).mean()
     a2 = (thresh < 1.25 ** 2).mean()
@@ -39,11 +45,22 @@ width_to_focal[1241] = 718.856
 width_to_focal[1224] = 707.0493
 width_to_focal[1238] = 718.3351
 
-def convert_disps_to_depths_kitti(disparity_map, target_width = 1242, target_height = 375):
+def convert_disps_to_depths_kitti(disparity_map, target_width = 1242, target_height = 375, mask = True):
     # this way of converting only works when the stereo vision was performed on the original image size:
-    disparity_map = target_width * disparity_map; 
+    disparity_map = disparity_map.astype(float);
+    if(mask):
+        M = disparity_map == 0;
+        
     disparity_map[disparity_map == 0] = 1E-5;
-    depth_map = width_to_focal[target_width] * 0.54 / disparity_map;
+    #factor = (width_to_focal[target_width]/target_width) * 0.54 ;
+    #depth_map = factor / disparity_map;
+    
+    # this formula comes from the run_demoVelodyne.m function in the raw KITTI development kit.
+    depth_map = (64.0*5.0) / disparity_map; 
+
+    if(mask):
+        depth_map = np.multiply(depth_map, 1-M);
+    
     depth_map[depth_map > 80.0] = 80.0;
     return depth_map;
 
