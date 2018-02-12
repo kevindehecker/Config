@@ -32,7 +32,7 @@ calib_dirs = calib_dirs{1};
 
 cam       = 2; % 0-based index
 
-for d = 1:length(base_dirs)
+for d = 3:4 %1:length(base_dirs)
 
     fprintf('\nDir %d / %d\n', d, length(base_dirs));
     
@@ -69,53 +69,58 @@ for d = 1:length(base_dirs)
         end
 
         % load velodyne points
-        fid = fopen(sprintf('%s/velodyne_points/data/%010d.bin',base_dir,frame),'rb');
-        velo = fread(fid,[4 inf],'single')';
-        step = 1; % original script has 5
-        velo = velo(1:step:end,:); % remove every 5th point for display speed
-        fclose(fid);
+        vel_file_name = sprintf('%s/velodyne_points/data/%010d.bin',base_dir,frame);
+        if(exist(vel_file_name, 'file'))
+            fid = fopen(vel_file_name,'rb');
+            velo = fread(fid,[4 inf],'single')';
+            step = 1; % original script has 5
+            velo = velo(1:step:end,:); % remove every 5th point for display speed
+            fclose(fid);
 
-        % remove all points behind image plane (approximation
-        idx = velo(:,1)<5;
-        velo(idx,:) = [];
+            % remove all points behind image plane (approximation
+            idx = velo(:,1)<5;
+            velo(idx,:) = [];
 
-        % project to image plane (exclude luminance)
-        velo_img = project(velo(:,1:3),P_velo_to_img);
+            % project to image plane (exclude luminance)
+            velo_img = project(velo(:,1:3),P_velo_to_img);
 
-        if(graphics)
-            % plot points
-            cols = jet;
-            for i=1:size(velo_img,1)
-                col_idx = round(64*5/velo(i,1)); % obtaining disparities
-                plot(velo_img(i,1),velo_img(i,2),'o','LineWidth',4,'MarkerSize',1,'Color',cols(col_idx,:));
+            if(graphics)
+                % plot points
+                cols = jet;
+                for i=1:size(velo_img,1)
+                    col_idx = round(64*5/velo(i,1)); % obtaining disparities
+                    plot(velo_img(i,1),velo_img(i,2),'o','LineWidth',4,'MarkerSize',1,'Color',cols(col_idx,:));
+                end
             end
-        end
 
-        disps = (64.0*5) ./velo(:,1);
-        W = size(img, 2);
-        H = size(img, 1);
-        % output dimensions of the disparity map --> should correspond to
-        % output deep neural network!
-        new_W = 128; %W;
-        new_H = 40; %H;
-        k = 3;
-        max_dist = 1;
-        disp_image = construct_disparity_image(velo_img, disps, W, H, new_W, new_H);
-        
-        if(graphics)
-            figure();
-            imagesc(disp_image);
-            title('disparity image');
+            disps = (64.0*5) ./velo(:,1);
+            W = size(img, 2);
+            H = size(img, 1);
+            % output dimensions of the disparity map --> should correspond to
+            % output deep neural network!
+            new_W = 128; %W;
+            new_H = 40; %H;
+            k = 3;
+            max_dist = 1;
+            disp_image = construct_disparity_image(velo_img, disps, W, H, new_W, new_H);
+
+            if(graphics)
+                figure();
+                imagesc(disp_image);
+                title('disparity image');
+            end
+
+            % write the image in the right place:
+            disp_image = uint8(disp_image);
+            GT_dir_name = sprintf('%s/GT_disp/', base_dir);
+            if(~exist(GT_dir_name, 'dir'))
+                mkdir(GT_dir_name);
+            end
+            im_name = sprintf('%s/GT_disp/%010d.png',base_dir,frame);
+            imwrite(disp_image, im_name);
+        else
+            fprintf('File %s does not exist!!!\n', vel_file_name);
         end
-        
-        % write the image in the right place:
-        disp_image = uint8(disp_image);
-        GT_dir_name = sprintf('%s/GT_disp/', base_dir);
-        if(~exist(GT_dir_name, 'dir'))
-            mkdir(GT_dir_name);
-        end
-        im_name = sprintf('%s/GT_disp/%010d.png',base_dir,frame);
-        imwrite(disp_image, im_name);
         
     end
 end
