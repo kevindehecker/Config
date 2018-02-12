@@ -10,6 +10,7 @@ Merge a monocular and stereo map
 import cv2
 import numpy as np
 import matplotlib.pyplot as plt
+from scipy.signal import medfilt2d
 
 
 def merge_Diogo(stereo_map, mono_map, image, graphics = False):
@@ -31,9 +32,7 @@ def merge_Diogo(stereo_map, mono_map, image, graphics = False):
         plt.colorbar();
     
     # 2. Determine the scale of the monocular map:
-    mono_scale = determine_mono_scale(stereo_map, mono_map);
-    # from here on work with the scaled mono outputs:
-    mono_map *= mono_scale;
+    mono_map = scale_mono_map(stereo_map, mono_map);
     
     # 3. Get the weighing matrix:
     weight_map = get_Diogo_weight_map(stereo_map, mono_map);
@@ -50,14 +49,14 @@ def merge_Diogo(stereo_map, mono_map, image, graphics = False):
     
     # equivalent:
     stereo_confidence = stereo_confidence + np.multiply(1 - stereo_confidence, 1-weight_map);
-    if(graphics):
+    if(True):
         plt.figure();
         plt.imshow(stereo_confidence);
         plt.title('Updated stereo confidence');
         plt.colorbar();
         
     mono_confidence = 1 - stereo_confidence;
-    if(graphics):
+    if(True):
         plt.figure();
         plt.imshow(mono_confidence);
         plt.title('Mono confidence');
@@ -66,7 +65,8 @@ def merge_Diogo(stereo_map, mono_map, image, graphics = False):
     fusion = np.multiply(stereo_confidence, stereo_map) + np.multiply(mono_confidence, mono_map);
     
     # 5. post-processing with median filter:
-    # fusion = cv2.medianBlur(fusion, 3);
+    # fusion = cv2.medianBlur(fusion.astype(np.uint8), 3);
+    fusion = medfilt2d(fusion, 3);
     
     if(graphics):
         fig, axes = plt.subplots(nrows=1, ncols=3)
@@ -137,15 +137,21 @@ def determine_stereo_confidence(stereo_map, image, blur_window = 3, gradient_thr
     
     return stereo_confidence;
 
-def determine_mono_scale(stereo_map, mono_map):
+def scale_mono_map(stereo_map, mono_map):
     
     # Diogo's original method (TODO: make more robust to outliers):
-    max_stereo = np.max(stereo_map[:]);
+    max_stereo = np.max(stereo_map[stereo_map != 0]);
+    min_stereo = np.min(stereo_map[stereo_map != 0]);
+    min_mono = np.min(mono_map[:]);
+    mono_map -= min_mono;
     max_mono = np.max(mono_map[:]);
-    mono_scale = max_stereo / max_mono;
-    return mono_scale;
+    mono_map /= max_mono;
+    mono_map *= max_stereo - min_stereo;
+    mono_map += min_stereo;
+    
+    return mono_map;
 
-def get_Diogo_weight_map(stereo_map, mono_map):
+def get_Diogo_weight_map(stereo_map, mono_map, graphics = False):
     
     # get the weight map:    
     # first normalize both maps:
@@ -161,5 +167,14 @@ def get_Diogo_weight_map(stereo_map, mono_map):
 
     # Eq 4 in the article:    
     weight_map = np.multiply(Ns >= Nm, Wsb) + np.multiply(Ns < Nm, Wss);
+    weight_map[stereo_map == 0] = 1;
+    
+    if(graphics):
+        plt.figure()
+        plt.imshow(weight_map);
+        plt.title('weight map');
+        plt.colorbar();
+    
+        
     
     return weight_map;
