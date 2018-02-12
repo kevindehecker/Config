@@ -7,6 +7,8 @@ function transform_velodyne_to_disparity_map (base_dir_file,calib_dir_file)
 % base_dir .... absolute path to sequence base directory (ends with _sync)
 % calib_dir ... absolute path to directory that contains calibration files
 
+% http://kitti.is.tue.mpg.de/kitti/devkit_raw_data.zip
+addpath('/home/guido/KITTI/devkit/matlab/');
 
 if(nargin < 1)
     base_dir_file = 'base_dirs.txt';
@@ -57,7 +59,7 @@ for d = 1:length(base_dirs)
     
     for frame = 0:length(im_names)-1
 
-        fprintf('.');
+        fprintf('%d / %d\n', frame, length(im_names)-1);
         
         % load and display image
         img = imread(sprintf('%s/image_%02d/data/%010d.png',base_dir,cam,frame));
@@ -108,6 +110,10 @@ for d = 1:length(base_dirs)
         
         % write the image in the right place:
         disp_image = uint8(disp_image);
+        GT_dir_name = sprintf('%s/GT_disp/', base_dir);
+        if(~exist(GT_dir_name, 'dir'))
+            mkdir(GT_dir_name);
+        end
         im_name = sprintf('%s/GT_disp/%010d.png',base_dir,frame);
         imwrite(disp_image, im_name);
         
