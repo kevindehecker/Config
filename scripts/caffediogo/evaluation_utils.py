@@ -16,7 +16,9 @@ import pdb
 
 def compute_errors(gt, pred):
     
-    inds = gt > 0;
+    inds1 = gt > 0;
+    inds2 = pred > 0;
+    inds = np.logical_and(inds1, inds2);
     gt = gt[inds];
     pred = pred[inds];
     
