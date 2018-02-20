@@ -102,7 +102,11 @@ layer {
   bottom: "inputImage"
   top: "conv1"
   param {
-    lr_mult: 0.001
+    lr_mult: 0
+    decay_mult: 0
+  }
+  param {
+    lr_mult: 0
     decay_mult: 0
   }
   convolution_param {
@@ -153,7 +157,11 @@ layer {
   bottom: "norm1"
   top: "conv2"
   param {
-    lr_mult: 0.001
+    lr_mult: 0
+    decay_mult: 0
+  }
+  param {
+    lr_mult: 0
     decay_mult: 0
   }
   convolution_param {
@@ -168,7 +176,7 @@ layer {
     }
     bias_filler {
       type: "constant"
-      value: 0
+      value: 1
     }
   }
 }
@@ -206,7 +214,11 @@ layer {
   bottom: "norm2"
   top: "conv3"
   param {
-    lr_mult: 0.001
+    lr_mult: 0
+    decay_mult: 0
+  }
+  param {
+    lr_mult: 0
     decay_mult: 0
   }
   convolution_param {
@@ -235,8 +247,12 @@ layer {
   bottom: "conv3"
   top: "conv4"
   param {
-    lr_mult: 0.001
+    lr_mult: 0
     decay_mult: 0.5
+  }
+  param {
+    lr_mult: 0
+    decay_mult: 0
   }
   convolution_param {
     num_output: 384
@@ -249,7 +265,7 @@ layer {
     }
     bias_filler {
       type: "constant"
-      value: 0
+      value: 1
     }
   }
 }
@@ -265,7 +281,11 @@ layer {
   bottom: "conv4"
   top: "conv5"
   param {
-    lr_mult: 0.001
+    lr_mult: 0
+    decay_mult: 0
+  }
+  param {
+    lr_mult: 0
     decay_mult: 0
   }
   convolution_param {
@@ -279,7 +299,7 @@ layer {
     }
     bias_filler {
       type: "constant"
-      value: 0
+      value: 1
     }
   }
 }
@@ -306,7 +326,11 @@ layer {
   bottom: "pool5"
   top: "fc6"
   param {
-    lr_mult: 0.01
+    lr_mult: 0
+    decay_mult: 0
+  }
+  param {
+    lr_mult: 0
     decay_mult: 0
   }
   inner_product_param {
@@ -317,7 +341,7 @@ layer {
     }
     bias_filler {
       type: "constant"
-      value: 0
+      value: 1
     }
   }
 }
@@ -342,7 +366,11 @@ layer {
   bottom: "fc6"
   top: "fc7"
   param {
-    lr_mult:0.01
+    lr_mult:0
+    decay_mult: 0
+  }
+  param {
+    lr_mult: 0
     decay_mult: 0
   }
   inner_product_param {
@@ -353,7 +381,7 @@ layer {
     }
     bias_filler {
       type: "constant"
-      value: 0
+      value: 1
     }
   }
 }
@@ -374,9 +402,130 @@ layer {
            dim: 0
            dim: 1
            dim: 40
-           dim: 128
+           dim: 128      
         }
     }
+}
+
+##FINE
+
+layer {
+  name: "conv1_fine"
+  type: "Convolution"
+  bottom: "inputImage"
+  top: "conv1_fine"
+  param {
+    lr_mult: 0.001
+    decay_mult: 0.0005
+  }
+  param {
+    lr_mult: 0
+    decay_mult: 0
+  }
+  convolution_param {
+    num_output: 63
+    kernel_size: 9
+    stride: 2
+    pad:4
+    weight_filler {
+      type: "gaussian"
+      std: 0.01
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "relu1_fine"
+  type: "ReLU"
+  bottom: "conv1_fine"
+  top: "conv1_fine"
+}
+layer {
+  name: "pool1_fine"
+  type: "Pooling"
+  bottom: "conv1_fine"
+  top: "pool1_fine"
+  pooling_param {
+    pool: MAX
+    kernel_size: 3
+    stride: 2
+  }
+}
+layer {
+  name: "concat"
+  type:"Concat"
+  bottom:"pool1_fine"
+  bottom:"coarse_depth"
+  top: "fine_input"
+}
+layer {
+  name: "conv2_fine"
+  type: "Convolution"
+  bottom: "fine_input"
+  top: "conv2_fine"
+  param {
+    lr_mult: 0.01
+    decay_mult: 0.0
+  }
+  param {
+    lr_mult: 0.01
+    decay_mult: 0
+  }
+  convolution_param {
+    num_output: 64
+    kernel_size: 5
+    pad: 2
+    weight_filler {
+      type: "gaussian"
+      std: 0.01
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "relu2_fine"
+  type: "ReLU"
+  bottom: "conv2_fine"
+  top: "conv2_fine"
+}
+layer {
+  name: "conv3_fine"
+  type: "Convolution"
+  bottom: "conv2_fine"
+  top: "fine_depth"
+  param {
+    lr_mult: 0.001
+    decay_mult: 0.0
+  }
+  param {
+    lr_mult: 0.0001
+    decay_mult: 0
+  }
+  convolution_param {
+    num_output: 1
+    kernel_size: 5
+    pad: 2
+    weight_filler {
+      type: "gaussian"
+      std: 0.01
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "relu3_fine"
+  type: "ReLU"
+  bottom: "fine_depth"
+  top: "fine_depth"
 }
 
 
@@ -471,7 +620,7 @@ layer{
 layer{
     name:"createSparseDepthCNN"
     type:"Eltwise"
-    bottom:"coarse_depth"
+    bottom:"fine_depth"
     bottom:"normSparse"
     top:"sparseCnnDepth"
     eltwise_param

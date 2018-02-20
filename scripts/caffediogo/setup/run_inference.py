@@ -29,7 +29,7 @@ for idx, imf in enumerate(input_images):
 	nim = nim.reshape(1,3,512,160)
 	net.blobs['inputData'].data[...] = nim
 	out = net.forward()
-	mat = out['coarse_depth'][0]
+	mat = out['fine_depth'][0]
 	a = np.asarray(mat)
 	#print(mat)
 	mat = mat * 255
