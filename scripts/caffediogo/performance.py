@@ -84,6 +84,6 @@ def merge_depth_maps(mono_name = "/home/guido/cnn_depth_tensorflow/tmp/00002.png
     print('Fusion:\t{},{},{},{},{},{},{}.'.format(abs_rel, sq_rel, rmse, rmse_log, a1, a2, a3));
     performance[2,:] = [abs_rel, sq_rel, rmse, rmse_log, a1, a2, a3];
     
-    return performance;
+    return performance, depth_fusion;
 
-merge_depth_maps(graphics=True);
+#merge_depth_maps(graphics=True);
