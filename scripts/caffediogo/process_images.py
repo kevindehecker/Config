@@ -1,6 +1,8 @@
 #!/usr/bin/env python2
+ 
+#usage:
+#python2 ./process_images.py /data/kevin/kitti/raw_data/2011_09_26/val_images2.txt /data/kevin/kitti/raw_data/2011_09_26/val_images3.txt
 
-# partially based on stereo_match.py example in the OpenCV distribution.
 import glob
 import numpy as np
 import cv2
@@ -8,7 +10,7 @@ import pdb
 import os
 import sys
 import subprocess
-import monodepth_kevin
+import monodepth_kevin # export PYTHONPATH=$PYTHONPATH:/data/kevin/sperziboon/monodepth 
 import performance
 
 def diff_letters(a,b):
@@ -17,8 +19,8 @@ def diff_letters(a,b):
 def generate_maps():
     im_step = 1;
 
-    fname_left =  sys.argv[1] #"/data/kevin/kitti/raw_data/2011_09_26/train_images2.txt";
-    fname_right = sys.argv[2] #"/data/kevin/kitti/raw_data/2011_09_26/train_images3.txt"; and also for val
+    fname_left =  sys.argv[1]
+    fname_right = sys.argv[2]
     with open(fname_left) as f:
         images_left = f.readlines()
     # you may also want to remove whitespace characters like `\n` at the end of each line
@@ -55,9 +57,8 @@ def generate_maps():
         gt_path = dir_name + "/velodyne/data/" + file_name + ".bin"
         
         stereo_path,conf_path = do_stereo(dir_name, file_name, imgL, imgR)
-        mono_path= do_sperziboon(dir_name, file_name, im)
-        merged_path = do_merge(dir_name, file_name, mono_path,stereo_path,gt_path)
-        
+        mono_path = do_sperziboon(dir_name, file_name, im)
+        merged_path,perf_result = do_merge(dir_name, file_name, mono_path,stereo_path,gt_path)
 
 
 def do_merge(dir_name, file_name, mono_path,stereo_path,gt_path):
@@ -67,7 +68,7 @@ def do_merge(dir_name, file_name, mono_path,stereo_path,gt_path):
         os.makedirs(dir_name  + "/merged/")
     merged_path = dir_name + "/merged/" + file_name + "_merged.png"
     cv2.imwrite(merged_path, disp);
-    return merged_path
+    return merged_path,perf_result
         
 def do_sperziboon(dir_name, file_name, im_rgb_path):
     
@@ -77,7 +78,6 @@ def do_sperziboon(dir_name, file_name, im_rgb_path):
     out_file = dir_name + "/sperzi/" + file_name + "_sperziboon.png"
     monodepth_kevin.process_im_sperzi(im_rgb_path,'/data/kevin/sperziboon/monodepth/hoeren/models/model_kitti',out_file)
     return out_file
-
 
 def do_stereo(dir_name, file_name, imgL, imgR):
 
