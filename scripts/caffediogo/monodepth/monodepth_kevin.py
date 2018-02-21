@@ -22,6 +22,7 @@ import tensorflow as tf
 import tensorflow.contrib.slim as slim
 import scipy.misc
 import matplotlib.pyplot as plt
+import cv2
 
 from monodepth_model import *
 from monodepth_dataloader import *
@@ -103,7 +104,8 @@ def process_im_sperzi(image_path = '/data/kevin/kitti/raw_data/2011_09_26/2011_0
 
     #np.save(os.path.join(output_directory, "{}_disp.npy".format(output_name)), disp_pp)
     disp_to_img = scipy.misc.imresize(disp_pp.squeeze(), [original_height, original_width])
-    plt.imsave(output_path, disp_to_img)
+    #plt.imsave(output_path, disp_to_img)
+    cv2.imwrite(output_path, disp_to_img);
     
 
 process_im_sperzi()

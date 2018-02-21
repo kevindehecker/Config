@@ -86,23 +86,22 @@ def generate_maps():
         
         gt_path = dir_name + "/GT_disp/" + file_name + ".png"        
         stereo_path,conf_path = do_stereo(dir_name, file_name, imgL, imgR)       
-        if(CNN == 'mrharicot'):
+        if(CNN == 'mrharicot'):            
             merged_path,perf_result1 = do_merge(dir_name, file_name, mono1_path,stereo_path,gt_path,im)
             Performance1 += perf_result1;
-        else:
+            if(np.mod(n_perfs, 10) == 0):
+                performance.print_performance(Performance1 / n_perfs, name = 'Performance 1');
+        else:            
             merged_path,perf_result2 = do_merge(dir_name, file_name, mono2_path,stereo_path,gt_path,im)
             Performance2 += perf_result2;
+            if(np.mod(n_perfs, 10) == 0):
+                performance.print_performance(Performance2 / n_perfs, name = 'Performance 2');
         n_perfs += 1;
-        
-        if(np.mod(n_perfs, 100) == 0):
-#            performance.print_performance(Performance1 / n_perfs, name = 'Performance 1');
-            performance.print_performance(Performance2 / n_perfs, name = 'Performance 2');
-    
-#    Performance1 /= n_perfs;
-    Performance2 /= n_perfs;
-#    performance.print_performance(Performance1, name = 'Performance 1');
-    performance.print_performance(Performance2, name = 'Performance 2');
-    
+     
+    #Performance1 /= n_perfs;
+    #Performance2 /= n_perfs;
+    #performance.print_performance(Performance1, name = 'Performance 1');
+    #performance.print_performance(Performance2, name = 'Performance 2');
     
     filehandler = open("performance_1.pkl","wb")
     pickle.dump(Performance1, filehandler)
