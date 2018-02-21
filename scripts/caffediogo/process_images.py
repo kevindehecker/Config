@@ -73,13 +73,14 @@ def generate_maps():
         #mono1_path = do_sperziboon(dir_name, file_name, im);        
         mono2_path = do_mancini(dir_name, file_name, im,model)            
         
-        gt_path = dir_name + "/velodyne/data/" + file_name + ".bin"        
-        stereo_path,conf_path = do_stereo(dir_name, file_name, imgL, imgR)        
+        gt_path = dir_name + "/GT_disp/" + file_name + ".png"        
+        stereo_path,conf_path = do_stereo(dir_name, file_name, imgL, imgR)       
         #merged_path,perf_result1 = do_merge(dir_name, file_name, mono1_path,stereo_path,gt_path)
         merged_path,perf_result2 = do_merge(dir_name, file_name, mono2_path,stereo_path,gt_path)
 
 
 def do_merge(dir_name, file_name, mono_path,stereo_path,gt_path):
+    pdb.set_trace()
     perf_result, depth_fusion = performance.merge_depth_maps(mono_path,stereo_path,gt_path)
     if not os.path.exists(dir_name  + "/merged/"): 
         os.makedirs(dir_name  + "/merged/")
