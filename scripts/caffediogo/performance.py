@@ -31,7 +31,7 @@ def merge_depth_maps(mono_name = "/home/guido/cnn_depth_tensorflow/tmp/00002.png
     mono = cv2.cvtColor(mono, cv2.COLOR_RGB2GRAY);
     mono = mono.astype(float);
     mono /= 255.0 / MAX_DISP;
-    mono = cv2.resize(mono, (64, 20), interpolation=cv2.INTER_NEAREST);
+    # mono = cv2.resize(mono, (64, 20), interpolation=cv2.INTER_NEAREST);
 
 
     stereo = cv2.imread(stereo_name);
