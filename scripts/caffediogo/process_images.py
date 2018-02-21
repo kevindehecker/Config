@@ -11,22 +11,26 @@ import os
 import sys
 import subprocess
 import performance
+import argparse
 
-# whether to use haricot or mancini
-CNN = 'mancini';
+#parser = argparse.ArgumentParser(description='Monodepth TensorFlow implementation.')
+#parser.add_argument('--encoder',          type=str,   help='type of encoder, mrharicot or mancini', default='mrharicot')
 
-#if(CNN == 'mrharicot'):
-sperzi_dir = '/data/kevin/Config/scripts/caffediogo/monodepth/'
-sys.path.insert(0, sperzi_dir)
-import monodepth_kevin
-#else:
+# whether to use mrharicot or mancini
+CNN = sys.argv[3] #args.encoder #'mancini';
+
+if(CNN == 'mrharicot'):
+    sperzi_dir = '/data/kevin/Config/scripts/caffediogo/monodepth/'
+    sys.path.insert(0, sperzi_dir)
+    import monodepth_kevin
+else:
     # Mancini's network:
-mancini_dir = '/home/guido/trained_mancini/'
+    mancini_dir = '/home/guido/trained_mancini/'
     # '/home/guido/SSL_OF/keras/';
-sys.path.insert(0, mancini_dir)
+    sys.path.insert(0, mancini_dir)
 #    # sys.path.append('/home/SSL_OF/keras/')
-import upsample_vgg16 
-import pickle
+    import upsample_vgg16 
+    import pickle
 
 
 def diff_letters(a,b):
@@ -75,17 +79,19 @@ def generate_maps():
         dir_name = os.path.dirname(im);
         dir_name = os.path.dirname(dir_name);
         dir_name = os.path.dirname(dir_name);
-
-        #mono1_path = do_sperziboon(dir_name, file_name, im);        
-        mono2_path = do_mancini(dir_name, file_name, im,model)            
+        if(CNN == 'mrharicot'):
+            mono1_path = do_sperziboon(dir_name, file_name, im);        
+        else:
+            mono2_path = do_mancini(dir_name, file_name, im,model)            
         
         gt_path = dir_name + "/GT_disp/" + file_name + ".png"        
         stereo_path,conf_path = do_stereo(dir_name, file_name, imgL, imgR)       
-        #merged_path,perf_result1 = do_merge(dir_name, file_name, mono1_path,stereo_path,gt_path,im)
-        #Performance1 += perf_result1;
-        
-        merged_path,perf_result2 = do_merge(dir_name, file_name, mono2_path,stereo_path,gt_path,im)
-        Performance2 += perf_result2;
+        if(CNN == 'mrharicot'):
+            merged_path,perf_result1 = do_merge(dir_name, file_name, mono1_path,stereo_path,gt_path,im)
+            Performance1 += perf_result1;
+        else:
+            merged_path,perf_result2 = do_merge(dir_name, file_name, mono2_path,stereo_path,gt_path,im)
+            Performance2 += perf_result2;
         n_perfs += 1;
         
         if(np.mod(n_perfs, 100) == 0):
