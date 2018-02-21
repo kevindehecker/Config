@@ -9,7 +9,7 @@ function transform_velodyne_to_disparity_map (im_names_file)
 
 % http://kitti.is.tue.mpg.de/kitti/devkit_raw_data.zip
 
-addpath('E:\TMP\tmptmp\devkit\matlab');
+% addpath('E:\TMP\tmptmp\devkit\matlab');
 
 if(nargin < 1)
     im_names_file = 'val_velodyne.txt';
@@ -17,8 +17,8 @@ end
 
 graphics = false;
 
-% dev_kit_dir = './';
-% addpath(dev_kit_dir);
+dev_kit_dir = './';
+addpath(dev_kit_dir);
 
 fid = fopen(im_names_file);
 im_names = textscan(fid,'%s','delimiter','\n');
