@@ -28,11 +28,11 @@ def print_performance(performance_matrix, name='Performance'):
 def merge_depth_maps(mono_name = "/home/guido/cnn_depth_tensorflow/tmp/00002.png", 
                      stereo_name = "/home/guido/cnn_depth_tensorflow/tmp/00002_disparity.png",
                      GT_name = "/home/guido/cnn_depth_tensorflow/tmp/00002_GT.png",
-                     graphics = False, image_name = "/home/guido/cnn_depth_tensorflow/tmp/00002_org.png",
-                     verbose = True):
+                     image_name = "/home/guido/cnn_depth_tensorflow/tmp/00002_org.png",
+                     graphics = False, verbose = True):
 
-    if(graphics):
-        image = cv2.imread(image_name);
+    #if(graphics):
+    image = cv2.imread(image_name);
     
     mono = cv2.imread(mono_name);
     mono = cv2.cvtColor(mono, cv2.COLOR_RGB2GRAY);

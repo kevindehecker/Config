@@ -49,14 +49,14 @@ def merge_Diogo(stereo_map, mono_map, image, graphics = False):
     
     # equivalent:
     stereo_confidence = stereo_confidence + np.multiply(1 - stereo_confidence, 1-weight_map);
-    if(True):
+    if(graphics):
         plt.figure();
         plt.imshow(stereo_confidence);
         plt.title('Updated stereo confidence');
         plt.colorbar();
         
     mono_confidence = 1 - stereo_confidence;
-    if(True):
+    if(graphics):
         plt.figure();
         plt.imshow(mono_confidence);
         plt.title('Mono confidence');
