@@ -108,4 +108,4 @@ def merge_depth_maps(mono_name = "/home/guido/cnn_depth_tensorflow/tmp/00002.png
     
     return performance, depth_fusion;
 
-merge_depth_maps(graphics=True);
+#merge_depth_maps(graphics=True);

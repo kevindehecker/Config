@@ -15,22 +15,23 @@ import performance
 # whether to use haricot or mancini
 CNN = 'mancini';
 
-if(CNN == 'mrharicot'):
-    import monodepth_kevin
-else:
+#if(CNN == 'mrharicot'):
+sperzi_dir = '/data/kevin/Config/scripts/caffediogo/monodepth/'
+sys.path.insert(0, sperzi_dir)
+import monodepth_kevin
+#else:
     # Mancini's network:
-    mancini_dir = '/home/guido/trained_mancini/'
+mancini_dir = '/home/guido/trained_mancini/'
     # '/home/guido/SSL_OF/keras/';
-    sys.path.insert(0, mancini_dir)
+sys.path.insert(0, mancini_dir)
 #    # sys.path.append('/home/SSL_OF/keras/')
-    import upsample_vgg16 
+import upsample_vgg16 
 
 def diff_letters(a,b):
     return sum ( a[i] != b[i] for i in range(len(a)) )
 
 def generate_maps():
     im_step = 1;
-
     fname_left =  sys.argv[1]
     fname_right = sys.argv[2]
     with open(fname_left) as f:
@@ -69,22 +70,16 @@ def generate_maps():
         dir_name = os.path.dirname(dir_name);
         dir_name = os.path.dirname(dir_name);
 
-        if(CNN == 'mrharicot'):
-            mono_path = do_sperziboon(dir_name, file_name, im);
-        else:
-            if not os.path.exists(dir_name  + "/mancini/"): 
-                os.makedirs(dir_name  + "/mancini/")
-            mono_path = dir_name  + "/mancini/" + file_name + "_mancini.png";
-            prediction = upsample_vgg16.test_model_on_image(im, save_image_name = mono_path, model=model);
-            
+        #mono1_path = do_sperziboon(dir_name, file_name, im);        
+        mono2_path = do_mancini(dir_name, file_name, im,model)            
         
         gt_path = dir_name + "/velodyne/data/" + file_name + ".bin"        
         stereo_path,conf_path = do_stereo(dir_name, file_name, imgL, imgR)        
-        merged_path,perf_result = do_merge(dir_name, file_name, mono_path,stereo_path,gt_path)
+        #merged_path,perf_result1 = do_merge(dir_name, file_name, mono1_path,stereo_path,gt_path)
+        merged_path,perf_result2 = do_merge(dir_name, file_name, mono2_path,stereo_path,gt_path)
 
 
 def do_merge(dir_name, file_name, mono_path,stereo_path,gt_path):
-
     perf_result, depth_fusion = performance.merge_depth_maps(mono_path,stereo_path,gt_path)
     if not os.path.exists(dir_name  + "/merged/"): 
         os.makedirs(dir_name  + "/merged/")
@@ -92,13 +87,20 @@ def do_merge(dir_name, file_name, mono_path,stereo_path,gt_path):
     cv2.imwrite(merged_path, depth_fusion);
     return merged_path,perf_result
     
+def do_mancini(dir_name, file_name, im_rgb_path,model):
+    if not os.path.exists(dir_name  + "/mancini/"): 
+        os.makedirs(dir_name  + "/mancini/")
+    mono_path = dir_name  + "/mancini/" + file_name + "_mancini.png";
+    prediction = upsample_vgg16.test_model_on_image(im_rgb_path, save_image_name = mono_path, model=model);
+    return mono_path
+    
 def do_sperziboon(dir_name, file_name, im_rgb_path):
     
     if not os.path.exists(dir_name  + "/sperzi/"): 
         os.makedirs(dir_name  + "/sperzi/")
 
     out_file = dir_name + "/sperzi/" + file_name + "_sperziboon.png"
-    monodepth_kevin.process_im_sperzi(im_rgb_path,'/data/kevin/sperziboon/monodepth/hoeren/models/model_kitti',out_file)
+    monodepth_kevin.process_im_sperzi(im_rgb_path,'/data/kevin/Config/scripts/caffediogo/monodepth/models/model_kitti',out_file)
     return out_file
 
 def do_stereo(dir_name, file_name, imgL, imgR):
