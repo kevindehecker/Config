@@ -98,8 +98,8 @@ for d = 1:length(base_dirs)
             H = size(img, 1);
             % output dimensions of the disparity map --> should correspond to
             % output deep neural network!
-            new_W = 128; %W;
-            new_H = 40; %H;
+            new_W = W; %128; %W;
+            new_H = H; %40; %H;
             k = 3;
             max_dist = 1;
             disp_image = construct_disparity_image(velo_img, disps, W, H, new_W, new_H);

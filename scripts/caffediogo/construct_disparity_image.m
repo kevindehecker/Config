@@ -29,3 +29,28 @@ for x = 1:new_W
     end
 end
 
+figure();
+imagesc(D);
+title('Old method');
+
+D = zeros(new_H, new_W);
+P = zeros(new_H, new_W);
+for p = 1:n_points
+    x_int = round(velo_img(p,1));
+    y_int = round(velo_img(p,2));
+    if(x_int >= 1 && x_int <= new_W && y_int >= 1 && y_int <= new_H)
+        D(y_int, x_int) =  D(y_int, x_int) + disps(p);
+        P(y_int, x_int) = P(y_int, x_int) + 1;
+    end
+end
+
+M = P == 0;
+P = P + M;
+D = D ./ P;
+
+figure();
+imagesc(D);
+title('New method');
+
+pause;
+close all;

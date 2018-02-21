@@ -8,7 +8,19 @@ import pdb
 import os
 import sys
 import subprocess
-import monodepth_kevin
+
+# whether to use haricot or mancini
+CNN = 'mancini';
+
+if(CNN == 'mrharicot'):
+    import monodepth_kevin
+else:
+    # Mancini's network:
+    mancini_dir = '/home/guido/SSL_OF/keras/';
+    sys.path.insert(0, mancini_dir)
+#    # sys.path.append('/home/SSL_OF/keras/')
+    import upsample_vgg16 
+    
 
 def diff_letters(a,b):
     return sum ( a[i] != b[i] for i in range(len(a)) )
@@ -36,6 +48,9 @@ def generate_maps():
         images_right = f.readlines()
     # you may also want to remove whitespace characters like `\n` at the end of each line
     images_right = [x.strip() for x in images_right] 
+
+    if(CNN == 'mancini'):
+        model = upsample_vgg16.load_model(dir_name=mancini_dir);
 
     # iterate over the files:
     # for idx, im in enumerate(images_left):
@@ -80,7 +95,13 @@ def generate_maps():
         dir_name = os.path.dirname(dir_name);
 
         write_images(dir_name, file_name, disp, thresh1);
-        do_sperziboon(dir_name, file_name, im)
+        if(CNN == 'mrharicot'):
+            do_sperziboon(dir_name, file_name, im);
+        else:
+            if not os.path.exists(dir_name  + "/mancini/"): 
+                os.makedirs(dir_name  + "/mancini/")
+            prediction = upsample_vgg16.test_model_on_image(im, save_image_name = dir_name + "/mancini/" + file_name + "_mancini.png", model=model);
+
 
 def do_sperziboon(dir_name, file_name, im_rgb_path):
     
