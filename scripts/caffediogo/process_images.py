@@ -76,12 +76,11 @@ def generate_maps():
         gt_path = dir_name + "/GT_disp/" + file_name + ".png"        
         stereo_path,conf_path = do_stereo(dir_name, file_name, imgL, imgR)       
         #merged_path,perf_result1 = do_merge(dir_name, file_name, mono1_path,stereo_path,gt_path)
-        merged_path,perf_result2 = do_merge(dir_name, file_name, mono2_path,stereo_path,gt_path)
+        merged_path,perf_result2 = do_merge(dir_name, file_name, mono2_path,stereo_path,gt_path,im)
 
 
-def do_merge(dir_name, file_name, mono_path,stereo_path,gt_path):
-    pdb.set_trace()
-    perf_result, depth_fusion = performance.merge_depth_maps(mono_path,stereo_path,gt_path)
+def do_merge(dir_name, file_name, mono_path,stereo_path,gt_path, im_rgb_path):    
+    perf_result, depth_fusion = performance.merge_depth_maps(mono_path,stereo_path,gt_path,im_rgb_path,False)                                            
     if not os.path.exists(dir_name  + "/merged/"): 
         os.makedirs(dir_name  + "/merged/")
     merged_path = dir_name + "/merged/" + file_name + "_merged.png"
