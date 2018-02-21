@@ -15,15 +15,17 @@ import performance
 # whether to use haricot or mancini
 CNN = 'mancini';
 
-if(CNN == 'mrharicot'):
-    import monodepth_kevin
-else:
+#if(CNN == 'mrharicot'):
+sperzi_dir = '/data/kevin/Config/scripts/caffediogo/monodepth/'
+sys.path.insert(0, sperzi_dir)
+import monodepth_kevin
+#else:
     # Mancini's network:
-    mancini_dir = '/home/guido/trained_mancini/'
+mancini_dir = '/home/guido/trained_mancini/'
     # '/home/guido/SSL_OF/keras/';
-    sys.path.insert(0, mancini_dir)
+sys.path.insert(0, mancini_dir)
 #    # sys.path.append('/home/SSL_OF/keras/')
-    import upsample_vgg16 
+import upsample_vgg16 
 
 def diff_letters(a,b):
     return sum ( a[i] != b[i] for i in range(len(a)) )
@@ -69,14 +71,8 @@ def generate_maps():
         dir_name = os.path.dirname(dir_name);
         dir_name = os.path.dirname(dir_name);
 
-        if(CNN == 'mrharicot'):
-            mono_path = do_sperziboon(dir_name, file_name, im);
-        else:
-            if not os.path.exists(dir_name  + "/mancini/"): 
-                os.makedirs(dir_name  + "/mancini/")
-            mono_path = dir_name  + "/mancini/" + file_name + "_mancini.png";
-            prediction = upsample_vgg16.test_model_on_image(im, save_image_name = mono_path, model=model);
-            
+        mono1_path = do_sperziboon(dir_name, file_name, im);        
+        mono2_path = do_mancini(dir_name, file_name, im)            
         
         gt_path = dir_name + "/velodyne/data/" + file_name + ".bin"        
         stereo_path,conf_path = do_stereo(dir_name, file_name, imgL, imgR)        
@@ -84,13 +80,19 @@ def generate_maps():
 
 
 def do_merge(dir_name, file_name, mono_path,stereo_path,gt_path):
-
     perf_result, depth_fusion = performance.merge_depth_maps(mono_path,stereo_path,gt_path)
     if not os.path.exists(dir_name  + "/merged/"): 
         os.makedirs(dir_name  + "/merged/")
     merged_path = dir_name + "/merged/" + file_name + "_merged.png"
     cv2.imwrite(merged_path, depth_fusion);
     return merged_path,perf_result
+    
+def do_mancini(dir_name, file_name, im_rgb_path):
+    if not os.path.exists(dir_name  + "/mancini/"): 
+        os.makedirs(dir_name  + "/mancini/")
+    mono_path = dir_name  + "/mancini/" + file_name + "_mancini.png";
+    prediction = upsample_vgg16.test_model_on_image(im_rgb_path, save_image_name = mono_path, model=model);
+    return mono_path
     
 def do_sperziboon(dir_name, file_name, im_rgb_path):
     
