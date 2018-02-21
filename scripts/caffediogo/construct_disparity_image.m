@@ -12,26 +12,26 @@ ratio_H = new_H / H;
 velo_img(:,1) = velo_img(:,1) * ratio_W;
 velo_img(:,2) = velo_img(:,2) * ratio_H;
 
-% fill the disparity matrix:
-D = zeros(new_H, new_W);
-n_points = size(velo_img,1);
-for x = 1:new_W
-    for y = 1:new_H
-        dists = sqrt(sum((velo_img - repmat([x,y], [n_points, 1])).^2, 2));
-        [min_dist, i] = min(dists);
-        if(min_dist <= max_dist)
-            if(k == 1)
-                D(y,x) = disps(i);
-            else
-                % sort the list, etc.
-            end
-        end
-    end
-end
-
-figure();
-imagesc(D);
-title('Old method');
+% % fill the disparity matrix:
+% D = zeros(new_H, new_W);
+% n_points = size(velo_img,1);
+% for x = 1:new_W
+%     for y = 1:new_H
+%         dists = sqrt(sum((velo_img - repmat([x,y], [n_points, 1])).^2, 2));
+%         [min_dist, i] = min(dists);
+%         if(min_dist <= max_dist)
+%             if(k == 1)
+%                 D(y,x) = disps(i);
+%             else
+%                 % sort the list, etc.
+%             end
+%         end
+%     end
+% end
+% 
+% figure();
+% imagesc(D);
+% title('Old method');
 
 D = zeros(new_H, new_W);
 P = zeros(new_H, new_W);
@@ -48,9 +48,9 @@ M = P == 0;
 P = P + M;
 D = D ./ P;
 
-figure();
-imagesc(D);
-title('New method');
-
-pause;
-close all;
+% figure();
+% imagesc(D);
+% title('New method');
+% 
+% pause;
+% close all;

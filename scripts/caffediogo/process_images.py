@@ -1,6 +1,8 @@
 #!/usr/bin/env python2
+ 
+#usage:
+#python2 ./process_images.py /data/kevin/kitti/raw_data/2011_09_26/val_images2.txt /data/kevin/kitti/raw_data/2011_09_26/val_images3.txt
 
-# partially based on stereo_match.py example in the OpenCV distribution.
 import glob
 import numpy as np
 import cv2
@@ -8,6 +10,7 @@ import pdb
 import os
 import sys
 import subprocess
+import performance
 
 # whether to use haricot or mancini
 CNN = 'mancini';
@@ -16,29 +19,20 @@ if(CNN == 'mrharicot'):
     import monodepth_kevin
 else:
     # Mancini's network:
-    mancini_dir = '/home/guido/SSL_OF/keras/';
+    mancini_dir = '/home/guido/trained_mancini/'
+    # '/home/guido/SSL_OF/keras/';
     sys.path.insert(0, mancini_dir)
 #    # sys.path.append('/home/SSL_OF/keras/')
     import upsample_vgg16 
-    
 
 def diff_letters(a,b):
     return sum ( a[i] != b[i] for i in range(len(a)) )
 
 def generate_maps():
-
-    # parameters for the stereo matching:
-    window_size = 9;
-    min_disp = 1;
-    num_disp = 64; # must be divisible by 16 (http://docs.opencv.org/java/org/opencv/calib3d/StereoSGBM.html)
-
-    #TARGET_H = 40;
-    #TARGET_W = 128;
-
     im_step = 1;
 
-    fname_left =  sys.argv[1] #"/data/kevin/kitti/raw_data/2011_09_26/train_images2.txt";
-    fname_right = sys.argv[2] #"/data/kevin/kitti/raw_data/2011_09_26/train_images3.txt"; and also for val
+    fname_left =  sys.argv[1]
+    fname_right = sys.argv[2]
     with open(fname_left) as f:
         images_left = f.readlines()
     # you may also want to remove whitespace characters like `\n` at the end of each line
@@ -69,59 +63,80 @@ def generate_maps():
           print('Element in the list: {}. Names: {} <=> {}'.format(idx, im, images_right[idx]));
           pdb.set_trace();
 
-        # calculate the disparities:
-        disp = calculate_disparities(imgL, imgR, window_size, min_disp, num_disp);
-        ret,thresh0 = cv2.threshold(disp,0,255,cv2.THRESH_BINARY);
-        #disp = cv2.resize(disp, (TARGET_W, TARGET_H), interpolation=cv2.INTER_NEAREST);
-        #disp[:] = 255;
-
-        # gradient for certainty:
-        grey = cv2.cvtColor(imgL, cv2.COLOR_RGB2GRAY);
-        blur = cv2.GaussianBlur(grey,(11,11),0)
-        sobelX = cv2.Sobel(blur,cv2.CV_64F,1,0,ksize=5);
-        ret,thresh1 = cv2.threshold(sobelX,175,255,cv2.THRESH_BINARY);
-
-        #mask out unknown pixels in disp map
-        # thresh 0 is for uncertain disparities (e.g., left band in left image + bad matches)
-        # thresh 1 is for detecting high texture regions
-        thresh1 = cv2.bitwise_and(thresh0.astype(np.uint8),thresh1.astype(np.uint8))
-        #thresh1 = cv2.resize(thresh1, (TARGET_W, TARGET_H), interpolation=cv2.INTER_NEAREST);
-        # thresh1[:] = 255;
-
         base_name = os.path.basename(im);
         file_name, ext = os.path.splitext(base_name);
         dir_name = os.path.dirname(im);
         dir_name = os.path.dirname(dir_name);
         dir_name = os.path.dirname(dir_name);
 
-        write_images(dir_name, file_name, disp, thresh1);
         if(CNN == 'mrharicot'):
-            do_sperziboon(dir_name, file_name, im);
+            mono_path = do_sperziboon(dir_name, file_name, im);
         else:
             if not os.path.exists(dir_name  + "/mancini/"): 
                 os.makedirs(dir_name  + "/mancini/")
-            prediction = upsample_vgg16.test_model_on_image(im, save_image_name = dir_name + "/mancini/" + file_name + "_mancini.png", model=model);
+            mono_path = dir_name  + "/mancini/" + file_name + "_mancini.png";
+            prediction = upsample_vgg16.test_model_on_image(im, save_image_name = mono_path, model=model);
+            
+        
+        gt_path = dir_name + "/velodyne/data/" + file_name + ".bin"        
+        stereo_path,conf_path = do_stereo(dir_name, file_name, imgL, imgR)        
+        merged_path,perf_result = do_merge(dir_name, file_name, mono_path,stereo_path,gt_path)
 
 
+def do_merge(dir_name, file_name, mono_path,stereo_path,gt_path):
+
+    perf_result, depth_fusion = performance.merge_depth_maps(mono_path,stereo_path,gt_path)
+    if not os.path.exists(dir_name  + "/merged/"): 
+        os.makedirs(dir_name  + "/merged/")
+    merged_path = dir_name + "/merged/" + file_name + "_merged.png"
+    cv2.imwrite(merged_path, depth_fusion);
+    return merged_path,perf_result
+    
 def do_sperziboon(dir_name, file_name, im_rgb_path):
     
     if not os.path.exists(dir_name  + "/sperzi/"): 
         os.makedirs(dir_name  + "/sperzi/")
 
-    monodepth_kevin.process_im_sperzi(im_rgb_path,'/data/kevin/sperziboon/monodepth/hoeren/models/model_kitti',dir_name + "/sperzi/" + file_name + "_sperziboon.png" )
+    out_file = dir_name + "/sperzi/" + file_name + "_sperziboon.png"
+    monodepth_kevin.process_im_sperzi(im_rgb_path,'/data/kevin/sperziboon/monodepth/hoeren/models/model_kitti',out_file)
+    return out_file
 
+def do_stereo(dir_name, file_name, imgL, imgR):
 
-def write_images(dir_name, file_name, disp, confidence):
+    # parameters for the stereo matching:
+    window_size = 9;
+    min_disp = 1;
+    num_disp = 64; # must be divisible by 16 (http://docs.opencv.org/java/org/opencv/calib3d/StereoSGBM.html)
+    
+    # calculate the disparities:
+    disp = calculate_disparities(imgL, imgR, window_size, min_disp, num_disp);
+    ret,thresh0 = cv2.threshold(disp,0,255,cv2.THRESH_BINARY);
+    #disp = cv2.resize(disp, (TARGET_W, TARGET_H), interpolation=cv2.INTER_NEAREST);
+    #disp[:] = 255;
+
+    # gradient for certainty:
+    grey = cv2.cvtColor(imgL, cv2.COLOR_RGB2GRAY);
+    blur = cv2.GaussianBlur(grey,(11,11),0)
+    sobelX = cv2.Sobel(blur,cv2.CV_64F,1,0,ksize=5);
+    ret,thresh1 = cv2.threshold(sobelX,175,255,cv2.THRESH_BINARY);
+
+    #mask out unknown pixels in disp map
+    # thresh 0 is for uncertain disparities (e.g., left band in left image + bad matches)
+    # thresh 1 is for detecting high texture regions
+    confidence = cv2.bitwise_and(thresh0.astype(np.uint8),thresh1.astype(np.uint8))
+
     # write all images:
-
     if not os.path.exists(dir_name  + "/disp/"): 
         os.makedirs(dir_name  + "/disp/")
 
     if not os.path.exists(dir_name  + "/conf/"): 
         os.makedirs(dir_name  + "/conf/")
 
-    cv2.imwrite(dir_name + "/disp/" + file_name + "_disparity.png", disp);
-    cv2.imwrite(dir_name + "/conf/" + file_name + "_confidence.png", confidence);
+    stereo_path = dir_name + "/disp/" + file_name + "_disparity.png"
+    cv2.imwrite(stereo_path, disp);
+    conf_path = dir_name + "/conf/" + file_name + "_confidence.png"
+    cv2.imwrite(conf_path, confidence);
+    return stereo_path,conf_path
 
 def calculate_disparities(imgL, imgR, window_size, min_disp, num_disp):
 
