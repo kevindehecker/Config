@@ -31,12 +31,34 @@ def merge_depth_maps(mono_name = "/home/guido/cnn_depth_tensorflow/tmp/00002.png
     mono = cv2.cvtColor(mono, cv2.COLOR_RGB2GRAY);
     mono = mono.astype(float);
     mono /= 255.0 / MAX_DISP;
+    mono = cv2.resize(mono, (64, 20), interpolation=cv2.INTER_NEAREST);
+
 
     stereo = cv2.imread(stereo_name);
-    stereo = cv2.cvtColor(stereo, cv2.COLOR_RGB2GRAY);
+    if(len(stereo.shape) == 3 and stereo.shape[2] > 1):
+        stereo = cv2.cvtColor(stereo, cv2.COLOR_RGB2GRAY);
 
     GT = cv2.imread(GT_name);
-    GT = cv2.cvtColor(GT, cv2.COLOR_RGB2GRAY);
+    if(len(GT.shape) == 3 and GT.shape[2] > 1):
+        GT = cv2.cvtColor(GT, cv2.COLOR_RGB2GRAY);
+    
+    if(mono.shape[0] != stereo.shape[0] or mono.shape[0] != GT.shape[0]):
+        H = np.asarray([mono.shape[0]] * 3);
+        W = np.asarray([mono.shape[1]] * 3);
+        H[1] = stereo.shape[0];
+        W[1] = stereo.shape[1];
+        H[2] = GT.shape[0];
+        W[2] = GT.shape[1];
+        TARGET_H = np.min(H);
+        TARGET_W = np.min(W);
+        if(mono.shape[0] != TARGET_H):
+            mono = cv2.resize(mono, (TARGET_W, TARGET_H), interpolation=cv2.INTER_NEAREST);
+        if(stereo.shape[0] != TARGET_H):
+            stereo = cv2.resize(stereo, (TARGET_W, TARGET_H), interpolation=cv2.INTER_NEAREST);
+        if(GT.shape[0] != TARGET_H):
+            GT = cv2.resize(GT, (TARGET_W, TARGET_H), interpolation=cv2.INTER_NEAREST);        
+        
+        
     
     if(graphics):
         fig, axes = plt.subplots(nrows=2, ncols=2);
