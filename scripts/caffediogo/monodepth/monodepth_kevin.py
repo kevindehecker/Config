@@ -48,7 +48,7 @@ def post_process_disparity(disp):
     r_mask = np.fliplr(l_mask)
     return r_mask * l_disp + l_mask * r_disp + (1.0 - l_mask - r_mask) * m_disp
 
-def process_im_sperzi(image_path,checkpoint_path,output_path):
+def process_im_sperzi(image_path = '/data/kevin/kitti/raw_data/2011_09_26/2011_09_26_drive_0002_sync/image_02/data/0000000005.png',checkpoint_path = '/data/kevin/Config/scripts/caffediogo/monodepth/models/model_kitti',output_path = 'test.png' ):
     
     input_height = 256
     input_width = 512
@@ -106,3 +106,4 @@ def process_im_sperzi(image_path,checkpoint_path,output_path):
     plt.imsave(output_path, disp_to_img)
     
 
+process_im_sperzi()
