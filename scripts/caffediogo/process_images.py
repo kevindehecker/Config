@@ -26,6 +26,8 @@ mancini_dir = '/home/guido/trained_mancini/'
 sys.path.insert(0, mancini_dir)
 #    # sys.path.append('/home/SSL_OF/keras/')
 import upsample_vgg16 
+import pickle
+
 
 def diff_letters(a,b):
     return sum ( a[i] != b[i] for i in range(len(a)) )
@@ -46,6 +48,10 @@ def generate_maps():
 
     if(CNN == 'mancini'):
         model = upsample_vgg16.load_model(dir_name=mancini_dir);
+
+    Performance1 = np.zeros([3, 7]);
+    Performance2 = np.zeros([3, 7]);
+    n_perfs = 0;
 
     # iterate over the files:
     # for idx, im in enumerate(images_left):
@@ -76,12 +82,33 @@ def generate_maps():
         gt_path = dir_name + "/GT_disp/" + file_name + ".png"        
         stereo_path,conf_path = do_stereo(dir_name, file_name, imgL, imgR)       
         #merged_path,perf_result1 = do_merge(dir_name, file_name, mono1_path,stereo_path,gt_path)
-        merged_path,perf_result2 = do_merge(dir_name, file_name, mono2_path,stereo_path,gt_path)
+        #Performance1 += perf_result1;
+        
+        merged_path,perf_result2 = do_merge(dir_name, file_name, mono2_path,stereo_path,gt_path);
+        Performance2 += perf_result2;
+        n_perfs += 1;
+        
+        if(np.mod(n_perfs, 100) == 0):
+#            performance.print_performance(Performance1 / n_perfs, name = 'Performance 1');
+            performance.print_performance(Performance2 / n_perfs, name = 'Performance 2');
+    
+#    Performance1 /= n_perfs;
+    Performance2 /= n_perfs;
+#    performance.print_performance(Performance1, name = 'Performance 1');
+    performance.print_performance(Performance2, name = 'Performance 2');
+    
+    
+    filehandler = open("performance_1.pkl","wb")
+    pickle.dump(Performance1, filehandler)
+    filehandler.close()
 
+    filehandler = open("performance_2.pkl","wb")
+    pickle.dump(Performance2, filehandler)
+    filehandler.close()
 
 def do_merge(dir_name, file_name, mono_path,stereo_path,gt_path):
     pdb.set_trace()
-    perf_result, depth_fusion = performance.merge_depth_maps(mono_path,stereo_path,gt_path)
+    perf_result, depth_fusion = performance.merge_depth_maps(mono_path,stereo_path,gt_path, verbose = False)
     if not os.path.exists(dir_name  + "/merged/"): 
         os.makedirs(dir_name  + "/merged/")
     merged_path = dir_name + "/merged/" + file_name + "_merged.png"

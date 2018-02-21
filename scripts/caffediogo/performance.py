@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*- 
 """
 Created on Mon Feb 12 15:47:54 2018
 
@@ -19,10 +19,17 @@ import evaluation_utils
 
 MAX_DISP = 64.0;
 
+def print_performance(performance_matrix, name='Performance'):
+    print('%s' % name);
+    prefix = ['Stereo', 'Mono:', 'Fusion']
+    for r in range(3):
+        print(prefix[r] + ': %f, %f, %f, %f, %f, %f, %f' % tuple(performance_matrix[r, :]));
+
 def merge_depth_maps(mono_name = "/home/guido/cnn_depth_tensorflow/tmp/00002.png", 
                      stereo_name = "/home/guido/cnn_depth_tensorflow/tmp/00002_disparity.png",
                      GT_name = "/home/guido/cnn_depth_tensorflow/tmp/00002_GT.png",
-                     graphics = False, image_name = "/home/guido/cnn_depth_tensorflow/tmp/00002_org.png"):
+                     graphics = False, image_name = "/home/guido/cnn_depth_tensorflow/tmp/00002_org.png",
+                     verbose = True):
 
     if(graphics):
         image = cv2.imread(image_name);
@@ -32,7 +39,6 @@ def merge_depth_maps(mono_name = "/home/guido/cnn_depth_tensorflow/tmp/00002.png
     mono = mono.astype(float);
     mono /= 255.0 / MAX_DISP;
     # mono = cv2.resize(mono, (64, 20), interpolation=cv2.INTER_NEAREST);
-
 
     stereo = cv2.imread(stereo_name);
     if(len(stereo.shape) == 3 and stereo.shape[2] > 1):
@@ -97,15 +103,14 @@ def merge_depth_maps(mono_name = "/home/guido/cnn_depth_tensorflow/tmp/00002.png
     performance = np.zeros([3, 7]);
     abs_rel, sq_rel, rmse, rmse_log, a1, a2, a3 = evaluation_utils.compute_errors(depth_GT[:], depth_stereo[:]);
     performance[0,:] = [abs_rel, sq_rel, rmse, rmse_log, a1, a2, a3];
-    print('Performance:\tabs_rel,sq_rel,rmse,rmse_log,a1,a2,a3.');
-    print('Stereo:\t{},{},{},{},{},{},{}.'.format(abs_rel, sq_rel, rmse, rmse_log, a1, a2, a3));
     abs_rel, sq_rel, rmse, rmse_log, a1, a2, a3 = evaluation_utils.compute_errors(depth_GT[:], depth_mono[:]);
     performance[1,:] = [abs_rel, sq_rel, rmse, rmse_log, a1, a2, a3];
-    print('Mono:\t{},{},{},{},{},{},{}.'.format(abs_rel, sq_rel, rmse, rmse_log, a1, a2, a3));
     abs_rel, sq_rel, rmse, rmse_log, a1, a2, a3 = evaluation_utils.compute_errors(depth_GT[:], depth_fusion[:]);
-    print('Fusion:\t{},{},{},{},{},{},{}.'.format(abs_rel, sq_rel, rmse, rmse_log, a1, a2, a3));
     performance[2,:] = [abs_rel, sq_rel, rmse, rmse_log, a1, a2, a3];
+    
+    if(verbose):
+        print_performance(performance);
     
     return performance, depth_fusion;
 
-#merge_depth_maps(graphics=True);
+# merge_depth_maps(graphics=True);
