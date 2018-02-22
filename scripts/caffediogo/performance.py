@@ -37,7 +37,7 @@ def merge_depth_maps(mono_name = "/home/guido/cnn_depth_tensorflow/tmp/00002.png
     mono = cv2.imread(mono_name);
     mono = cv2.cvtColor(mono, cv2.COLOR_RGB2GRAY);
     mono = mono.astype(float);
-    mono /= 255.0 / MAX_DISP;
+    mono /= 255.0 / MAX_DISP; # TODO: is this correct for mancini?
     # mono = cv2.resize(mono, (64, 20), interpolation=cv2.INTER_NEAREST);
 
     stereo = cv2.imread(stereo_name);
@@ -84,7 +84,8 @@ def merge_depth_maps(mono_name = "/home/guido/cnn_depth_tensorflow/tmp/00002.png
     
     depth_stereo = evaluation_utils.convert_disps_to_depths_kitti(stereo);
     depth_mono = evaluation_utils.convert_disps_to_depths_kitti(mono);
-    depth_GT = evaluation_utils.convert_disps_to_depths_kitti(GT);
+    depth_GT = GT;
+    # depth_GT = evaluation_utils.convert_disps_to_depths_kitti(GT);
     depth_fusion = merge.merge_Diogo(depth_stereo, depth_mono, image, graphics = False);
     
     if(graphics):
@@ -103,21 +104,31 @@ def merge_depth_maps(mono_name = "/home/guido/cnn_depth_tensorflow/tmp/00002.png
         fig.colorbar(cf, ax=axes[1,1])
     
     performance = np.zeros([3, 7]);
-    abs_rel, sq_rel, rmse, rmse_log, a1, a2, a3 = evaluation_utils.compute_errors(depth_GT[:], depth_stereo[:]);
+    abs_rel, sq_rel, rmse, rmse_log, a1, a2, a3 = evaluation_utils.compute_errors(depth_GT[:], depth_stereo[:], name_fig = 'stereo error map');
     performance[0,:] = [abs_rel, sq_rel, rmse, rmse_log, a1, a2, a3];
-    abs_rel, sq_rel, rmse, rmse_log, a1, a2, a3 = evaluation_utils.compute_errors(depth_GT[:], depth_mono[:]);
+    abs_rel, sq_rel, rmse, rmse_log, a1, a2, a3 = evaluation_utils.compute_errors(depth_GT[:], depth_mono[:], name_fig = 'mono error map');
     performance[1,:] = [abs_rel, sq_rel, rmse, rmse_log, a1, a2, a3];
-    abs_rel, sq_rel, rmse, rmse_log, a1, a2, a3 = evaluation_utils.compute_errors(depth_GT[:], depth_fusion[:]);
+    abs_rel, sq_rel, rmse, rmse_log, a1, a2, a3 = evaluation_utils.compute_errors(depth_GT[:], depth_fusion[:], name_fig = 'fusion error map');
     performance[2,:] = [abs_rel, sq_rel, rmse, rmse_log, a1, a2, a3];
     
     if(verbose):
         print_performance(performance);
-    
+
+    # scaled mono
+#    depth_mono = merge.scale_mono_map(depth_stereo, depth_mono);    
+#    abs_rel, sq_rel, rmse, rmse_log, a1, a2, a3 = evaluation_utils.compute_errors(depth_GT[:], depth_mono[:]);
+#    performance[1,:] = [abs_rel, sq_rel, rmse, rmse_log, a1, a2, a3];    
+#    
+#    if(verbose):
+#        print('Scaled mono:')
+#        print_performance(performance);
+#        
+        
     return performance, depth_fusion;
 
 # merge_depth_maps(graphics=True);
-merge_depth_maps(mono_name = "./tmp/0000000061_sperziboon.png", 
-                     stereo_name = "./tmp/0000000061_disparity.png",
-                     GT_name = "./tmp/0000000061_GT.png",
-                     image_name = "./tmp/0000000061_image.png",
-                     graphics = True, verbose = True)
+#merge_depth_maps(mono_name = "./tmp/0000000013_sperziboon.png", 
+#                     stereo_name = "./tmp/0000000013_disparity.png",
+#                     GT_name = "./tmp/0000000013_GT.png",
+#                     image_name = "./tmp/0000000013_image.png",
+#                     graphics = False, verbose = True)

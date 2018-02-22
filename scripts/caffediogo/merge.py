@@ -76,16 +76,18 @@ def merge_Diogo(stereo_map, mono_map, image, graphics = False):
         axes[1].set_title('Stereo');
         axes[2].imshow(fusion);
         axes[2].set_title('Fusion');
-        
         fig, axes = plt.subplots(nrows=1, ncols=2)
         axes[0].imshow(image);
         axes[0].set_title('Image');
         axes[1].imshow(stereo_confidence);    
+        axes[1].set_title('Stereo confidence');        
     
     return fusion;
     
     
 def determine_stereo_confidence(stereo_map, image, blur_window = 3, gradient_threshold = 175, graphics = False):
+
+    # TODO: use matching cost / uncertainty of stereo
 
     # always when there is no stereo output, low conf
     ret,thresh0 = cv2.threshold(stereo_map, 0, 255, cv2.THRESH_BINARY); 
@@ -96,7 +98,7 @@ def determine_stereo_confidence(stereo_map, image, blur_window = 3, gradient_thr
     if(graphics):
         plt.figure()
         plt.imshow(blur);
-        plt.title('initial blur stereo')
+        plt.title('initial blur grayscale for conf stereo')
     
     #blur = grey;
     sobelX = cv2.Sobel(blur,cv2.CV_64F,1,0,ksize=5);
@@ -105,7 +107,7 @@ def determine_stereo_confidence(stereo_map, image, blur_window = 3, gradient_thr
     if(graphics):
         plt.figure();
         plt.imshow(thresh1);
-        plt.title('thresh1');
+        plt.title('thresh1: enough vertical contrast');
     
     # combine the confidence of thresh 0 (invalid matches) and thresh 1 (edges)
     thresh1 = cv2.bitwise_and(thresh0.astype(np.uint8),thresh1.astype(np.uint8));  
@@ -114,17 +116,17 @@ def determine_stereo_confidence(stereo_map, image, blur_window = 3, gradient_thr
     if(graphics):
         plt.figure()
         plt.imshow(thresh1);
-        plt.title('thresh2')    
+        plt.title('thresh2: vertical contrast and valid match')    
     
     
     # blur the threshold image
     blur = cv2.GaussianBlur(thresh1,(blur_window*2+1,blur_window*2+1),0);
     blur /= np.max(blur[:]);
     
-    if(graphics):
-        plt.figure()
-        plt.imshow(blur);
-        plt.title('second blur stereo')    
+#    if(graphics):
+#        plt.figure()
+#        plt.imshow(blur);
+#        plt.title('second blur stereo')    
     
     # on the edges, the confidence should be 1
     stereo_confidence = blur;
@@ -140,6 +142,7 @@ def determine_stereo_confidence(stereo_map, image, blur_window = 3, gradient_thr
 def scale_mono_map(stereo_map, mono_map):
     
     # Diogo's original method (TODO: make more robust to outliers):
+    # TODO: what is the best scaling for performance?
     max_stereo = np.max(stereo_map[stereo_map != 0]);
     min_stereo = np.min(stereo_map[stereo_map != 0]);
     min_mono = np.min(mono_map[:]);

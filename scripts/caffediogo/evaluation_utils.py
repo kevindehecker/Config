@@ -13,19 +13,30 @@ import os
 import cv2
 from collections import Counter
 import pdb
+import matplotlib.pyplot as plt
 
-def compute_errors(gt, pred):
+def compute_errors(gt, pred, graphics = False, name_fig='error map'):
+
+    if(graphics):
+        Mask = gt == 0;
+        Mask = 1.0 - Mask;
+        AbsErr = np.abs(gt - pred);
+        AbsErr = np.multiply(Mask, AbsErr);
+        plt.figure();
+        plt.imshow(AbsErr);
+        plt.colorbar();
+        plt.title(name_fig);
+        
     
-    inds1 = gt > 0;
-    inds2 = pred > 0;
-    inds = np.logical_and(inds1, inds2);
+#    inds1 = gt > 0;
+#    inds2 = pred > 0;
+#    inds = np.logical_and(inds1, inds2);
+    inds = gt > 0;
     gt = gt[inds];
     pred = pred[inds];
-    
-    thresh = np.maximum((gt / pred), (pred / gt))
-    a1 = (thresh < 1.25   ).mean()
-    a2 = (thresh < 1.25 ** 2).mean()
-    a3 = (thresh < 1.25 ** 3).mean()
+
+    inds = pred == 0;
+    pred[inds] += 1E-4;
 
     rmse = (gt - pred) ** 2
     rmse = np.sqrt(rmse.mean())
@@ -36,6 +47,11 @@ def compute_errors(gt, pred):
     abs_rel = np.mean(np.abs(gt - pred) / gt)
 
     sq_rel = np.mean(((gt - pred)**2) / gt)
+
+    thresh = np.maximum((gt / pred), (pred / gt))
+    a1 = (thresh < 1.25   ).mean()
+    a2 = (thresh < 1.25 ** 2).mean()
+    a3 = (thresh < 1.25 ** 3).mean()
 
     return abs_rel, sq_rel, rmse, rmse_log, a1, a2, a3
 
