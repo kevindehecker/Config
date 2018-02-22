@@ -73,7 +73,7 @@ def generate_maps():
         if(num_diff != 1):
           print('Element in the list: {}. Names: {} <=> {}'.format(idx, im, images_right[idx]));
           pdb.set_trace();
-
+        
         base_name = os.path.basename(im);
         file_name, ext = os.path.splitext(base_name);
         dir_name = os.path.dirname(im);
@@ -113,64 +113,65 @@ def generate_maps():
     filehandler.close()
 
 def do_merge(dir_name, file_name, mono_path,stereo_path,gt_path, im_rgb_path):    
-    perf_result, depth_fusion = performance.merge_depth_maps(mono_path,stereo_path,gt_path,im_rgb_path,graphics=False,verbose=False)                                            
     if not os.path.exists(dir_name  + "/merged/"): 
         os.makedirs(dir_name  + "/merged/")
     merged_path = dir_name + "/merged/" + file_name + "_merged.png"
-    cv2.imwrite(merged_path, depth_fusion);
+    perf_result, depth_fusion = performance.merge_depth_maps(mono_path,stereo_path,gt_path,im_rgb_path,graphics=False,verbose=False)                                            
+    if not os.path.isfile(merged_path) or sys.argv[4] == 'True':    
+        cv2.imwrite(merged_path, depth_fusion);
     return merged_path,perf_result
     
 def do_mancini(dir_name, file_name, im_rgb_path,model):
     if not os.path.exists(dir_name  + "/mancini/"): 
         os.makedirs(dir_name  + "/mancini/")
     mono_path = dir_name  + "/mancini/" + file_name + "_mancini.png";
-    prediction = upsample_vgg16.test_model_on_image(im_rgb_path, save_image_name = mono_path, model=model);
+    if not os.path.isfile(mono_path) or sys.argv[4] == 'True':
+        prediction = upsample_vgg16.test_model_on_image(im_rgb_path, save_image_name = mono_path, model=model);
     return mono_path
     
-def do_sperziboon(dir_name, file_name, im_rgb_path):
-    
+def do_sperziboon(dir_name, file_name, im_rgb_path):    
     if not os.path.exists(dir_name  + "/sperzi/"): 
         os.makedirs(dir_name  + "/sperzi/")
-
     out_file = dir_name + "/sperzi/" + file_name + "_sperziboon.png"
-    monodepth_kevin.process_im_sperzi(im_rgb_path,'/data/kevin/Config/scripts/caffediogo/monodepth/models/model_kitti',out_file)
+    if not os.path.isfile(out_file) or sys.argv[4] == 'True':
+        monodepth_kevin.process_im_sperzi(im_rgb_path,'/data/kevin/Config/scripts/caffediogo/monodepth/models/model_kitti',out_file)
     return out_file
 
 def do_stereo(dir_name, file_name, imgL, imgR):
 
-    # parameters for the stereo matching:
-    window_size = 9;
-    min_disp = 1;
-    num_disp = 64; # must be divisible by 16 (http://docs.opencv.org/java/org/opencv/calib3d/StereoSGBM.html)
-    
-    # calculate the disparities:
-    disp = calculate_disparities(imgL, imgR, window_size, min_disp, num_disp);
-    ret,thresh0 = cv2.threshold(disp,0,255,cv2.THRESH_BINARY);
-    #disp = cv2.resize(disp, (TARGET_W, TARGET_H), interpolation=cv2.INTER_NEAREST);
-    #disp[:] = 255;
-
-    # gradient for certainty:
-    grey = cv2.cvtColor(imgL, cv2.COLOR_RGB2GRAY);
-    blur = cv2.GaussianBlur(grey,(11,11),0)
-    sobelX = cv2.Sobel(blur,cv2.CV_64F,1,0,ksize=5);
-    ret,thresh1 = cv2.threshold(sobelX,175,255,cv2.THRESH_BINARY);
-
-    #mask out unknown pixels in disp map
-    # thresh 0 is for uncertain disparities (e.g., left band in left image + bad matches)
-    # thresh 1 is for detecting high texture regions
-    confidence = cv2.bitwise_and(thresh0.astype(np.uint8),thresh1.astype(np.uint8))
-
-    # write all images:
     if not os.path.exists(dir_name  + "/disp/"): 
         os.makedirs(dir_name  + "/disp/")
-
     if not os.path.exists(dir_name  + "/conf/"): 
         os.makedirs(dir_name  + "/conf/")
-
     stereo_path = dir_name + "/disp/" + file_name + "_disparity.png"
-    cv2.imwrite(stereo_path, disp);
     conf_path = dir_name + "/conf/" + file_name + "_confidence.png"
-    cv2.imwrite(conf_path, confidence);
+    if (not os.path.isfile(stereo_path) and not os.path.isfile(conf_path)) or sys.argv[4] == 'True':
+        # parameters for the stereo matching:
+        window_size = 9;
+        min_disp = 1;
+        num_disp = 64; # must be divisible by 16 (http://docs.opencv.org/java/org/opencv/calib3d/StereoSGBM.html)
+        
+        # calculate the disparities:
+        disp = calculate_disparities(imgL, imgR, window_size, min_disp, num_disp);
+        ret,thresh0 = cv2.threshold(disp,0,255,cv2.THRESH_BINARY);
+        #disp = cv2.resize(disp, (TARGET_W, TARGET_H), interpolation=cv2.INTER_NEAREST);
+        #disp[:] = 255;
+
+        # gradient for certainty:
+        grey = cv2.cvtColor(imgL, cv2.COLOR_RGB2GRAY);
+        blur = cv2.GaussianBlur(grey,(11,11),0)
+        sobelX = cv2.Sobel(blur,cv2.CV_64F,1,0,ksize=5);
+        ret,thresh1 = cv2.threshold(sobelX,175,255,cv2.THRESH_BINARY);
+
+        #mask out unknown pixels in disp map
+        # thresh 0 is for uncertain disparities (e.g., left band in left image + bad matches)
+        # thresh 1 is for detecting high texture regions
+        confidence = cv2.bitwise_and(thresh0.astype(np.uint8),thresh1.astype(np.uint8))
+
+        # write all images:
+        cv2.imwrite(stereo_path, disp);
+        cv2.imwrite(conf_path, confidence);
+        
     return stereo_path,conf_path
 
 def calculate_disparities(imgL, imgR, window_size, min_disp, num_disp):
