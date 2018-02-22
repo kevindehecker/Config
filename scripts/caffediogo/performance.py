@@ -22,8 +22,9 @@ MAX_DISP = 64.0;
 def print_performance(performance_matrix, name='Performance'):
     print('%s' % name);
     prefix = ['Stereo', 'Mono:', 'Fusion']
+    print('\t\tabs_rel, sq_rel, rmse, rmse_log, a1, a2, a3');
     for r in range(3):
-        print(prefix[r] + ': %f, %f, %f, %f, %f, %f, %f' % tuple(performance_matrix[r, :]));
+        print(prefix[r] + ':\t %f, %f, %f, %f, %f, %f, %f' % tuple(performance_matrix[r, :]));
 
 def merge_depth_maps(mono_name = "/home/guido/cnn_depth_tensorflow/tmp/00002.png", 
                      stereo_name = "/home/guido/cnn_depth_tensorflow/tmp/00002_disparity.png",
