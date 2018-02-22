@@ -47,6 +47,8 @@ def merge_depth_maps(mono_name = "/home/guido/cnn_depth_tensorflow/tmp/00002.png
     GT = cv2.imread(GT_name);
     if(len(GT.shape) == 3 and GT.shape[2] > 1):
         GT = cv2.cvtColor(GT, cv2.COLOR_RGB2GRAY);
+    kernel_dilate = np.ones([5,5]);
+    GT = cv2.dilate(GT, kernel_dilate);
     
     if(mono.shape[0] != stereo.shape[0] or mono.shape[0] != GT.shape[0]):
         H = np.asarray([mono.shape[0]] * 3);
@@ -114,3 +116,8 @@ def merge_depth_maps(mono_name = "/home/guido/cnn_depth_tensorflow/tmp/00002.png
     return performance, depth_fusion;
 
 # merge_depth_maps(graphics=True);
+merge_depth_maps(mono_name = "./tmp/0000000061_sperziboon.png", 
+                     stereo_name = "./tmp/0000000061_disparity.png",
+                     GT_name = "./tmp/0000000061_GT.png",
+                     image_name = "./tmp/0000000061_image.png",
+                     graphics = True, verbose = True)

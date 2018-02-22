@@ -11,6 +11,7 @@ ratio_W = new_W / W;
 ratio_H = new_H / H;
 velo_img(:,1) = velo_img(:,1) * ratio_W;
 velo_img(:,2) = velo_img(:,2) * ratio_H;
+n_points = size(velo_img,1);
 
 % % fill the disparity matrix:
 % D = zeros(new_H, new_W);
@@ -48,9 +49,9 @@ M = P == 0;
 P = P + M;
 D = D ./ P;
 
-% figure();
-% imagesc(D);
-% title('New method');
-% 
-% pause;
-% close all;
+figure();
+imagesc(D);
+title('New method');
+
+pause;
+close all;
