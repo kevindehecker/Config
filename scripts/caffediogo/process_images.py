@@ -84,7 +84,8 @@ def generate_maps():
         else:
             mono2_path = do_mancini(dir_name, file_name, im,model)            
         
-        gt_path = dir_name + "/GT_disp/" + file_name + ".png"        
+        dirdate_name = os.path.basename(dir_name)
+        gt_path = dir_name + "/../../../data_depth_annotated/val/" + dirdate_name + "/proj_depth/groundtruth/image_02/" + file_name + ".png"        
         stereo_path,conf_path = do_stereo(dir_name, file_name, imgL, imgR)       
         if(CNN == 'mrharicot'):            
             merged_path,perf_result1 = do_merge(dir_name, file_name, mono1_path,stereo_path,gt_path,im)
