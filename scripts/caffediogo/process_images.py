@@ -12,6 +12,14 @@ import sys
 import subprocess
 import performance
 import argparse
+from matplotlib.pylab import cm
+
+regen_combined = True
+regen_Merge = True
+regen_stereo = False
+regen_Sperzi = False
+regen_Mancini = False
+
 
 #parser = argparse.ArgumentParser(description='Monodepth TensorFlow implementation.')
 #parser.add_argument('--encoder',          type=str,   help='type of encoder, mrharicot or mancini', default='mrharicot')
@@ -117,7 +125,7 @@ def do_combine(dir_name, file_name, sperzi_path,mancini_path,stereo_path,conf_pa
     if not os.path.exists(dir_name  + "/combined/"): 
         os.makedirs(dir_name  + "/combined/")
     combined_path = dir_name + "/combined/" + file_name + "_combined.png"
-    if not os.path.isfile(combined_path) or sys.argv[4] == 'True':
+    if not os.path.isfile(combined_path) or sys.argv[4] == 'True' or regen_combined:
         im = cv2.imread(im_rgb_path)
         imd = cv2.imread(stereo_path)
         imc = cv2.imread(conf_path)
@@ -127,6 +135,7 @@ def do_combine(dir_name, file_name, sperzi_path,mancini_path,stereo_path,conf_pa
         imms = cv2.imread(merged_sperzi_path)
         immm = cv2.imread(merged_mancini_path)
 
+        pdb.set_trace()
         img = cv2.applyColorMap(img, cv2.COLORMAP_JET)
         imd = cv2.applyColorMap(imd, cv2.COLORMAP_JET)
         ims = cv2.applyColorMap(ims, cv2.COLORMAP_JET)
@@ -136,7 +145,7 @@ def do_combine(dir_name, file_name, sperzi_path,mancini_path,stereo_path,conf_pa
         immm = cv2.applyColorMap(immm, cv2.COLORMAP_JET)
         immm = cv2.resize(immm,(img.shape[1], img.shape[0]), interpolation = cv2.INTER_CUBIC)
         
-        #pdb.set_trace()
+        
         #rgb    | conf
         #laser  | stereo
         #sperzi | mancini
@@ -159,7 +168,7 @@ def do_merge(dir_name, file_name, mono_path,stereo_path,gt_path, im_rgb_path, cn
         os.makedirs(dir_name  + "/merged/")
     merged_path = dir_name + "/merged/" + file_name + "_merged_" + cnn + ".png"
     perf_result, depth_fusion = performance.merge_depth_maps(mono_path,stereo_path,gt_path,im_rgb_path,graphics=False,verbose=False)                                            
-    if not os.path.isfile(merged_path) or sys.argv[4] == 'True':    
+    if not os.path.isfile(merged_path) or sys.argv[4] == 'True' or regen_merged:    
         cv2.imwrite(merged_path, depth_fusion);
     return merged_path,perf_result
     
@@ -167,7 +176,7 @@ def do_mancini(dir_name, file_name, im_rgb_path,model):
     if not os.path.exists(dir_name  + "/mancini/"): 
         os.makedirs(dir_name  + "/mancini/")
     mono_path = dir_name  + "/mancini/" + file_name + "_mancini.png";
-    if (not os.path.isfile(mono_path) and not CNN == 'mrharicot') or sys.argv[4] == 'True':
+    if (not os.path.isfile(mono_path) and not CNN == 'mrharicot') or sys.argv[4] == 'True' or regen_Mancini:
         prediction = upsample_vgg16.test_model_on_image(im_rgb_path, save_image_name = mono_path, model=model);
     return mono_path
     
@@ -175,7 +184,7 @@ def do_sperziboon(dir_name, file_name, im_rgb_path):
     if not os.path.exists(dir_name  + "/sperzi/"): 
         os.makedirs(dir_name  + "/sperzi/")
     out_file = dir_name + "/sperzi/" + file_name + "_sperziboon.png"
-    if (not os.path.isfile(out_file) and CNN == 'mrharicot') or sys.argv[4] == 'True':
+    if (not os.path.isfile(out_file) and CNN == 'mrharicot') or sys.argv[4] == 'True' or regen_Sperzi:
         monodepth_kevin.process_im_sperzi(im_rgb_path,'/data/kevin/Config/scripts/caffediogo/monodepth/models/model_kitti',out_file)
     return out_file
 
@@ -187,7 +196,7 @@ def do_stereo(dir_name, file_name, imgL, imgR):
         os.makedirs(dir_name  + "/conf/")
     stereo_path = dir_name + "/disp/" + file_name + "_disparity.png"
     conf_path = dir_name + "/conf/" + file_name + "_confidence.png"
-    if (not os.path.isfile(stereo_path) and not os.path.isfile(conf_path)) or sys.argv[4] == 'True':
+    if (not os.path.isfile(stereo_path) and not os.path.isfile(conf_path)) or sys.argv[4] == 'True' or regen_stereo:
         # parameters for the stereo matching:
         window_size = 9;
         min_disp = 1;
@@ -196,8 +205,6 @@ def do_stereo(dir_name, file_name, imgL, imgR):
         # calculate the disparities:
         disp = calculate_disparities(imgL, imgR, window_size, min_disp, num_disp);
         ret,thresh0 = cv2.threshold(disp,0,255,cv2.THRESH_BINARY);
-        #disp = cv2.resize(disp, (TARGET_W, TARGET_H), interpolation=cv2.INTER_NEAREST);
-        #disp[:] = 255;
 
         # gradient for certainty:
         grey = cv2.cvtColor(imgL, cv2.COLOR_RGB2GRAY);
