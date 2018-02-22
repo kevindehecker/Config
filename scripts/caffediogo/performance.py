@@ -66,7 +66,7 @@ def merge_depth_maps(mono_name = "/home/guido/cnn_depth_tensorflow/tmp/00002.png
         
         
     
-    if(graphics):
+    if(graphics and False):
         fig, axes = plt.subplots(nrows=2, ncols=2);
         cf = axes[0,0].imshow(mono);
         axes[0,0].set_title('Mono disp');

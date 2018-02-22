@@ -108,4 +108,4 @@ def process_im_sperzi(image_path = '/data/kevin/kitti/raw_data/2011_09_26/2011_0
     cv2.imwrite(output_path, disp_to_img);
     
 
-process_im_sperzi()
+#process_im_sperzi()

@@ -14,9 +14,10 @@ import performance
 import argparse
 from matplotlib.pylab import cm
 import pickle
+import matplotlib.pyplot as plt
 
-regen_combined = False
-regen_merged = False
+regen_combined = True
+regen_merged = True
 regen_stereo = False
 regen_sperzi = False
 regen_mancini = False
@@ -96,7 +97,7 @@ def generate_maps():
         Performance1 += perf_result1;
         if(np.mod(n_perfs, 10) == 0):
             performance.print_performance(Performance1 / n_perfs, name = 'Performance 1');
-        
+        plt.show()
         merged_mancini_path,perf_result2 = do_merge(dir_name, file_name, mancini_path,stereo_path,gt_path,im, "manchini")
         Performance2 += perf_result2;
         if(np.mod(n_perfs, 10) == 0):
@@ -105,6 +106,8 @@ def generate_maps():
         n_perfs += 1;
 
         do_combine(dir_name, file_name, sperzi_path,mancini_path,stereo_path,conf_path,gt_path, im,merged_sperzi_path,merged_mancini_path)
+        plt.show()
+
     
     filehandler = open("performance_1.pkl","wb")
     pickle.dump(Performance1, filehandler)
@@ -161,7 +164,7 @@ def do_merge(dir_name, file_name, mono_path,stereo_path,gt_path, im_rgb_path, cn
     if not os.path.exists(dir_name  + "/merged/"): 
         os.makedirs(dir_name  + "/merged/")
     merged_path = dir_name + "/merged/" + file_name + "_merged_" + cnn + ".png"
-    perf_result, depth_fusion = performance.merge_depth_maps(mono_path,stereo_path,gt_path,im_rgb_path,graphics=False,verbose=False)                                            
+    perf_result, depth_fusion = performance.merge_depth_maps(mono_path,stereo_path,gt_path,im_rgb_path,graphics=False,verbose=False) 
     if not os.path.isfile(merged_path) or sys.argv[4] == 'True' or regen_merged:    
         cv2.imwrite(merged_path, depth_fusion);
     return merged_path,perf_result
