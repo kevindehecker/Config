@@ -1,7 +1,7 @@
 #!/usr/bin/env python2
  
 #usage:
-#python2 ./process_images.py /data/kevin/kitti/raw_data/2011_09_26/val_images2.txt /data/kevin/kitti/raw_data/2011_09_26/val_images3.txt
+#python2 ./process_images.py /data/kevin/kitti/raw_data/2011_09_26/val_images2.txt /data/kevin/kitti/raw_data/2011_09_26/val_images3.txt mrharicot False
 
 import glob
 import numpy as np
@@ -13,13 +13,13 @@ import subprocess
 import performance
 import argparse
 from matplotlib.pylab import cm
+import pickle
 
-regen_combined = True
-regen_merged = True
+regen_combined = False
+regen_merged = False
 regen_stereo = False
 regen_sperzi = False
 regen_mancini = False
-
 
 #parser = argparse.ArgumentParser(description='Monodepth TensorFlow implementation.')
 #parser.add_argument('--encoder',          type=str,   help='type of encoder, mrharicot or mancini', default='mrharicot')
@@ -38,8 +38,6 @@ else:
     sys.path.insert(0, mancini_dir)
 #    # sys.path.append('/home/SSL_OF/keras/')
     import upsample_vgg16 
-    import pickle
-
 
 def diff_letters(a,b):
     return sum ( a[i] != b[i] for i in range(len(a)) )
@@ -70,14 +68,11 @@ def generate_maps():
     # iterate over the files:
     # for idx, im in enumerate(images_left):
     for idx in np.arange(0, len(images_left), im_step):
-
-        print("{} / {}".format(idx, len(images_left)));
-
         # read the image (consisting of a right image and left image)
         im = images_left[idx];        
         imgL = cv2.imread(im);
         imgR = cv2.imread(images_right[idx]);
-
+        print("{} / {} {}".format(idx, len(images_left),im));        
         # check if the two images correspond:
         num_diff = diff_letters(im, images_right[idx]);
         if(num_diff != 1):
@@ -97,7 +92,6 @@ def generate_maps():
         gt_path = dir_name + "/../../../data_depth_annotated/val/" + dirdate_name + "/proj_depth/groundtruth/image_02/" + file_name + ".png"        
         stereo_path,conf_path = do_stereo(dir_name, file_name, imgL, imgR)       
 
-        
         merged_sperzi_path,perf_result1 = do_merge(dir_name, file_name, sperzi_path,stereo_path,gt_path,im,"sperzi")
         Performance1 += perf_result1;
         if(np.mod(n_perfs, 10) == 0):
@@ -135,7 +129,7 @@ def do_combine(dir_name, file_name, sperzi_path,mancini_path,stereo_path,conf_pa
         imms = cv2.imread(merged_sperzi_path)
         immm = cv2.imread(merged_mancini_path)
 
-        pdb.set_trace()
+        #pdb.set_trace()
         img = cv2.applyColorMap(img, cv2.COLORMAP_JET)
         imd = cv2.applyColorMap(imd, cv2.COLORMAP_JET)
         ims = cv2.applyColorMap(ims, cv2.COLORMAP_JET)
