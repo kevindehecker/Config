@@ -15,10 +15,10 @@ import argparse
 from matplotlib.pylab import cm
 
 regen_combined = True
-regen_Merge = True
+regen_merged = True
 regen_stereo = False
-regen_Sperzi = False
-regen_Mancini = False
+regen_sperzi = False
+regen_mancini = False
 
 
 #parser = argparse.ArgumentParser(description='Monodepth TensorFlow implementation.')
@@ -176,7 +176,7 @@ def do_mancini(dir_name, file_name, im_rgb_path,model):
     if not os.path.exists(dir_name  + "/mancini/"): 
         os.makedirs(dir_name  + "/mancini/")
     mono_path = dir_name  + "/mancini/" + file_name + "_mancini.png";
-    if (not os.path.isfile(mono_path) and not CNN == 'mrharicot') or sys.argv[4] == 'True' or regen_Mancini:
+    if (not os.path.isfile(mono_path) and not CNN == 'mrharicot') or sys.argv[4] == 'True' or regen_mancini:
         prediction = upsample_vgg16.test_model_on_image(im_rgb_path, save_image_name = mono_path, model=model);
     return mono_path
     
@@ -184,7 +184,7 @@ def do_sperziboon(dir_name, file_name, im_rgb_path):
     if not os.path.exists(dir_name  + "/sperzi/"): 
         os.makedirs(dir_name  + "/sperzi/")
     out_file = dir_name + "/sperzi/" + file_name + "_sperziboon.png"
-    if (not os.path.isfile(out_file) and CNN == 'mrharicot') or sys.argv[4] == 'True' or regen_Sperzi:
+    if (not os.path.isfile(out_file) and CNN == 'mrharicot') or sys.argv[4] == 'True' or regen_sperzi:
         monodepth_kevin.process_im_sperzi(im_rgb_path,'/data/kevin/Config/scripts/caffediogo/monodepth/models/model_kitti',out_file)
     return out_file
 
