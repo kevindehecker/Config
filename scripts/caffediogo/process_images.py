@@ -52,6 +52,8 @@ def generate_maps():
 
     if(CNN == 'mancini'):
         model = upsample_vgg16.load_model(dir_name=mancini_dir);
+    else:
+        model = 'hack'
 
     Performance1 = np.zeros([3, 7]);
     Performance2 = np.zeros([3, 7]);
@@ -79,30 +81,28 @@ def generate_maps():
         dir_name = os.path.dirname(im);
         dir_name = os.path.dirname(dir_name);
         dir_name = os.path.dirname(dir_name);
-        if(CNN == 'mrharicot'):
-            mono1_path = do_sperziboon(dir_name, file_name, im);        
-        else:
-            mono2_path = do_mancini(dir_name, file_name, im,model)            
+  
+        sperzi_path = do_sperziboon(dir_name, file_name, im);        
+        mancini_path = do_mancini(dir_name, file_name, im,model)            
         
         dirdate_name = os.path.basename(dir_name)
         gt_path = dir_name + "/../../../data_depth_annotated/val/" + dirdate_name + "/proj_depth/groundtruth/image_02/" + file_name + ".png"        
         stereo_path,conf_path = do_stereo(dir_name, file_name, imgL, imgR)       
-        if(CNN == 'mrharicot'):            
-            merged_path,perf_result1 = do_merge(dir_name, file_name, mono1_path,stereo_path,gt_path,im)
-            Performance1 += perf_result1;
-            if(np.mod(n_perfs, 10) == 0):
-                performance.print_performance(Performance1 / n_perfs, name = 'Performance 1');
-        else:            
-            merged_path,perf_result2 = do_merge(dir_name, file_name, mono2_path,stereo_path,gt_path,im)
-            Performance2 += perf_result2;
-            if(np.mod(n_perfs, 10) == 0):
-                performance.print_performance(Performance2 / n_perfs, name = 'Performance 2');
+
+        
+        merged_sperzi_path,perf_result1 = do_merge(dir_name, file_name, sperzi_path,stereo_path,gt_path,im,"sperzi")
+        Performance1 += perf_result1;
+        if(np.mod(n_perfs, 10) == 0):
+            performance.print_performance(Performance1 / n_perfs, name = 'Performance 1');
+        
+        merged_mancini_path,perf_result2 = do_merge(dir_name, file_name, mancini_path,stereo_path,gt_path,im, "manchini")
+        Performance2 += perf_result2;
+        if(np.mod(n_perfs, 10) == 0):
+            performance.print_performance(Performance2 / n_perfs, name = 'Performance 2');
+            
         n_perfs += 1;
-     
-    #Performance1 /= n_perfs;
-    #Performance2 /= n_perfs;
-    #performance.print_performance(Performance1, name = 'Performance 1');
-    #performance.print_performance(Performance2, name = 'Performance 2');
+
+        do_combine(dir_name, file_name, sperzi_path,mancini_path,stereo_path,conf_path,gt_path, im,merged_sperzi_path,merged_mancini_path)
     
     filehandler = open("performance_1.pkl","wb")
     pickle.dump(Performance1, filehandler)
@@ -112,10 +112,52 @@ def generate_maps():
     pickle.dump(Performance2, filehandler)
     filehandler.close()
 
-def do_merge(dir_name, file_name, mono_path,stereo_path,gt_path, im_rgb_path):    
+def do_combine(dir_name, file_name, sperzi_path,mancini_path,stereo_path,conf_path,gt_path, im_rgb_path,merged_sperzi_path,merged_mancini_path):
+    
+    if not os.path.exists(dir_name  + "/combined/"): 
+        os.makedirs(dir_name  + "/combined/")
+    combined_path = dir_name + "/combined/" + file_name + "_combined.png"
+    if not os.path.isfile(combined_path) or sys.argv[4] == 'True':
+        im = cv2.imread(im_rgb_path)
+        imd = cv2.imread(stereo_path)
+        imc = cv2.imread(conf_path)
+        img = cv2.imread(gt_path)
+        ims = cv2.imread(sperzi_path)
+        imm = cv2.imread(mancini_path)
+        imms = cv2.imread(merged_sperzi_path)
+        immm = cv2.imread(merged_mancini_path)
+
+        img = cv2.applyColorMap(img, cv2.COLORMAP_JET)
+        imd = cv2.applyColorMap(imd, cv2.COLORMAP_JET)
+        ims = cv2.applyColorMap(ims, cv2.COLORMAP_JET)
+        imm = cv2.applyColorMap(imm, cv2.COLORMAP_JET)
+        imm = cv2.resize(imm,(img.shape[1], img.shape[0]), interpolation = cv2.INTER_CUBIC)
+        imms = cv2.applyColorMap(imms, cv2.COLORMAP_JET)
+        immm = cv2.applyColorMap(immm, cv2.COLORMAP_JET)
+        immm = cv2.resize(immm,(img.shape[1], img.shape[0]), interpolation = cv2.INTER_CUBIC)
+        
+        #pdb.set_trace()
+        #rgb    | conf
+        #laser  | stereo
+        #sperzi | mancini
+        #merged | merged
+        
+        visL = np.concatenate((im, img), axis=0)
+        visL = np.concatenate((visL, ims), axis=0)
+        visL = np.concatenate((visL, imms), axis=0)
+        
+        visR = np.concatenate((imc, imd), axis=0)
+        visR = np.concatenate((visR, imm), axis=0) 
+        visR = np.concatenate((visR, immm), axis=0)
+        
+        vis = np.concatenate((visL, visR), axis=1)
+        cv2.imwrite(combined_path, vis);
+
+    
+def do_merge(dir_name, file_name, mono_path,stereo_path,gt_path, im_rgb_path, cnn):
     if not os.path.exists(dir_name  + "/merged/"): 
         os.makedirs(dir_name  + "/merged/")
-    merged_path = dir_name + "/merged/" + file_name + "_merged.png"
+    merged_path = dir_name + "/merged/" + file_name + "_merged_" + cnn + ".png"
     perf_result, depth_fusion = performance.merge_depth_maps(mono_path,stereo_path,gt_path,im_rgb_path,graphics=False,verbose=False)                                            
     if not os.path.isfile(merged_path) or sys.argv[4] == 'True':    
         cv2.imwrite(merged_path, depth_fusion);
@@ -125,7 +167,7 @@ def do_mancini(dir_name, file_name, im_rgb_path,model):
     if not os.path.exists(dir_name  + "/mancini/"): 
         os.makedirs(dir_name  + "/mancini/")
     mono_path = dir_name  + "/mancini/" + file_name + "_mancini.png";
-    if not os.path.isfile(mono_path) or sys.argv[4] == 'True':
+    if (not os.path.isfile(mono_path) and not CNN == 'mrharicot') or sys.argv[4] == 'True':
         prediction = upsample_vgg16.test_model_on_image(im_rgb_path, save_image_name = mono_path, model=model);
     return mono_path
     
@@ -133,7 +175,7 @@ def do_sperziboon(dir_name, file_name, im_rgb_path):
     if not os.path.exists(dir_name  + "/sperzi/"): 
         os.makedirs(dir_name  + "/sperzi/")
     out_file = dir_name + "/sperzi/" + file_name + "_sperziboon.png"
-    if not os.path.isfile(out_file) or sys.argv[4] == 'True':
+    if (not os.path.isfile(out_file) and CNN == 'mrharicot') or sys.argv[4] == 'True':
         monodepth_kevin.process_im_sperzi(im_rgb_path,'/data/kevin/Config/scripts/caffediogo/monodepth/models/model_kitti',out_file)
     return out_file
 
