@@ -6,7 +6,7 @@ Merge a monocular and stereo map
 
 @author: guido
 """
-
+import pdb
 import cv2
 import numpy as np
 import matplotlib.pyplot as plt
@@ -145,13 +145,24 @@ def scale_mono_map(stereo_map, mono_map):
     # TODO: what is the best scaling for performance?
     max_stereo = np.max(stereo_map[stereo_map != 0]);
     min_stereo = np.min(stereo_map[stereo_map != 0]);
+    avg_stereo = np.mean(stereo_map[stereo_map != 0]);
     min_mono = np.min(mono_map[:]);
     mono_map -= min_mono;
     max_mono = np.max(mono_map[:]);
-    mono_map /= max_mono;
-    mono_map *= max_stereo - min_stereo;
-    mono_map += min_stereo;
+    avg_mono = np.mean(mono_map[:]);
+
+    scalef = avg_mono / avg_stereo
     
+    #mono_map /= max_mono
+    #mono_map *= max_stereo - min_stereo;
+    #mono_map += min_stereo;
+    mono_map /= scalef;
+
+    # print np.mean(mono_map[:])
+    # print avg_stereo
+    # print avg_mono
+
+    # pdb.set_trace()
     return mono_map;
 
 def get_Diogo_weight_map(stereo_map, mono_map, graphics = False):
