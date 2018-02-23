@@ -14,6 +14,7 @@ Scripts that determines the performance of the various algorithms.
 import cv2
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib
 import merge
 import evaluation_utils
 
@@ -91,9 +92,18 @@ def merge_depth_maps(mono_name = "/home/guido/cnn_depth_tensorflow/tmp/00002.png
     depth_mono = evaluation_utils.convert_disps_to_depths_kitti(mono);
     depth_GT = GT;
     # depth_GT = evaluation_utils.convert_disps_to_depths_kitti(GT);
-    depth_fusion = merge.merge_Diogo(depth_stereo, depth_mono, image, graphics = False);
+    depth_fusion, stereo_confidence = merge.merge_Diogo(depth_stereo, depth_mono, image, graphics = False);
     
     if(graphics):
+        fig, ax = plt.subplots()
+        ax.imshow(gray_scale, cmap='gray');
+        ax.imshow(1.0 - stereo_confidence, norm = matplotlib.colors.Normalize(vmin= 0.0,vmax=1.0), cmap=plt.cm.RdBu, alpha=0.5);    
+        PCM=ax.get_children()[3] #get the mappable, the 1st and the 2nd are the x and y axes
+        plt.colorbar(PCM, ax=ax)
+        #cb.set_lim(-MAX_DEPTH, MAX_DEPTH);
+        plt.title('Mono confidence');
+        
+        
         fig, axes = plt.subplots(nrows=2, ncols=2);
         cf = axes[0,0].imshow(depth_mono);
         axes[0,0].set_title('Mono depth');
@@ -122,8 +132,9 @@ def merge_depth_maps(mono_name = "/home/guido/cnn_depth_tensorflow/tmp/00002.png
         MAX_DEPTH = 40;
         fig, ax = plt.subplots()
         ax.imshow(gray_scale, cmap='gray');
-        ax.imshow(error_comparison, norm = mpl.colors.Normalize(vmin= -MAX_DEPTH,vmax=MAX_DEPTH), cmap=plt.cm.RdBu, alpha=0.5);    
-        cb = ax.colorbar();
+        ax.imshow(error_comparison, norm = matplotlib.colors.Normalize(vmin= -MAX_DEPTH,vmax=MAX_DEPTH), cmap=plt.cm.RdBu, alpha=0.5);    
+        PCM=ax.get_children()[3] #get the mappable, the 1st and the 2nd are the x and y axes
+        plt.colorbar(PCM, ax=ax)
         #cb.set_lim(-MAX_DEPTH, MAX_DEPTH);
         plt.title('abs error stereo - abs error mono');
         

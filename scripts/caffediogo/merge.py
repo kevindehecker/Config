@@ -82,7 +82,7 @@ def merge_Diogo(stereo_map, mono_map, image, graphics = False):
         axes[1].imshow(stereo_confidence);    
         axes[1].set_title('Stereo confidence');        
     
-    return fusion;
+    return fusion, stereo_confidence;
     
     
 def determine_stereo_confidence(stereo_map, image, blur_window = 3, gradient_threshold = 175, graphics = False):
