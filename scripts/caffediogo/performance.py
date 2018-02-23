@@ -14,11 +14,13 @@ Scripts that determines the performance of the various algorithms.
 import cv2
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib.cm as cm
 import matplotlib
 import merge
 import evaluation_utils
 import copy
 import pdb
+from PIL import Image
 
 MAX_DISP = 64.0;
 
@@ -28,6 +30,15 @@ def print_performance(performance_matrix, name='Performance'):
     print('\t\tabs_rel, sq_rel, rmse, rmse_log, a1, a2, a3');
     for r in range(3):
         print(prefix[r] + ':\t %f, %f, %f, %f, %f, %f, %f' % tuple(performance_matrix[r, :]));
+
+def createOverlay(im_background,im_overlay):
+    if im_background.shape[0] != im_overlay.shape[0] or im_background.shape[1] != im_overlay.shape[1]:
+        im_overlay = cv2.resize(im_overlay,(im_background.shape[1], im_background.shape[0]), interpolation = cv2.INTER_CUBIC)
+    imt = im_overlay.astype(np.float32) # convert to float
+    imt = Image.fromarray(np.uint8(255*cm.RdBu(imt)))
+    imt2 = Image.fromarray(cv2.cvtColor(im_background,cv2.COLOR_GRAY2RGBA))
+    imt = Image.blend(imt2, imt, 0.5)
+    return imt
 
 def merge_depth_maps(mono_name = "/home/guido/cnn_depth_tensorflow/tmp/00002.png", 
                      stereo_name = "/home/guido/cnn_depth_tensorflow/tmp/00002_disparity.png",
@@ -95,16 +106,17 @@ def merge_depth_maps(mono_name = "/home/guido/cnn_depth_tensorflow/tmp/00002.png
     depth_GT = GT;
     # depth_GT = evaluation_utils.convert_disps_to_depths_kitti(GT);
     depth_fusion, stereo_confidence = merge.merge_Diogo(depth_stereo, depth_mono, image, graphics = False);
-    
-    if(graphics):
+    im_mono_conf = createOverlay(gray_scale,1-stereo_confidence)
+
+    if(graphics):        
         fig, ax = plt.subplots()
-        ax.imshow(gray_scale, cmap='gray');
-        ax.imshow(1.0 - stereo_confidence, norm = matplotlib.colors.Normalize(vmin= 0.0,vmax=1.0), cmap=plt.cm.RdBu, alpha=0.5);    
-        PCM=ax.get_children()[3] #get the mappable, the 1st and the 2nd are the x and y axes
-        plt.colorbar(PCM, ax=ax)
+        plt.imshow(im_mono_conf);
+        #ax.imshow(gray_scale, cmap='gray');
+        #ax.imshow(1.0 - stereo_confidence, norm = matplotlib.colors.Normalize(vmin= 0.0,vmax=1.0), cmap=plt.cm.RdBu, alpha=0.5);    
+        #PCM=ax.get_children()[3] #get the mappable, the 1st and the 2nd are the x and y axes
+        #plt.colorbar(PCM, ax=ax)
         #cb.set_lim(-MAX_DEPTH, MAX_DEPTH);
         plt.title('Mono confidence');
-        
         
         fig, axes = plt.subplots(nrows=2, ncols=2);
         cf = axes[0,0].imshow(depth_mono);
@@ -173,7 +185,7 @@ def merge_depth_maps(mono_name = "/home/guido/cnn_depth_tensorflow/tmp/00002.png
 #        print_performance(performance);
 #        
         
-    return performance, depth_fusion;
+    return performance, depth_fusion,im_mono_conf;
 
 # merge_depth_maps(graphics=True);
 #merge_depth_maps(mono_name = "./tmp/0000000013_sperziboon.png", 

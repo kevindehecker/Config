@@ -16,7 +16,7 @@ from matplotlib.pylab import cm
 import pickle
 import matplotlib.pyplot as plt
 
-regen_combined = False
+regen_combined = True
 regen_merged = True
 regen_stereo = False
 regen_sperzi = False
@@ -94,20 +94,20 @@ def generate_maps():
         gt_path = dir_name + "/../../../data_depth_annotated/val/" + dirdate_name + "/proj_depth/groundtruth/image_02/" + file_name + ".png"        
         stereo_path,conf_path = do_stereo(dir_name, file_name, imgL, imgR)       
 
-        merged_sperzi_path,perf_result1 = do_merge(dir_name, file_name, sperzi_path,stereo_path,gt_path,im,"sperzi",non_occluded)
+        merged_sperzi_path,fusionconf_sperzi_path,perf_result1 = do_merge(dir_name, file_name, sperzi_path,stereo_path,gt_path,im,"sperzi",non_occluded)
         Performance1 += perf_result1;
         if(np.mod(n_perfs, 10) == 0):
             print(['nocc:', non_occluded])
             performance.print_performance(Performance1 / n_perfs, name = 'Performance sperzi');
         plt.show()
-        merged_mancini_path,perf_result2 = do_merge(dir_name, file_name, mancini_path,stereo_path,gt_path,im, "manchini",non_occluded)
+        merged_mancini_path,fusionconf_mancini_path,perf_result2 = do_merge(dir_name, file_name, mancini_path,stereo_path,gt_path,im, "manchini",non_occluded)
         Performance2 += perf_result2;
         if(np.mod(n_perfs, 10) == 0):
             performance.print_performance(Performance2 / n_perfs, name = 'Performance manchini');
             
         n_perfs += 1;
 
-        do_combine(dir_name, file_name, sperzi_path,mancini_path,stereo_path,conf_path,gt_path, im,merged_sperzi_path,merged_mancini_path)
+        do_combine(dir_name, file_name, sperzi_path,mancini_path,stereo_path,conf_path,gt_path, im,merged_sperzi_path,merged_mancini_path,fusionconf_sperzi_path,fusionconf_mancini_path)
         plt.show()
 
     
@@ -119,8 +119,7 @@ def generate_maps():
     pickle.dump(Performance2, filehandler)
     filehandler.close()
 
-def do_combine(dir_name, file_name, sperzi_path,mancini_path,stereo_path,conf_path,gt_path, im_rgb_path,merged_sperzi_path,merged_mancini_path):
-    
+def do_combine(dir_name, file_name, sperzi_path,mancini_path,stereo_path,conf_path,gt_path, im_rgb_path,merged_sperzi_path,merged_mancini_path,fusionconf_sperzi_path,fusionconf_mancini_path):
     if not os.path.exists(dir_name  + "/combined/"): 
         os.makedirs(dir_name  + "/combined/")
     combined_path = dir_name + "/combined/" + file_name + "_combined.png"
@@ -133,6 +132,8 @@ def do_combine(dir_name, file_name, sperzi_path,mancini_path,stereo_path,conf_pa
         imm = cv2.imread(mancini_path)
         imms = cv2.imread(merged_sperzi_path)
         immm = cv2.imread(merged_mancini_path)
+        imfcm = cv2.imread(fusionconf_mancini_path)
+        imfcs = cv2.imread(fusionconf_sperzi_path)
 
         #pdb.set_trace()
         img = cv2.applyColorMap(img, cv2.COLORMAP_JET)
@@ -153,10 +154,12 @@ def do_combine(dir_name, file_name, sperzi_path,mancini_path,stereo_path,conf_pa
         visL = np.concatenate((im, img), axis=0)
         visL = np.concatenate((visL, ims), axis=0)
         visL = np.concatenate((visL, imms), axis=0)
+        visL = np.concatenate((visL, imfcs), axis=0)
         
         visR = np.concatenate((imc, imd), axis=0)
         visR = np.concatenate((visR, imm), axis=0) 
         visR = np.concatenate((visR, immm), axis=0)
+        visR = np.concatenate((visR, imfcm), axis=0)
         
         vis = np.concatenate((visL, visR), axis=1)
         cv2.imwrite(combined_path, vis);
@@ -166,10 +169,15 @@ def do_merge(dir_name, file_name, mono_path,stereo_path,gt_path, im_rgb_path, cn
     if not os.path.exists(dir_name  + "/merged/"): 
         os.makedirs(dir_name  + "/merged/")
     merged_path = dir_name + "/merged/" + file_name + "_merged_" + cnn + ".png"
-    perf_result, depth_fusion = performance.merge_depth_maps(mono_path,stereo_path,gt_path,im_rgb_path,graphics=False,verbose=False, method=cnn, non_occluded=non_occluded) 
+    if not os.path.exists(dir_name  + "/fusionconf/"): 
+        os.makedirs(dir_name  + "/fusionconf/")
+    fusionconf_path = dir_name + "/fusionconf/" + file_name + "_fusionconf_" + cnn + ".png"
+    perf_result, depth_fusion,im_mono_conf = performance.merge_depth_maps(mono_path,stereo_path,gt_path,im_rgb_path,graphics=False,verbose=False, method=cnn, non_occluded=non_occluded) 
     if not os.path.isfile(merged_path) or sys.argv[4] == 'True' or regen_merged:    
         cv2.imwrite(merged_path, depth_fusion);
-    return merged_path,perf_result
+    if not os.path.isfile(merged_path) or sys.argv[4] == 'True' or regen_merged:    
+        cv2.imwrite(fusionconf_path, np.asarray(im_mono_conf));
+    return merged_path,fusionconf_path,perf_result
     
 def do_mancini(dir_name, file_name, im_rgb_path,model):
     if not os.path.exists(dir_name  + "/mancini/"): 
