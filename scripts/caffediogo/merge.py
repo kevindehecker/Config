@@ -189,6 +189,4 @@ def get_Diogo_weight_map(stereo_map, mono_map, graphics = False):
         plt.title('weight map');
         plt.colorbar();
     
-        
-    
     return weight_map;
