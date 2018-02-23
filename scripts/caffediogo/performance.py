@@ -141,6 +141,12 @@ def merge_depth_maps(mono_name = "/home/guido/cnn_depth_tensorflow/tmp/00002.png
     if(verbose):
         print_performance(performance);
 
+
+    gt, error_measure_mono = evaluation_utils.compute_error_vs_distance(depth_GT[:], depth_mono[:], error_type = 'rmse', graphics = graphics, name_fig='Mono: error vs distance', non_occluded=True, marker='rx');
+    gt, error_measure_stereo = evaluation_utils.compute_error_vs_distance(depth_GT[:], depth_stereo[:], error_type = 'rmse', graphics = graphics, name_fig='Stereo: error vs distance', non_occluded=True, marker='bo');
+    gt, error_measure_fusion = evaluation_utils.compute_error_vs_distance(depth_GT[:], depth_fusion[:], error_type = 'rmse', graphics = graphics, name_fig='Fusion: error vs distance', non_occluded=True, marker='g*');
+    
+
     # scaled mono
 #    depth_mono = merge.scale_mono_map(depth_stereo, depth_mono);    
 #    abs_rel, sq_rel, rmse, rmse_log, a1, a2, a3 = evaluation_utils.compute_errors(depth_GT[:], depth_mono[:]);

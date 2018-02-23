@@ -17,6 +17,34 @@ import matplotlib.pyplot as plt
 
 MAX_DEPTH = 80;
 
+def compute_error_vs_distance(gt, pred, error_type = 'rmse', graphics = False, name_fig='Error vs distance', non_occluded=True, marker='bo'):
+    
+    if(non_occluded):
+        inds1 = gt > 0;
+        inds2 = pred > 0;
+        inds = np.logical_and(inds1, inds2);
+        gt = gt[inds];
+        pred = pred[inds];
+    else:
+        inds = gt > 0;
+        gt = gt[inds];
+        pred = pred[inds];
+        inds = pred == 0;
+        pred[inds] += 1E-4;
+
+    sorted_inds = np.argsort(gt);
+    if(error_type == 'rmse'):
+        error_measure = np.sqrt((gt - pred) ** 2);
+    
+    if(graphics):
+        plt.figure();
+        plt.plot(gt[sorted_inds], error_measure[sorted_inds], marker);
+        plt.title(name_fig);
+    
+    # return the raw lists for accumulation over multiple images:
+    return gt, error_measure;
+        
+
 def compute_errors(gt, pred, graphics = False, name_fig='error map', non_occluded=True):
 
     Mask = gt == 0;
