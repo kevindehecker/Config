@@ -107,12 +107,20 @@ def merge_depth_maps(mono_name = "/home/guido/cnn_depth_tensorflow/tmp/00002.png
         fig.colorbar(cf, ax=axes[1,1])
     
     performance = np.zeros([3, 7]);
-    abs_rel, sq_rel, rmse, rmse_log, a1, a2, a3 = evaluation_utils.compute_errors(depth_GT[:], depth_stereo[:], name_fig = 'stereo error map');
+    abs_rel, sq_rel, rmse, rmse_log, a1, a2, a3, error_map_stereo = evaluation_utils.compute_errors(depth_GT[:], depth_stereo[:], name_fig = 'stereo error map');
     performance[0,:] = [abs_rel, sq_rel, rmse, rmse_log, a1, a2, a3];
-    abs_rel, sq_rel, rmse, rmse_log, a1, a2, a3 = evaluation_utils.compute_errors(depth_GT[:], depth_mono[:], name_fig = 'mono error map');
+    abs_rel, sq_rel, rmse, rmse_log, a1, a2, a3, error_map_mono = evaluation_utils.compute_errors(depth_GT[:], depth_mono[:], name_fig = 'mono error map');
     performance[1,:] = [abs_rel, sq_rel, rmse, rmse_log, a1, a2, a3];
-    abs_rel, sq_rel, rmse, rmse_log, a1, a2, a3 = evaluation_utils.compute_errors(depth_GT[:], depth_fusion[:], name_fig = 'fusion error map');
+    abs_rel, sq_rel, rmse, rmse_log, a1, a2, a3, error_map_fusion = evaluation_utils.compute_errors(depth_GT[:], depth_fusion[:], name_fig = 'fusion error map');
     performance[2,:] = [abs_rel, sq_rel, rmse, rmse_log, a1, a2, a3];
+    
+    error_comparison = error_map_stereo - error_map_mono;
+    plt.figure();
+    MAX_DEPTH = 40;
+    plt.imshow(error_comparison, norm = mpl.colors.Normalize(vmin= -MAX_DEPTH,vmax=MAX_DEPTH), cmap=plt.cm.RdBu);    
+    cb = plt.colorbar();
+    #cb.set_lim(-MAX_DEPTH, MAX_DEPTH);
+    plt.title('abs error stereo - abs error mono');
     
     if(verbose):
         print_performance(performance);
@@ -130,8 +138,8 @@ def merge_depth_maps(mono_name = "/home/guido/cnn_depth_tensorflow/tmp/00002.png
     return performance, depth_fusion;
 
 # merge_depth_maps(graphics=True);
-#merge_depth_maps(mono_name = "./tmp/0000000005_sperziboon.png", 
-#                     stereo_name = "./tmp/0000000005_disparity.png",
-#                     GT_name = "./tmp/0000000005_GT.png",
-#                     image_name = "./tmp/0000000005_image.png",
-#                     graphics = False, verbose = True)#, method = 'mancini')
+merge_depth_maps(mono_name = "./tmp/0000000005_sperziboon.png", 
+                     stereo_name = "./tmp/0000000005_disparity.png",
+                     GT_name = "./tmp/0000000005_GT.png",
+                     image_name = "./tmp/0000000005_image.png",
+                     graphics = False, verbose = True)#, method = 'mancini')

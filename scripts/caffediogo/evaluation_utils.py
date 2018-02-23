@@ -15,16 +15,20 @@ from collections import Counter
 import pdb
 import matplotlib.pyplot as plt
 
+MAX_DEPTH = 80;
+
 def compute_errors(gt, pred, graphics = True, name_fig='error map', non_occluded=True):
 
+    Mask = gt == 0;
+    Mask = 1.0 - Mask;
+    AbsErr = np.abs(gt - pred);
+    AbsErr = np.multiply(Mask, AbsErr);
+    
     if(graphics):
-        Mask = gt == 0;
-        Mask = 1.0 - Mask;
-        AbsErr = np.abs(gt - pred);
-        AbsErr = np.multiply(Mask, AbsErr);
         plt.figure();
         plt.imshow(AbsErr);
-        plt.colorbar();
+        cb = plt.colorbar();
+        cb.set_clim(0, MAX_DEPTH);
         plt.title(name_fig);
         
     
@@ -57,7 +61,7 @@ def compute_errors(gt, pred, graphics = True, name_fig='error map', non_occluded
     a2 = (delta < 1.25 ** 2).mean()
     a3 = (delta < 1.25 ** 3).mean()
 
-    return abs_rel, sq_rel, rmse, rmse_log, a1, a2, a3
+    return abs_rel, sq_rel, rmse, rmse_log, a1, a2, a3, AbsErr;
 
 # KITTI
 
