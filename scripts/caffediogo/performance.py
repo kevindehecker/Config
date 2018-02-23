@@ -34,6 +34,8 @@ def merge_depth_maps(mono_name = "/home/guido/cnn_depth_tensorflow/tmp/00002.png
 
     #if(graphics):
     image = cv2.imread(image_name);
+    if(len(image.shape) == 3 and image.shape[2] > 1):
+        gray_scale = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY);    
     
     mono = cv2.imread(mono_name);
     if(len(mono.shape) == 3 and mono.shape[2] > 1):
@@ -116,10 +118,12 @@ def merge_depth_maps(mono_name = "/home/guido/cnn_depth_tensorflow/tmp/00002.png
     
     if(graphics):
         error_comparison = error_map_stereo - error_map_mono;
-        plt.figure();
+        #plt.figure();
         MAX_DEPTH = 40;
-        plt.imshow(error_comparison, norm = mpl.colors.Normalize(vmin= -MAX_DEPTH,vmax=MAX_DEPTH), cmap=plt.cm.RdBu);    
-        cb = plt.colorbar();
+        fig, ax = plt.subplots()
+        ax.imshow(gray_scale, cmap='gray');
+        ax.imshow(error_comparison, norm = mpl.colors.Normalize(vmin= -MAX_DEPTH,vmax=MAX_DEPTH), cmap=plt.cm.RdBu, alpha=0.5);    
+        cb = ax.colorbar();
         #cb.set_lim(-MAX_DEPTH, MAX_DEPTH);
         plt.title('abs error stereo - abs error mono');
         
@@ -143,4 +147,4 @@ def merge_depth_maps(mono_name = "/home/guido/cnn_depth_tensorflow/tmp/00002.png
 #                     stereo_name = "./tmp/0000000013_disparity.png",
 #                     GT_name = "./tmp/0000000013_GT.png",
 #                     image_name = "./tmp/0000000013_image.png",
-#                     graphics = False, verbose = True)#, method = 'mancini')
+#                     graphics = True, verbose = True)#, method = 'mancini')

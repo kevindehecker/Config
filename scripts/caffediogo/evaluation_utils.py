@@ -17,7 +17,7 @@ import matplotlib.pyplot as plt
 
 MAX_DEPTH = 80;
 
-def compute_errors(gt, pred, graphics = True, name_fig='error map', non_occluded=True):
+def compute_errors(gt, pred, graphics = False, name_fig='error map', non_occluded=True):
 
     Mask = gt == 0;
     Mask = 1.0 - Mask;
