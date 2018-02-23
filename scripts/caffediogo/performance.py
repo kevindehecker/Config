@@ -17,6 +17,8 @@ import matplotlib.pyplot as plt
 import matplotlib
 import merge
 import evaluation_utils
+import copy
+import pdb
 
 MAX_DISP = 64.0;
 
@@ -125,6 +127,23 @@ def merge_depth_maps(mono_name = "/home/guido/cnn_depth_tensorflow/tmp/00002.png
     performance[1,:] = [abs_rel, sq_rel, rmse, rmse_log, a1, a2, a3];
     abs_rel, sq_rel, rmse, rmse_log, a1, a2, a3, error_map_fusion = evaluation_utils.compute_errors(depth_GT[:], depth_fusion[:], name_fig = 'fusion error map');
     performance[2,:] = [abs_rel, sq_rel, rmse, rmse_log, a1, a2, a3];
+
+    #pdb.set_trace()
+    tmp = copy.copy(depth_fusion)
+    tmp[depth_GT == 0] = 0
+    tmp2 = depth_GT - tmp
+    if(graphics or True):
+        ig, axes = plt.subplots(nrows=4, ncols=2);
+        cf = axes[0,0].imshow(depth_fusion);
+        axes[0,0].set_title('depth_fusion');
+        cf = axes[1,0].imshow(depth_GT);
+        axes[1,0].set_title('depth_GT');
+        cf = axes[2,0].imshow(tmp);
+        axes[2,0].set_title('tmp');
+        cf = axes[3,0].imshow(tmp2);
+        axes[3,0].set_title('tmp2');
+        #plt.title('Pixel depth error')  
+
     
     if(graphics):
         error_comparison = error_map_stereo - error_map_mono;

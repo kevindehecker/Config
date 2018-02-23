@@ -96,12 +96,12 @@ def generate_maps():
         merged_sperzi_path,perf_result1 = do_merge(dir_name, file_name, sperzi_path,stereo_path,gt_path,im,"sperzi")
         Performance1 += perf_result1;
         if(np.mod(n_perfs, 10) == 0):
-            performance.print_performance(Performance1 / n_perfs, name = 'Performance 1');
+            performance.print_performance(Performance1 / n_perfs, name = 'Performance sperzi');
         plt.show()
         merged_mancini_path,perf_result2 = do_merge(dir_name, file_name, mancini_path,stereo_path,gt_path,im, "manchini")
         Performance2 += perf_result2;
         if(np.mod(n_perfs, 10) == 0):
-            performance.print_performance(Performance2 / n_perfs, name = 'Performance 2');
+            performance.print_performance(Performance2 / n_perfs, name = 'Performance manchini');
             
         n_perfs += 1;
 
