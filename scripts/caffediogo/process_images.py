@@ -16,7 +16,7 @@ from matplotlib.pylab import cm
 import pickle
 import matplotlib.pyplot as plt
 
-regen_combined = True
+regen_combined = False
 regen_merged = True
 regen_stereo = False
 regen_sperzi = False
@@ -65,6 +65,7 @@ def generate_maps():
     Performance1 = np.zeros([3, 7]);
     Performance2 = np.zeros([3, 7]);
     n_perfs = 0;
+    non_occluded = True
 
     # iterate over the files:
     # for idx, im in enumerate(images_left):
@@ -93,12 +94,13 @@ def generate_maps():
         gt_path = dir_name + "/../../../data_depth_annotated/val/" + dirdate_name + "/proj_depth/groundtruth/image_02/" + file_name + ".png"        
         stereo_path,conf_path = do_stereo(dir_name, file_name, imgL, imgR)       
 
-        merged_sperzi_path,perf_result1 = do_merge(dir_name, file_name, sperzi_path,stereo_path,gt_path,im,"sperzi")
+        merged_sperzi_path,perf_result1 = do_merge(dir_name, file_name, sperzi_path,stereo_path,gt_path,im,"sperzi",non_occluded)
         Performance1 += perf_result1;
         if(np.mod(n_perfs, 10) == 0):
+            print(['nocc:', non_occluded])
             performance.print_performance(Performance1 / n_perfs, name = 'Performance sperzi');
         plt.show()
-        merged_mancini_path,perf_result2 = do_merge(dir_name, file_name, mancini_path,stereo_path,gt_path,im, "manchini")
+        merged_mancini_path,perf_result2 = do_merge(dir_name, file_name, mancini_path,stereo_path,gt_path,im, "manchini",non_occluded)
         Performance2 += perf_result2;
         if(np.mod(n_perfs, 10) == 0):
             performance.print_performance(Performance2 / n_perfs, name = 'Performance manchini');
@@ -160,11 +162,11 @@ def do_combine(dir_name, file_name, sperzi_path,mancini_path,stereo_path,conf_pa
         cv2.imwrite(combined_path, vis);
 
     
-def do_merge(dir_name, file_name, mono_path,stereo_path,gt_path, im_rgb_path, cnn):
+def do_merge(dir_name, file_name, mono_path,stereo_path,gt_path, im_rgb_path, cnn,non_occluded):
     if not os.path.exists(dir_name  + "/merged/"): 
         os.makedirs(dir_name  + "/merged/")
     merged_path = dir_name + "/merged/" + file_name + "_merged_" + cnn + ".png"
-    perf_result, depth_fusion = performance.merge_depth_maps(mono_path,stereo_path,gt_path,im_rgb_path,graphics=False,verbose=False) 
+    perf_result, depth_fusion = performance.merge_depth_maps(mono_path,stereo_path,gt_path,im_rgb_path,graphics=False,verbose=False, method=cnn, non_occluded=non_occluded) 
     if not os.path.isfile(merged_path) or sys.argv[4] == 'True' or regen_merged:    
         cv2.imwrite(merged_path, depth_fusion);
     return merged_path,perf_result

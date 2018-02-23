@@ -33,7 +33,7 @@ def merge_depth_maps(mono_name = "/home/guido/cnn_depth_tensorflow/tmp/00002.png
                      stereo_name = "/home/guido/cnn_depth_tensorflow/tmp/00002_disparity.png",
                      GT_name = "/home/guido/cnn_depth_tensorflow/tmp/00002_GT.png",
                      image_name = "/home/guido/cnn_depth_tensorflow/tmp/00002_org.png",
-                     graphics = True, verbose = True, method='sperzi'):
+                     graphics = True, verbose = True, method='sperzi', non_occluded=True):
 
     #if(graphics):
     image = cv2.imread(image_name);
@@ -121,18 +121,15 @@ def merge_depth_maps(mono_name = "/home/guido/cnn_depth_tensorflow/tmp/00002.png
         fig.colorbar(cf, ax=axes[1,1])
     
     performance = np.zeros([3, 7]);
-    abs_rel, sq_rel, rmse, rmse_log, a1, a2, a3, error_map_stereo = evaluation_utils.compute_errors(depth_GT[:], depth_stereo[:], name_fig = 'stereo error map');
+    abs_rel, sq_rel, rmse, rmse_log, a1, a2, a3 = evaluation_utils.compute_errors(depth_GT[:], depth_stereo[:], name_fig = 'stereo error map', non_occluded=non_occluded);
     performance[0,:] = [abs_rel, sq_rel, rmse, rmse_log, a1, a2, a3];
-    abs_rel, sq_rel, rmse, rmse_log, a1, a2, a3, error_map_mono = evaluation_utils.compute_errors(depth_GT[:], depth_mono[:], name_fig = 'mono error map');
+    abs_rel, sq_rel, rmse, rmse_log, a1, a2, a3 = evaluation_utils.compute_errors(depth_GT[:], depth_mono[:], name_fig = 'mono error map', non_occluded=non_occluded);
     performance[1,:] = [abs_rel, sq_rel, rmse, rmse_log, a1, a2, a3];
-    abs_rel, sq_rel, rmse, rmse_log, a1, a2, a3, error_map_fusion = evaluation_utils.compute_errors(depth_GT[:], depth_fusion[:], name_fig = 'fusion error map');
+    abs_rel, sq_rel, rmse, rmse_log, a1, a2, a3 = evaluation_utils.compute_errors(depth_GT[:], depth_fusion[:], name_fig = 'fusion error map', non_occluded=non_occluded);
     performance[2,:] = [abs_rel, sq_rel, rmse, rmse_log, a1, a2, a3];
 
-    #pdb.set_trace()
-    tmp = copy.copy(depth_fusion)
-    tmp[depth_GT == 0] = 0
-    tmp2 = depth_GT - tmp
-    if(graphics or True):
+
+    if(graphics):
         ig, axes = plt.subplots(nrows=4, ncols=2);
         cf = axes[0,0].imshow(depth_fusion);
         axes[0,0].set_title('depth_fusion');
