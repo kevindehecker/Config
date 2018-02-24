@@ -189,7 +189,9 @@ def merge_depth_maps(mono_name = "/home/guido/cnn_depth_tensorflow/tmp/00002.png
     max_samples = 1000;
     for i in np.arange(0, 6, 2):    
         n_samples = len(dve_info[i]);
-        inds = np.random.choice(n_samples, size=max_samples, replace=False);
+        if(n_samples < max_samples):
+            print('N samples < max samples for %s' % (image_name));
+        inds = np.random.choice(n_samples, size=np.min([max_samples, n_samples]), replace=False);
         dve_info[i] = dve_info[i][inds];
         dve_info[i+1] = dve_info[i+1][inds];
         
