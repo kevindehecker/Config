@@ -87,7 +87,8 @@ def generate_maps():
         dir_name = os.path.dirname(dir_name);
         dir_name = os.path.dirname(dir_name);
   
-        sperzi_path = do_sperziboon(dir_name, file_name, im);        
+        #sperzi_path = do_sperziboon(dir_name, file_name, im);        
+        sperzi_path = do_mancini_original(dir_name, file_name, im)
         mancini_path = do_mancini(dir_name, file_name, im,model)            
         
         dirdate_name = os.path.basename(dir_name)
@@ -98,7 +99,7 @@ def generate_maps():
         Performance1 += perf_result1;
         if(np.mod(n_perfs, 10) == 0):
             print(['nocc:', non_occluded])
-            performance.print_performance(Performance1 / n_perfs, name = 'Performance sperzi');
+            performance.print_performance(Performance1 / n_perfs, name = 'Performance mix_fcn');
         plt.show()
         merged_mancini_path,fusionconf_mancini_path,perf_result2 = do_merge(dir_name, file_name, mancini_path,stereo_path,gt_path,im, "manchini",non_occluded)
         Performance2 += perf_result2;
@@ -139,9 +140,11 @@ def do_combine(dir_name, file_name, sperzi_path,mancini_path,stereo_path,conf_pa
         img = cv2.applyColorMap(img, cv2.COLORMAP_JET)
         imd = cv2.applyColorMap(imd, cv2.COLORMAP_JET)
         ims = cv2.applyColorMap(ims, cv2.COLORMAP_JET)
+        ims = cv2.resize(ims,(img.shape[1], img.shape[0]), interpolation = cv2.INTER_CUBIC)
         imm = cv2.applyColorMap(imm, cv2.COLORMAP_JET)
         imm = cv2.resize(imm,(img.shape[1], img.shape[0]), interpolation = cv2.INTER_CUBIC)
         imms = cv2.applyColorMap(imms, cv2.COLORMAP_JET)
+        imms = cv2.resize(imms,(img.shape[1], img.shape[0]), interpolation = cv2.INTER_CUBIC)
         immm = cv2.applyColorMap(immm, cv2.COLORMAP_JET)
         immm = cv2.resize(immm,(img.shape[1], img.shape[0]), interpolation = cv2.INTER_CUBIC)
         
@@ -185,6 +188,14 @@ def do_mancini(dir_name, file_name, im_rgb_path,model):
     mono_path = dir_name  + "/mancini/" + file_name + "_mancini.png";
     if (not os.path.isfile(mono_path) and not CNN == 'mrharicot') or sys.argv[4] == 'True' or regen_mancini:
         prediction = upsample_vgg16.test_model_on_image(im_rgb_path, save_image_name = mono_path, model=model);
+    return mono_path
+
+def do_mancini_original(dir_name, file_name, im_rgb_path):
+    if not os.path.exists(dir_name  + "/mix_fcn/"): 
+        os.makedirs(dir_name  + "/mix_fcn/")
+    mono_path = dir_name  + "/mix_fcn/" + file_name + "_mix_fcn.png";
+    if (not os.path.isfile(mono_path) and not CNN == 'mrharicot') or sys.argv[4] == 'True' :
+        ERROR
     return mono_path
     
 def do_sperziboon(dir_name, file_name, im_rgb_path):    
