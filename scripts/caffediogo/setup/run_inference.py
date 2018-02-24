@@ -14,7 +14,7 @@ caffe.set_mode_gpu()
 #caffe.set_device(1)
 
 print("Usage: prototxt, caffemodel, imagestxt")
-net = caffe.Net(sys.argv[1],sys.argv[2],0)
+net = caffe.Net(sys.argv[1],sys.argv[2],caffe.TEST)
 
 with open(sys.argv[3]) as f:
 	input_images = f.readlines()
@@ -50,10 +50,10 @@ for idx, imf in enumerate(input_images):
 
 	a = np.asarray(mat)
 	#a = np.flipud(a)
-	plt.imsave(dir_name + "/mix_fcn/" + file_name + "_mix_fcn.png",a)
+	#plt.imsave(dir_name + "/mix_fcn/" + file_name + "_mix_fcn.png",a)
 
 	#mat = cv2.applyColorMap(mat, cv2.COLORMAP_JET)
-	#cv2.imwrite(dir_name + "/mix_fcn/" + file_name + "_mix_fcn.png",mat)
+	cv2.imwrite(dir_name + "/mix_fcn/" + file_name + "_mix_fcn.png",mat)
 	imm = mat
 
 	im2 =  cv2.imread(dir_name + "/image_02/data/" + file_name + ".png")
