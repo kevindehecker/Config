@@ -132,13 +132,13 @@ def merge_depth_maps(mono_name = "/home/guido/cnn_depth_tensorflow/tmp/00002.png
         axes[1,1].set_title('Fusion depth');
         fig.colorbar(cf, ax=axes[1,1])
     
-    performance = np.zeros([3, 7]);
-    abs_rel, sq_rel, rmse, rmse_log, a1, a2, a3, error_map_stereo  = evaluation_utils.compute_errors(depth_GT[:], depth_stereo[:], graphics, name_fig = 'stereo error map', non_occluded=non_occluded);
-    performance[0,:] = [abs_rel, sq_rel, rmse, rmse_log, a1, a2, a3];
-    abs_rel, sq_rel, rmse, rmse_log, a1, a2, a3, error_map_mono = evaluation_utils.compute_errors(depth_GT[:], depth_mono[:], graphics, name_fig = 'mono error map', non_occluded=non_occluded);
-    performance[1,:] = [abs_rel, sq_rel, rmse, rmse_log, a1, a2, a3];
-    abs_rel, sq_rel, rmse, rmse_log, a1, a2, a3, error_map_fusion = evaluation_utils.compute_errors(depth_GT[:], depth_fusion[:], graphics, name_fig = 'fusion error map', non_occluded=non_occluded);
-    performance[2,:] = [abs_rel, sq_rel, rmse, rmse_log, a1, a2, a3];
+    performance = np.zeros([3, 8]);
+    abs_rel, sq_rel, rmse, rmse_log, a1, a2, a3, lsi_err, error_map_stereo  = evaluation_utils.compute_errors(depth_GT[:], depth_stereo[:], graphics, name_fig = 'stereo error map', non_occluded=non_occluded);
+    performance[0,:] = [abs_rel, sq_rel, rmse, rmse_log, a1, a2, a3, lsi_err];
+    abs_rel, sq_rel, rmse, rmse_log, a1, a2, a3, lsi_err, error_map_mono = evaluation_utils.compute_errors(depth_GT[:], depth_mono[:], graphics, name_fig = 'mono error map', non_occluded=non_occluded);
+    performance[1,:] = [abs_rel, sq_rel, rmse, rmse_log, a1, a2, a3, lsi_err];
+    abs_rel, sq_rel, rmse, rmse_log, a1, a2, a3, lsi_err, error_map_fusion = evaluation_utils.compute_errors(depth_GT[:], depth_fusion[:], graphics, name_fig = 'fusion error map', non_occluded=non_occluded);
+    performance[2,:] = [abs_rel, sq_rel, rmse, rmse_log, a1, a2, a3, lsi_err];
 
 
     if(graphics):

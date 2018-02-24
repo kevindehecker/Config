@@ -62,8 +62,8 @@ def generate_maps():
     else:
         model = 'hack'
 
-    Performance1 = np.zeros([3, 7]);
-    Performance2 = np.zeros([3, 7]);
+    Performance1 = np.zeros([3, 8]);
+    Performance2 = np.zeros([3, 8]);
     n_perfs = 0;
     non_occluded = True
 

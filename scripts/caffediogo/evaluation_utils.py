@@ -88,8 +88,11 @@ def compute_errors(gt, pred, graphics = False, name_fig='error map', non_occlude
     a1 = (delta < 1.25   ).mean()
     a2 = (delta < 1.25 ** 2).mean()
     a3 = (delta < 1.25 ** 3).mean()
+    
+    alpha = np.mean(np.log(gt) - np.log(pred));
+    lsi_err = 0.5 * np.mean((np.log(pred) - np.log(gt) + alpha) ** 2)
 
-    return abs_rel, sq_rel, rmse, rmse_log, a1, a2, a3, AbsErr;
+    return abs_rel, sq_rel, rmse, rmse_log, a1, a2, a3, lsi_err, AbsErr;
 
 # KITTI
 
