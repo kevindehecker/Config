@@ -27,9 +27,9 @@ MAX_DISP = 64.0;
 def print_performance(performance_matrix, name='Performance'):
     print('%s' % name);
     prefix = ['Stereo', 'Mono:', 'Fusion']
-    print('\t\tabs_rel, sq_rel, rmse, rmse_log, a1, a2, a3');
+    print('\t\tabs_rel, sq_rel, rmse, rmse_log, a1, a2, a3, lsi_err');
     for r in range(3):
-        print(prefix[r] + ':\t %f, %f, %f, %f, %f, %f, %f' % tuple(performance_matrix[r, :]));
+        print(prefix[r] + ':\t %f, %f, %f, %f, %f, %f, %f, %f' % tuple(performance_matrix[r, :]));
 
 def createOverlay(im_background,im_overlay):
     if im_background.shape[0] != im_overlay.shape[0] or im_background.shape[1] != im_overlay.shape[1]:
@@ -142,15 +142,15 @@ def merge_depth_maps(mono_name = "/home/guido/cnn_depth_tensorflow/tmp/00002.png
 
 
     if(graphics):
-        ig, axes = plt.subplots(nrows=4, ncols=2);
-        cf = axes[0,0].imshow(depth_fusion);
-        axes[0,0].set_title('depth_fusion');
-        cf = axes[1,0].imshow(depth_GT);
-        axes[1,0].set_title('depth_GT');
-        cf = axes[2,0].imshow(tmp);
-        axes[2,0].set_title('tmp');
-        cf = axes[3,0].imshow(tmp2);
-        axes[3,0].set_title('tmp2');
+        ig, axes = plt.subplots(nrows=2, ncols=1);
+        cf = axes[0].imshow(depth_fusion);
+        axes[0].set_title('depth_fusion');
+        cf = axes[1].imshow(depth_GT);
+        axes[1].set_title('depth_GT');
+#        cf = axes[2,0].imshow(tmp);
+#        axes[2,0].set_title('tmp');
+#        cf = axes[3,0].imshow(tmp2);
+#        axes[3,0].set_title('tmp2');
         #plt.title('Pixel depth error')  
 
     
@@ -192,4 +192,4 @@ def merge_depth_maps(mono_name = "/home/guido/cnn_depth_tensorflow/tmp/00002.png
 #                     stereo_name = "./tmp/0000000013_disparity.png",
 #                     GT_name = "./tmp/0000000013_GT.png",
 #                     image_name = "./tmp/0000000013_image.png",
-#                     graphics = True, verbose = True)#, method = 'mancini')
+#                     graphics = False, verbose = True)#, method = 'mancini')
