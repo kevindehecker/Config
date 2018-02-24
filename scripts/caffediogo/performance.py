@@ -2,7 +2,7 @@
 """
 Created on Mon Feb 12 15:47:54 2018
 
-Scripts that determines the performance of the various algorithms.
+Script that determines the performance of the various algorithms.
 
 @author: guido
 """
@@ -34,11 +34,12 @@ def print_performance(performance_matrix, name='Performance'):
     for r in range(3):
         print(prefix[r] + ':\t %f, %f, %f, %f, %f, %f, %f, %f' % tuple(performance_matrix[r, :]));
 
-def createOverlay(im_background,im_overlay):
+def createOverlay(im_background,im_overlay, v_min=0.0, v_max=1.0):
     if im_background.shape[0] != im_overlay.shape[0] or im_background.shape[1] != im_overlay.shape[1]:
         im_overlay = cv2.resize(im_overlay,(im_background.shape[1], im_background.shape[0]), interpolation = cv2.INTER_CUBIC)
     imt = im_overlay.astype(np.float32) # convert to float
-    imt = Image.fromarray(np.uint8(255*cm.RdBu(imt)))
+    norm = matplotlib.colors.Normalize(vmin=v_min,vmax=v_max)
+    imt = Image.fromarray(np.uint8(255*cm.RdBu(norm(imt))))
     imt2 = Image.fromarray(cv2.cvtColor(im_background,cv2.COLOR_GRAY2RGBA))
     imt = Image.blend(imt2, imt, 0.5)
     return imt
@@ -156,17 +157,22 @@ def merge_depth_maps(mono_name = "/home/guido/cnn_depth_tensorflow/tmp/00002.png
 #        axes[3,0].set_title('tmp2');
         #plt.title('Pixel depth error')  
     error_comparison = error_map_stereo - error_map_mono;
-    im_errormap = createOverlay(gray_scale,error_comparison)
+    MAX_DEPTH_PLOT = 40;
+    im_errormap = createOverlay(gray_scale,error_comparison, v_min=-MAX_DEPTH_PLOT, v_max=MAX_DEPTH_PLOT)
+    
     if(graphics):
         
-        #plt.figure();
-        MAX_DEPTH = 40;
-        fig, ax = plt.subplots()
-        ax.imshow(gray_scale, cmap='gray');
-        ax.imshow(error_comparison, norm = matplotlib.colors.Normalize(vmin= -MAX_DEPTH,vmax=MAX_DEPTH), cmap=plt.cm.RdBu, alpha=0.5);    
-        PCM=ax.get_children()[3] #get the mappable, the 1st and the 2nd are the x and y axes
-        plt.colorbar(PCM, ax=ax)
-        #cb.set_lim(-MAX_DEPTH, MAX_DEPTH);
+        #plt.figure() 
+        #        fig, ax = plt.subplots()
+        #        ax.imshow(gray_scale, cmap='gray');
+        #        ax.imshow(error_comparison, norm = matplotlib.colors.Normalize(vmin= -MAX_DEPTH_PLOT,vmax=MAX_DEPTH_PLOT), cmap=plt.cm.RdBu, alpha=0.5);    
+        #        PCM=ax.get_children()[3] #get the mappable, the 1st and the 2nd are the x and y axes
+        #        plt.colorbar(PCM, ax=ax)
+        #        #cb.set_lim(-MAX_DEPTH, MAX_DEPTH);
+        #        plt.title('abs error stereo - abs error mono');
+        
+        plt.figure()
+        plt.imshow(im_errormap)
         plt.title('abs error stereo - abs error mono');
         
     if(verbose):
@@ -205,4 +211,4 @@ def merge_depth_maps(mono_name = "/home/guido/cnn_depth_tensorflow/tmp/00002.png
 #                     stereo_name = "./tmp/0000000013_disparity.png",
 #                     GT_name = "./tmp/0000000013_GT.png",
 #                     image_name = "./tmp/0000000013_image.png",
-#                     graphics = False, verbose = True)#, method = 'mancini')
+#                     graphics = True, verbose = True)#, method = 'mancini')
