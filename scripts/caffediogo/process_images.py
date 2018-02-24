@@ -123,7 +123,7 @@ def generate_maps():
 def do_combine(dir_name, file_name, sperzi_path,mancini_path,stereo_path,conf_path,gt_path, im_rgb_path,merged_sperzi_path,merged_mancini_path,fusionconf_sperzi_path,fusionconf_mancini_path):
     if not os.path.exists(dir_name  + "/combined/"): 
         os.makedirs(dir_name  + "/combined/")
-    combined_path = dir_name + "/combined/" + file_name + "_combined.png"
+    combined_path = dir_name + "/combined/" + file_name + "_combined.jpg"
     if not os.path.isfile(combined_path) or sys.argv[4] == 'True' or regen_combined:
         im = cv2.imread(im_rgb_path)
         imd = cv2.imread(stereo_path)
