@@ -95,7 +95,7 @@ def generate_maps():
 
     # iterate over the files:
     # for idx, im in enumerate(images_left):
-    for idx in np.arange(0, 500, im_step):
+    for idx in np.arange(0, len(images_left), im_step):
         # read the image (consisting of a right image and left image)
         im = images_left[idx];        
         imgL = cv2.imread(im);
