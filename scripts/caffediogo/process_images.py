@@ -42,11 +42,8 @@ else:
     import upsample_vgg16 
 
 
-def add_dve_info(DVE_info, dve_info, max_samples = 1000):
+def add_dve_info(DVE_info, dve_info):    
     for i in range(6):
-        n_samples = len(dve_info[i]);
-        inds = np.random.choice(n_samples, size=max_samples);
-        dve_info[i] = dve_info[i][inds];
         DVE_info[i] = np.concatenate((dve_info[i], DVE_info[i]));
     return DVE_info;
 

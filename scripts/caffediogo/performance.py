@@ -21,9 +21,9 @@ import evaluation_utils
 import copy
 import pdb
 from PIL import Image
-from collections import namedtuple
+#from collections import namedtuple
 
-distance_versus_error_info = namedtuple("distance_versus_error_info", "err_mono gt_mono err_stereo gt_stereo err_fusion gt_fusion")
+#distance_versus_error_info = namedtuple("distance_versus_error_info", "err_mono gt_mono err_stereo gt_stereo err_fusion gt_fusion")
 
 MAX_DISP = 64.0;
 
@@ -183,8 +183,16 @@ def merge_depth_maps(mono_name = "/home/guido/cnn_depth_tensorflow/tmp/00002.png
     gt_mono, error_measure_mono = evaluation_utils.compute_error_vs_distance(depth_GT[:], depth_mono[:], error_type = 'rmse', graphics = graphics, name_fig='Mono: error vs distance', non_occluded=True, marker='rx');
     gt_stereo, error_measure_stereo = evaluation_utils.compute_error_vs_distance(depth_GT[:], depth_stereo[:], error_type = 'rmse', graphics = graphics, name_fig='Stereo: error vs distance', non_occluded=True, marker='bo');
     gt_fusion, error_measure_fusion = evaluation_utils.compute_error_vs_distance(depth_GT[:], depth_fusion[:], error_type = 'rmse', graphics = graphics, name_fig='Fusion: error vs distance', non_occluded=True, marker='g*');    
-    dve_info = distance_versus_error_info(error_measure_mono, gt_mono, error_measure_stereo, gt_stereo, error_measure_fusion, gt_fusion);
+    # dve_info = distance_versus_error_info(error_measure_mono, gt_mono, error_measure_stereo, gt_stereo, error_measure_fusion, gt_fusion);
+    dve_info = [error_measure_mono, gt_mono, error_measure_stereo, gt_stereo, error_measure_fusion, gt_fusion];
     
+    max_samples = 1000;
+    for i in np.arange(0, 6, 2):    
+        n_samples = len(dve_info[i]);
+        inds = np.random.choice(n_samples, size=max_samples, replace=False);
+        dve_info[i] = dve_info[i][inds];
+        dve_info[i+1] = dve_info[i+1][inds];
+        
     if(graphics):
         plt.figure();
         evaluation_utils.plot_error_vs_distance(gt_mono, error_measure_mono, bin_size_depth_meters=5, color='r', alpha_fill=[0.1, 0.3], label_name='Mono');
