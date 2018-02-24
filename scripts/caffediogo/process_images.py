@@ -48,20 +48,6 @@ def add_dve_info(DVE_info, dve_info):
         DVE_info[i] = np.concatenate((dve_info[i], DVE_info[i]));
     return DVE_info;
 
-
-def plot_dve_info(DVE_info):
-    plt.figure();
-    evaluation_utils.plot_error_vs_distance(DVE_info[1], DVE_info[0], bin_size_depth_meters=1, color='r', alpha_fill=[0.1, 0.3], label_name='Mono');
-    evaluation_utils.plot_error_vs_distance(DVE_info[3], DVE_info[2], bin_size_depth_meters=1, color='b', alpha_fill=[0.1, 0.3], label_name='Stereo');
-    plt.xlabel('Ground-truth depth [m]');
-    plt.ylabel('Absolute depth error [m]');
-    plt.legend('Mono', 'Stereo')
-    plt.figure();
-    evaluation_utils.plot_error_vs_distance(DVE_info[5], DVE_info[4], bin_size_depth_meters=1, color='g', alpha_fill=[0.1, 0.3], label_name='Fusion');    
-    plt.xlabel('Ground-truth depth [m]');
-    plt.ylabel('Absolute depth error [m]');
-    plt.legend('Fusion');
-
 def diff_letters(a,b):
     return sum ( a[i] != b[i] for i in range(len(a)) )
 
@@ -146,8 +132,8 @@ def generate_maps():
         
 
     # make DVE plots:
-    plot_dve_info(DVE_info1);
-    plot_dve_info(DVE_info2);
+    evaluation_utils.plot_dve_info(DVE_info1);
+    evaluation_utils.plot_dve_info(DVE_info2);
     
     Performance1 = Performance1 / n_perfs
     filehandler = open("performance_1.pkl","wb")
