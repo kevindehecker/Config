@@ -17,7 +17,7 @@ import pickle
 import matplotlib.pyplot as plt
 import evaluation_utils
 
-regen_combined = True
+regen_combined = False
 regen_merged = True
 regen_stereo = False
 regen_sperzi = False
@@ -137,7 +137,7 @@ def generate_maps():
         n_perfs += 1;
 
         do_combine(dir_name, file_name, sperzi_path,mancini_path,stereo_path,conf_path,gt_path, im,merged_sperzi_path,merged_mancini_path,fusionconf_sperzi_path,fusionconf_mancini_path)
-        plt.show()
+        
 
     
     filehandler = open("performance_1.pkl","wb")
@@ -151,6 +151,7 @@ def generate_maps():
     # make DVE plots:
     plot_dve_info(DVE_info1);
     plot_dve_info(DVE_info2);
+    plt.show()
     
 
 def do_combine(dir_name, file_name, sperzi_path,mancini_path,stereo_path,conf_path,gt_path, im_rgb_path,merged_sperzi_path,merged_mancini_path,fusionconf_sperzi_path,fusionconf_mancini_path):
@@ -208,7 +209,7 @@ def do_merge(dir_name, file_name, mono_path,stereo_path,gt_path, im_rgb_path, cn
     if not os.path.exists(dir_name  + "/fusionconf/"): 
         os.makedirs(dir_name  + "/fusionconf/")
     fusionconf_path = dir_name + "/fusionconf/" + file_name + "_fusionconf_" + cnn + ".png"
-    perf_result, depth_fusion,im_mono_conf, dve_info = performance.merge_depth_maps(mono_path,stereo_path,gt_path,im_rgb_path,graphics=False,verbose=False, method=cnn, non_occluded=non_occluded) 
+    perf_result, depth_fusion,im_mono_conf,im_error_map, dve_info = performance.merge_depth_maps(mono_path,stereo_path,gt_path,im_rgb_path,graphics=False,verbose=False, method=cnn, non_occluded=non_occluded) 
     if not os.path.isfile(merged_path) or sys.argv[4] == 'True' or regen_merged:    
         cv2.imwrite(merged_path, depth_fusion);
     if not os.path.isfile(merged_path) or sys.argv[4] == 'True' or regen_merged:    

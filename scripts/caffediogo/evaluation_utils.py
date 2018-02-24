@@ -160,6 +160,9 @@ width_to_focal[1224] = 707.0493
 width_to_focal[1238] = 718.3351
 
 def convert_disps_to_depths_kitti(disparity_map, target_width = 1242, target_height = 375, mask = True, limit_depth = 80.0):
+    if len(disparity_map.shape) == 3:
+        disparity_map = cv2.cvtColor(disparity_map,cv2.COLOR_BGR2GRAY)
+
     # this way of converting only works when the stereo vision was performed on the original image size:
     disparity_map = disparity_map.astype(float);
     if(mask):
