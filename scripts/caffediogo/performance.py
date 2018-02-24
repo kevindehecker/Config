@@ -142,7 +142,7 @@ def merge_depth_maps(mono_name = "/home/guido/cnn_depth_tensorflow/tmp/00002.png
     performance[1,:] = [abs_rel, sq_rel, rmse, rmse_log, a1, a2, a3, lsi_err];
     abs_rel, sq_rel, rmse, rmse_log, a1, a2, a3, lsi_err, error_map_fusion = evaluation_utils.compute_errors(depth_GT[:], depth_fusion[:], graphics, name_fig = 'fusion error map', non_occluded=non_occluded);
     performance[2,:] = [abs_rel, sq_rel, rmse, rmse_log, a1, a2, a3, lsi_err];
-    
+
 
     if(graphics):
         ig, axes = plt.subplots(nrows=2, ncols=1);
@@ -155,10 +155,10 @@ def merge_depth_maps(mono_name = "/home/guido/cnn_depth_tensorflow/tmp/00002.png
 #        cf = axes[3,0].imshow(tmp2);
 #        axes[3,0].set_title('tmp2');
         #plt.title('Pixel depth error')  
-
-    
+    error_comparison = error_map_stereo - error_map_mono;
+    im_errormap = createOverlay(gray_scale,error_comparison)
     if(graphics):
-        error_comparison = error_map_stereo - error_map_mono;
+        
         #plt.figure();
         MAX_DEPTH = 40;
         fig, ax = plt.subplots()
@@ -198,7 +198,7 @@ def merge_depth_maps(mono_name = "/home/guido/cnn_depth_tensorflow/tmp/00002.png
 #        print_performance(performance);
 #        
         
-    return performance, depth_fusion,im_mono_conf, dve_info;
+    return performance, depth_fusion,im_mono_conf, im_errormap, dve_info;
 
 # merge_depth_maps(graphics=True);
 #merge_depth_maps(mono_name = "./tmp/0000000013_sperziboon.png", 
