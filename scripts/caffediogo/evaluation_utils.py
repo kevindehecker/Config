@@ -75,6 +75,11 @@ def plot_error_vs_distance(gt, error_measure, bin_size_depth_meters=1, color=Non
 
     
 def plot_dve_info(DVE_info):
+    
+    plt.figure();
+    plt.plot(DVE_info[3], DVE_info[2], 'x') 
+    plt.title('stereo');
+    
     plt.figure();
     plot_error_vs_distance(DVE_info[1], DVE_info[0], bin_size_depth_meters=1, color='r', alpha_fill=[0.1, 0.3], label_name='Mono');
     plot_error_vs_distance(DVE_info[3], DVE_info[2], bin_size_depth_meters=1, color='b', alpha_fill=[0.1, 0.3], label_name='Stereo');
@@ -107,6 +112,8 @@ def compute_error_vs_distance(gt, pred, error_type = 'rmse', graphics = False, n
     sorted_inds = np.argsort(gt);
     if(error_type == 'rmse'):
         error_measure = np.sqrt((gt - pred) ** 2);
+    elif(error_type == 'raw'):
+        error_measure = gt - pred;        
     
     if(graphics):
         plt.figure();

@@ -180,9 +180,9 @@ def merge_depth_maps(mono_name = "/home/guido/cnn_depth_tensorflow/tmp/00002.png
         print_performance(performance);
 
 
-    gt_mono, error_measure_mono = evaluation_utils.compute_error_vs_distance(depth_GT[:], depth_mono[:], error_type = 'rmse', graphics = graphics, name_fig='Mono: error vs distance', non_occluded=True, marker='rx');
-    gt_stereo, error_measure_stereo = evaluation_utils.compute_error_vs_distance(depth_GT[:], depth_stereo[:], error_type = 'rmse', graphics = graphics, name_fig='Stereo: error vs distance', non_occluded=True, marker='bo');
-    gt_fusion, error_measure_fusion = evaluation_utils.compute_error_vs_distance(depth_GT[:], depth_fusion[:], error_type = 'rmse', graphics = graphics, name_fig='Fusion: error vs distance', non_occluded=True, marker='g*');    
+    gt_mono, error_measure_mono = evaluation_utils.compute_error_vs_distance(depth_GT[:], depth_mono[:], error_type = 'raw', graphics = graphics, name_fig='Mono: error vs distance', non_occluded=True, marker='rx');
+    gt_stereo, error_measure_stereo = evaluation_utils.compute_error_vs_distance(depth_GT[:], depth_stereo[:], error_type = 'raw', graphics = graphics, name_fig='Stereo: error vs distance', non_occluded=True, marker='bo');
+    gt_fusion, error_measure_fusion = evaluation_utils.compute_error_vs_distance(depth_GT[:], depth_fusion[:], error_type = 'raw', graphics = graphics, name_fig='Fusion: error vs distance', non_occluded=True, marker='g*');    
     # dve_info = distance_versus_error_info(error_measure_mono, gt_mono, error_measure_stereo, gt_stereo, error_measure_fusion, gt_fusion);
     dve_info = [error_measure_mono, gt_mono, error_measure_stereo, gt_stereo, error_measure_fusion, gt_fusion];
     
