@@ -139,6 +139,10 @@ def generate_maps():
         do_combine(dir_name, file_name, sperzi_path,mancini_path,stereo_path,conf_path,gt_path, im,merged_sperzi_path,merged_mancini_path,fusionconf_sperzi_path,fusionconf_mancini_path)
         
 
+    # make DVE plots:
+    plot_dve_info(DVE_info1);
+    plot_dve_info(DVE_info2);
+    plt.show()
     
     filehandler = open("performance_1.pkl","wb")
     pickle.dump(Performance1, filehandler)
@@ -148,10 +152,15 @@ def generate_maps():
     pickle.dump(Performance2, filehandler)
     filehandler.close()
     
-    # make DVE plots:
-    plot_dve_info(DVE_info1);
-    plot_dve_info(DVE_info2);
-    plt.show()
+    filehandler = open("DVE_info_1.pkl","wb")
+    pickle.dump(DVE_info1, filehandler)
+    filehandler.close()
+
+    filehandler = open("DVE_info_2.pkl","wb")
+    pickle.dump(DVE_info2, filehandler)
+    filehandler.close()
+    
+    
     
 
 def do_combine(dir_name, file_name, sperzi_path,mancini_path,stereo_path,conf_path,gt_path, im_rgb_path,merged_sperzi_path,merged_mancini_path,fusionconf_sperzi_path,fusionconf_mancini_path):
