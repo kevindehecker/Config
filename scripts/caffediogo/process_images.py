@@ -16,6 +16,7 @@ from matplotlib.pylab import cm
 import pickle
 import matplotlib.pyplot as plt
 import evaluation_utils
+from random import *
 
 regen_combined = False
 regen_merged = False
@@ -127,11 +128,13 @@ def generate_maps():
         gt_path = dir_name + "/../../../data_depth_annotated/val/" + dirdate_name + "/proj_depth/groundtruth/image_02/" + file_name + ".png"        
         stereo_path,conf_path = do_stereo(dir_name, file_name, imgL, imgR)       
 
+        r = random()
+
         merged_sperzi_path,fusionconf_sperzi_path,perf_result1, dve_info1 = do_merge(dir_name, file_name, sperzi_path,stereo_path,gt_path,im,"sperzi",non_occluded, Diogo_weighting =Diogo_weighting, mono_scaling=mono_scaling)
         DVE_info1 = add_dve_info(DVE_info1, dve_info1);
         Performance1 += perf_result1;
         if(np.mod(n_perfs, 10) == 0):
-            print(['nocc:', non_occluded])
+            print('nocc: ' + str(non_occluded) + ", Diogo_weighting: " +  str(Diogo_weighting) + ", mono_scaling: " + str(mono_scaling))
             performance.print_performance(Performance1 / n_perfs, name = 'Performance mix_fcn');
         plt.show()
         merged_mancini_path,fusionconf_mancini_path,perf_result2, dve_info2 = do_merge(dir_name, file_name, mancini_path,stereo_path,gt_path,im, "manchini",non_occluded, Diogo_weighting =Diogo_weighting, mono_scaling=mono_scaling)
@@ -153,7 +156,7 @@ def generate_maps():
     filehandler = open("performance_1.pkl","wb")
     pickle.dump(Performance1, filehandler)
     filehandler.close()
-    print(['nocc:', non_occluded])
+    print('nocc: ' + str(non_occluded) + ", Diogo_weighting: " +  str(Diogo_weighting) + ", mono_scaling: " + str(mono_scaling))
     performance.print_performance(Performance1, name = 'Performance mix_fcn');
 
     Performance2 = Performance2 / n_perfs
