@@ -18,7 +18,7 @@ import matplotlib.pyplot as plt
 import evaluation_utils
 
 regen_combined = False
-regen_merged = True
+regen_merged = False
 regen_stereo = False
 regen_sperzi = False
 regen_mancini = False
@@ -95,7 +95,7 @@ def generate_maps():
 
     # iterate over the files:
     # for idx, im in enumerate(images_left):
-    for idx in np.arange(0, len(images_left), im_step):
+    for idx in np.arange(0, 500, im_step):
         # read the image (consisting of a right image and left image)
         im = images_left[idx];        
         imgL = cv2.imread(im);
@@ -142,15 +142,19 @@ def generate_maps():
     # make DVE plots:
     plot_dve_info(DVE_info1);
     plot_dve_info(DVE_info2);
-    plt.show()
     
+    Performance1 = Performance1 / n_perfs
     filehandler = open("performance_1.pkl","wb")
     pickle.dump(Performance1, filehandler)
     filehandler.close()
+    print(['nocc:', non_occluded])
+    performance.print_performance(Performance1, name = 'Performance mix_fcn');
 
+    Performance2 = Performance2 / n_perfs
     filehandler = open("performance_2.pkl","wb")
     pickle.dump(Performance2, filehandler)
     filehandler.close()
+    performance.print_performance(Performance2, name = 'Performance manchini');
     
     filehandler = open("DVE_info_1.pkl","wb")
     pickle.dump(DVE_info1, filehandler)
@@ -160,7 +164,7 @@ def generate_maps():
     pickle.dump(DVE_info2, filehandler)
     filehandler.close()
     
-    
+    plt.show()
     
 
 def do_combine(dir_name, file_name, sperzi_path,mancini_path,stereo_path,conf_path,gt_path, im_rgb_path,merged_sperzi_path,merged_mancini_path,fusionconf_sperzi_path,fusionconf_mancini_path):

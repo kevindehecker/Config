@@ -62,7 +62,7 @@ syncids.append('0095')
 syncids.append('0113')
 
 print("\tgt [m],\tstereo [m],\tmancini [m],\tsperzi [m]")
-fig, axes = plt.subplots(nrows=len(fileids), ncols=7);
+
 
 for i in np.arange(0, len(fileids)):
     filename = fileids[i]
@@ -84,7 +84,7 @@ for i in np.arange(0, len(fileids)):
    
 
     im_rgb = cv2.imread(rgb_path)
-    im_rgb = cv2.cvtColor(im_rgb,cv2.COLOR_BGR2RGB)
+    im_rgb = cv2.cvtColor(im_rgb,cv2.COLOR_BGR2RGBA)
     im_stereo = cv2.imread(stereo_path)
     im_conf = cv2.imread(conf_path)
     im_gt = cv2.imread(gt_path)
@@ -123,27 +123,72 @@ for i in np.arange(0, len(fileids)):
     #im_merged_mix_fcn = colorize(im_merged_mix_fcn,255.0)
     #pdb.set_trace()
     im_merged_mancini = colorize(im_merged_mancini,80.0)
-    
-    cf = axes[i,0].imshow(im_rgb)   
-    cf = axes[i,1].imshow(im_stereo)
-    cf = axes[i,2].imshow(im_mancini)
-    cf = axes[i,3].imshow(im_merged_mancini)
-    cf = axes[i,4].imshow(im_fusionconf_mancini)
-    cf = axes[i,5].imshow(im_mancini_errormap)
-    cf = axes[i,6].imshow(im_gt)
 
-    axes[i,0].axis('off')
-    axes[i,1].axis('off')
-    axes[i,2].axis('off')
-    axes[i,3].axis('off')
-    axes[i,4].axis('off')
-    axes[i,5].axis('off')
-    axes[i,6].axis('off')
-    
+    # ii = i
+    # if i==0:
+    #     fig, axes = plt.subplots(nrows=7, ncols=len(fileids)/2);
+    # elif i ==4:
+    #     fig, axes = plt.subplots(nrows=7, ncols=len(fileids)/2);
 
+    # if i > 3:
+    #     ii = i-4
+
+    # cf = axes[0,ii].imshow(im_rgb)   
+    # cf = axes[1,ii].imshow(im_stereo)
+    # cf = axes[2,ii].imshow(im_mancini)
+    # cf = axes[3,ii].imshow(im_merged_mancini)
+    # cf = axes[4,ii].imshow(im_fusionconf_mancini)
+    # cf = axes[5,ii].imshow(im_mancini_errormap)
+    # cf = axes[6,ii].imshow(im_gt)
+
+    # axes[0,ii].axis('off')
+    # axes[1,ii].axis('off')
+    # axes[2,ii].axis('off')
+    # axes[3,ii].axis('off')
+    # axes[4,ii].axis('off')
+    # axes[5,ii].axis('off')
+    # axes[6,ii].axis('off')
+
+    border  = Image.new('RGBA', (1242, 30))
+
+    im_mancini = im_mancini.resize((1242,375), Image.ANTIALIAS)
+
+    colm = np.concatenate((im_rgb,border), axis=0)
+    colm = np.concatenate((colm, np.array(im_stereo)), axis=0)
+    colm = np.concatenate((colm, border), axis=0)
+    colm = np.concatenate((colm, np.array(im_mancini)), axis=0)
+    colm = np.concatenate((colm, border), axis=0)
+    colm = np.concatenate((colm, np.array(im_merged_mancini)), axis=0)
+    colm = np.concatenate((colm, border), axis=0)
+    colm = np.concatenate((colm, np.array(im_fusionconf_mancini)), axis=0)
+    colm = np.concatenate((colm, border), axis=0)
+    colm = np.concatenate((colm, np.array(im_mancini_errormap)), axis=0)
+    colm = np.concatenate((colm, border), axis=0)
+    colm = np.concatenate((colm, np.array(im_gt)), axis=0)
+
+    if i ==0:
+        total = colm
+    elif i ==4:
+        total1 = total
+        total = colm
+    else:
+        # pdb.set_trace()
+        border  = Image.new('RGBA', (30, 7*375+6*30))
+        total = np.concatenate((total, border), axis=1)  
+        total = np.concatenate((total, colm), axis=1)        
+
+
+
+
+Image.fromarray(total1).save('~/hv/Cloud/Google/Guido/fig5a.png')
+Image.fromarray(total).save('~/hv/Cloud/Google/Guido/fig5b.png')
+plt.figure()
+plt.imshow(total1)
+plt.axis('off')
+plt.figure()
+plt.imshow(total)
+plt.axis('off')
 plt.show()
-
-
 # im = cv2.imread(im_rgb_path)
 
 
