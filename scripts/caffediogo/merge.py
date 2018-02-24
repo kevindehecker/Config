@@ -13,7 +13,7 @@ import matplotlib.pyplot as plt
 from scipy.signal import medfilt2d
 
 
-def merge_Diogo(stereo_map, mono_map, image, graphics = False):
+def merge_Diogo(stereo_map, mono_map, image, graphics = False, Diogo_weighting=True, scaling=True):
     
     TARGET_H = stereo_map.shape[0];
     TARGET_W = stereo_map.shape[1];
@@ -31,29 +31,30 @@ def merge_Diogo(stereo_map, mono_map, image, graphics = False):
         plt.title('Stereo confidence');
         plt.colorbar();
     
-    # 2. Determine the scale of the monocular map:
-    mono_map = scale_mono_map(stereo_map, mono_map);
+    if(scaling):
+        # 2. Determine the scale of the monocular map:
+        mono_map = scale_mono_map(stereo_map, mono_map);
     
-    # 3. Get the weighing matrix:
-    weight_map = get_Diogo_weight_map(stereo_map, mono_map);
-    if(graphics):
-        plt.figure();
-        plt.imshow(weight_map);
-        plt.title('Weight map');
-        plt.colorbar();
-    
-    # 4. Do the fusion:
-#    fusion = np.multiply(stereo_confidence, stereo_map);
-#    pre_fusion = np.multiply(weight_map, stereo_map) + np.multiply(1-weight_map, mono_map);
-#    fusion += np.multiply(1 - stereo_confidence, pre_fusion);
-    
-    # equivalent:
-    stereo_confidence = stereo_confidence + np.multiply(1 - stereo_confidence, 1-weight_map);
-    if(graphics):
-        plt.figure();
-        plt.imshow(stereo_confidence);
-        plt.title('Updated stereo confidence');
-        plt.colorbar();
+    if(Diogo_weighting):
+        # 3. Get the weighing matrix:
+        weight_map = get_Diogo_weight_map(stereo_map, mono_map);
+        if(graphics):
+            plt.figure();
+            plt.imshow(weight_map);
+            plt.title('Weight map');
+            plt.colorbar();
+        
+        # 4. Do the fusion:
+        #fusion = np.multiply(stereo_confidence, stereo_map);
+        #pre_fusion = np.multiply(weight_map, stereo_map) + np.multiply(1-weight_map, mono_map);
+        #fusion += np.multiply(1 - stereo_confidence, pre_fusion);
+        # equivalent:
+        stereo_confidence = stereo_confidence + np.multiply(1 - stereo_confidence, 1-weight_map);
+        if(graphics):
+            plt.figure();
+            plt.imshow(stereo_confidence);
+            plt.title('Updated stereo confidence');
+            plt.colorbar();
         
     mono_confidence = 1 - stereo_confidence;
     if(graphics):

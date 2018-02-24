@@ -92,6 +92,9 @@ def generate_maps():
     Performance2 = np.zeros([3, 8]);
     n_perfs = 0;
     non_occluded = True
+    # for the merging process:
+    Diogo_weighting = True;
+    mono_scaling = True;
 
     # iterate over the files:
     # for idx, im in enumerate(images_left):
@@ -121,14 +124,14 @@ def generate_maps():
         gt_path = dir_name + "/../../../data_depth_annotated/val/" + dirdate_name + "/proj_depth/groundtruth/image_02/" + file_name + ".png"        
         stereo_path,conf_path = do_stereo(dir_name, file_name, imgL, imgR)       
 
-        merged_sperzi_path,fusionconf_sperzi_path,perf_result1, dve_info1 = do_merge(dir_name, file_name, sperzi_path,stereo_path,gt_path,im,"sperzi",non_occluded)
+        merged_sperzi_path,fusionconf_sperzi_path,perf_result1, dve_info1 = do_merge(dir_name, file_name, sperzi_path,stereo_path,gt_path,im,"sperzi",non_occluded, Diogo_weighting =Diogo_weighting, mono_scaling=mono_scaling)
         DVE_info1 = add_dve_info(DVE_info1, dve_info1);
         Performance1 += perf_result1;
         if(np.mod(n_perfs, 10) == 0):
             print(['nocc:', non_occluded])
             performance.print_performance(Performance1 / n_perfs, name = 'Performance mix_fcn');
         plt.show()
-        merged_mancini_path,fusionconf_mancini_path,perf_result2, dve_info2 = do_merge(dir_name, file_name, mancini_path,stereo_path,gt_path,im, "manchini",non_occluded)
+        merged_mancini_path,fusionconf_mancini_path,perf_result2, dve_info2 = do_merge(dir_name, file_name, mancini_path,stereo_path,gt_path,im, "manchini",non_occluded, Diogo_weighting =Diogo_weighting, mono_scaling=mono_scaling)
         DVE_info2 = add_dve_info(DVE_info2, dve_info2);
         Performance2 += perf_result2;
         if(np.mod(n_perfs, 10) == 0):
@@ -215,14 +218,14 @@ def do_combine(dir_name, file_name, sperzi_path,mancini_path,stereo_path,conf_pa
         cv2.imwrite(combined_path, vis);
 
     
-def do_merge(dir_name, file_name, mono_path,stereo_path,gt_path, im_rgb_path, cnn,non_occluded):
+def do_merge(dir_name, file_name, mono_path,stereo_path,gt_path, im_rgb_path, cnn,non_occluded, Diogo_weighting = True, mono_scaling=True):
     if not os.path.exists(dir_name  + "/merged/"): 
         os.makedirs(dir_name  + "/merged/")
     merged_path = dir_name + "/merged/" + file_name + "_merged_" + cnn + ".png"
     if not os.path.exists(dir_name  + "/fusionconf/"): 
         os.makedirs(dir_name  + "/fusionconf/")
     fusionconf_path = dir_name + "/fusionconf/" + file_name + "_fusionconf_" + cnn + ".png"
-    perf_result, depth_fusion,im_mono_conf,im_error_map, dve_info = performance.merge_depth_maps(mono_path,stereo_path,gt_path,im_rgb_path,graphics=False,verbose=False, method=cnn, non_occluded=non_occluded) 
+    perf_result, depth_fusion,im_mono_conf,im_error_map, dve_info = performance.merge_depth_maps(mono_path,stereo_path,gt_path,im_rgb_path,graphics=False,verbose=False, method=cnn, non_occluded=non_occluded, Diogo_weighting=Diogo_weighting, scaling=mono_scaling) 
     if not os.path.isfile(merged_path) or sys.argv[4] == 'True' or regen_merged:    
         cv2.imwrite(merged_path, depth_fusion);
     if not os.path.isfile(merged_path) or sys.argv[4] == 'True' or regen_merged:    

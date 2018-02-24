@@ -48,7 +48,8 @@ def merge_depth_maps(mono_name = "/home/guido/cnn_depth_tensorflow/tmp/00002.png
                      stereo_name = "/home/guido/cnn_depth_tensorflow/tmp/00002_disparity.png",
                      GT_name = "/home/guido/cnn_depth_tensorflow/tmp/00002_GT.png",
                      image_name = "/home/guido/cnn_depth_tensorflow/tmp/00002_org.png",
-                     graphics = True, verbose = True, method='sperzi', non_occluded=True):
+                     graphics = True, verbose = True, method='sperzi', non_occluded=True,
+                     Diogo_weighting=True, scaling=True):
 
     #if(graphics):
     image = cv2.imread(image_name);
@@ -109,7 +110,7 @@ def merge_depth_maps(mono_name = "/home/guido/cnn_depth_tensorflow/tmp/00002.png
     depth_mono = evaluation_utils.convert_disps_to_depths_kitti(mono);
     depth_GT = GT;
     # depth_GT = evaluation_utils.convert_disps_to_depths_kitti(GT);
-    depth_fusion, stereo_confidence = merge.merge_Diogo(depth_stereo, depth_mono, image, graphics = False);
+    depth_fusion, stereo_confidence = merge.merge_Diogo(depth_stereo, depth_mono, image, graphics = False, Diogo_weighting=Diogo_weighting, scaling=scaling);
     im_mono_conf = createOverlay(gray_scale,1-stereo_confidence)
 
     if(graphics):        
