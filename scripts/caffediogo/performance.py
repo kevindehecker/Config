@@ -186,12 +186,12 @@ def merge_depth_maps(mono_name = "/home/guido/cnn_depth_tensorflow/tmp/00002.png
     
     if(graphics):
         plt.figure();
-        evaluation_utils.plot_error_vs_distance(gt_mono, error_measure_mono, bin_size_depth_meters=5, color='r', alpha_fill=[0.1, 0.3]);
-        evaluation_utils.plot_error_vs_distance(gt_stereo, error_measure_stereo, bin_size_depth_meters=5, color='b', alpha_fill=[0.1, 0.3]);
-        plt.legend('Mono', 'Stereo')
+        evaluation_utils.plot_error_vs_distance(gt_mono, error_measure_mono, bin_size_depth_meters=5, color='r', alpha_fill=[0.1, 0.3], label_name='Mono');
+        evaluation_utils.plot_error_vs_distance(gt_stereo, error_measure_stereo, bin_size_depth_meters=5, color='b', alpha_fill=[0.1, 0.3], label_name='Stereo');
+        plt.legend()
         plt.figure();
-        evaluation_utils.plot_error_vs_distance(gt_fusion, error_measure_fusion, bin_size_depth_meters=5, color='g', alpha_fill=[0.1, 0.3]);
-        plt.legend('Fusion');
+        evaluation_utils.plot_error_vs_distance(gt_fusion, error_measure_fusion, bin_size_depth_meters=5, color='g', alpha_fill=[0.1, 0.3], label_name='Fusion');
+        plt.legend();
     
     
     # scaled mono
@@ -211,4 +211,4 @@ def merge_depth_maps(mono_name = "/home/guido/cnn_depth_tensorflow/tmp/00002.png
 #                     stereo_name = "./tmp/0000000013_disparity.png",
 #                     GT_name = "./tmp/0000000013_GT.png",
 #                     image_name = "./tmp/0000000013_image.png",
-#                     graphics = True, verbose = True)#, method = 'mancini')
+#                     graphics = False, verbose = True)#, method = 'mancini')

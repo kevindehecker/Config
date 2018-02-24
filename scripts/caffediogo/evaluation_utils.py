@@ -33,14 +33,17 @@ def errorfill(x, y, yerr, ymin = None, ymax = None, color=None, alpha_fill=0.3, 
         elif len(yerr) == 2:
             ymin, ymax = yerr
         
-    ax.plot(x, y, color=color)
-    ax.fill_between(x, ymax, ymin, color=color, alpha=alpha_fill)
+        ax.plot(x, y, color=color)
+        ax.fill_between(x, ymax, ymin, color=color, alpha=alpha_fill, label='_nolegend_')
+    else:
+        ax.fill_between(x, ymax, ymin, color=color, alpha=alpha_fill, label='_nolegend_')        
+            
 
 #errorfill(x, y_sin, 0.2)
 #errorfill(x, y_cos, 0.2)
 #plt.show()
     
-def plot_error_vs_distance(gt, error_measure, bin_size_depth_meters=1, color=None, alpha_fill=[0.1, 0.3]):
+def plot_error_vs_distance(gt, error_measure, bin_size_depth_meters=1, color=None, alpha_fill=[0.1, 0.3], label_name='graph'):
     # create the bin limits
     bins = np.arange(0.0, MAX_DEPTH, bin_size_depth_meters);
     n_bins = len(bins);
@@ -59,15 +62,16 @@ def plot_error_vs_distance(gt, error_measure, bin_size_depth_meters=1, color=Non
     for b in range(n_bins):
         err_values = np.asarray(Values[b]);
         if(len(err_values) > 0):
-            Stats[0,b] = np.mean(err_values);
+            Stats[0,b] = np.median(err_values);
             Stats[1,b] = np.percentile(err_values, 25);
             Stats[2,b] = np.percentile(err_values, 75);
             Stats[3,b] = np.percentile(err_values, 5);
             Stats[4,b] = np.percentile(err_values, 95);
 
+    ax = plt.gca();
     errorfill(bins, Stats[0,:], None, ymin=Stats[3,:], ymax=Stats[4,:], color=color, alpha_fill=alpha_fill[0], ax=plt.gca());
     errorfill(bins, Stats[0,:], None, ymin=Stats[1,:], ymax=Stats[2,:], color=color, alpha_fill=alpha_fill[1], ax=plt.gca());    
-
+    ax.plot(bins, Stats[0,:], color=color, label=label_name)
 
     
     

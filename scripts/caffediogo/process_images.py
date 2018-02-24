@@ -50,13 +50,13 @@ def add_dve_info(DVE_info, dve_info):
 
 def plot_dve_info(DVE_info):
     plt.figure();
-    evaluation_utils.plot_error_vs_distance(DVE_info[1], DVE_info[0], bin_size_depth_meters=1, color='r', alpha_fill=[0.1, 0.3]);
-    evaluation_utils.plot_error_vs_distance(DVE_info[3], DVE_info[2], bin_size_depth_meters=1, color='b', alpha_fill=[0.1, 0.3]);
+    evaluation_utils.plot_error_vs_distance(DVE_info[1], DVE_info[0], bin_size_depth_meters=1, color='r', alpha_fill=[0.1, 0.3], label_name='Mono');
+    evaluation_utils.plot_error_vs_distance(DVE_info[3], DVE_info[2], bin_size_depth_meters=1, color='b', alpha_fill=[0.1, 0.3], label_name='Stereo');
     plt.xlabel('Ground-truth depth [m]');
     plt.ylabel('Absolute depth error [m]');
     plt.legend('Mono', 'Stereo')
     plt.figure();
-    evaluation_utils.plot_error_vs_distance(DVE_info[5], DVE_info[4], bin_size_depth_meters=1, color='g', alpha_fill=[0.1, 0.3]);    
+    evaluation_utils.plot_error_vs_distance(DVE_info[5], DVE_info[4], bin_size_depth_meters=1, color='g', alpha_fill=[0.1, 0.3], label_name='Fusion');    
     plt.xlabel('Ground-truth depth [m]');
     plt.ylabel('Absolute depth error [m]');
     plt.legend('Fusion');
