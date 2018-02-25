@@ -23,7 +23,7 @@ regen_merged = True
 regen_stereo = False
 regen_sperzi = False
 regen_mancini = False
-disable_1 = True
+disable_1 = False
 #parser = argparse.ArgumentParser(description='Monodepth TensorFlow implementation.')
 #parser.add_argument('--encoder',          type=str,   help='type of encoder, mrharicot or mancini', default='mrharicot')
 
@@ -103,8 +103,8 @@ def generate_maps():
         dir_name = os.path.dirname(dir_name);
         dir_name = os.path.dirname(dir_name);
   
-        #sperzi_path = do_sperziboon(dir_name, file_name, im);        
-        sperzi_path = do_mancini_original(dir_name, file_name, im)
+        sperzi_path = do_sperziboon(dir_name, file_name, im);        
+        #sperzi_path = do_mancini_original(dir_name, file_name, im)
         mancini_path = do_mancini(dir_name, file_name, im,model)            
         
         dirdate_name = os.path.basename(dir_name)

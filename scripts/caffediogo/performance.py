@@ -109,7 +109,7 @@ def merge_depth_maps(mono_name = "/home/guido/cnn_depth_tensorflow/tmp/00002.png
         axes[1,1].set_title('Image');
     
     depth_stereo = evaluation_utils.convert_disps_to_depths_kitti(stereo);
-    depth_mono = evaluation_utils.convert_disps_to_depths_kitti(mono);
+    depth_mono = evaluation_utils.convert_disps_to_depths_kitti(mono, target_width = 1242, target_height = 375, mask = True, limit_depth = 0.0);
     depth_GT = GT;
     # depth_GT = evaluation_utils.convert_disps_to_depths_kitti(GT);
     depth_fusion, stereo_confidence = merge.merge_Diogo(depth_stereo, depth_mono, image, graphics = False, Diogo_weighting=Diogo_weighting, scaling=scaling);

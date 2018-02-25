@@ -229,7 +229,8 @@ def convert_disps_to_depths_kitti(disparity_map, target_width = 1242, target_hei
     if(mask):
         depth_map = np.multiply(depth_map, 1-M);
     
-    depth_map[depth_map > limit_depth] = limit_depth;
+    if limit_depth > 0:
+        depth_map[depth_map > limit_depth] = limit_depth;
     return depth_map;
 
 def load_velodyne_points(file_name):
