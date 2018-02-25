@@ -18,12 +18,12 @@ import matplotlib.pyplot as plt
 import evaluation_utils
 from random import *
 
-regen_combined = False
-regen_merged = False
-regen_stereo = True
+regen_combined = True
+regen_merged = True
+regen_stereo = False
 regen_sperzi = False
 regen_mancini = False
-
+disable_1 = True
 #parser = argparse.ArgumentParser(description='Monodepth TensorFlow implementation.')
 #parser.add_argument('--encoder',          type=str,   help='type of encoder, mrharicot or mancini', default='mrharicot')
 
@@ -111,34 +111,37 @@ def generate_maps():
         gt_path = dir_name + "/../../../data_depth_annotated/val/" + dirdate_name + "/proj_depth/groundtruth/image_02/" + file_name + ".png"        
         stereo_path,conf_path = do_stereo(dir_name, file_name, imgL, imgR)       
 
-        #   merged_sperzi_path,fusionconf_sperzi_path,perf_result1, dve_info1 = do_merge(dir_name, file_name, sperzi_path,stereo_path,gt_path,im,"sperzi",non_occluded, Diogo_weighting =Diogo_weighting, mono_scaling=mono_scaling)
-        # DVE_info1 = add_dve_info(DVE_info1, dve_info1);
-        # Performance1 += perf_result1;
-        # if(np.mod(n_perfs, 10) == 0):
-        #     print('nocc: ' + str(non_occluded) + ", Diogo_weighting: " +  str(Diogo_weighting) + ", mono_scaling: " + str(mono_scaling))
-        #     performance.print_performance(Performance1 / n_perfs, name = 'Performance mix_fcn');
-        # plt.show()
-        # merged_mancini_path,fusionconf_mancini_path,perf_result2, dve_info2 = do_merge(dir_name, file_name, mancini_path,stereo_path,gt_path,im, "manchini",non_occluded, Diogo_weighting =Diogo_weighting, mono_scaling=mono_scaling)
-        # DVE_info2 = add_dve_info(DVE_info2, dve_info2);
-        # Performance2 += perf_result2;
-        # if(np.mod(n_perfs, 10) == 0):
-        #     performance.print_performance(Performance2 / n_perfs, name = 'Performance manchini');
+        if not disable_1:
+            merged_sperzi_path,fusionconf_sperzi_path,perf_result1, dve_info1 = do_merge(dir_name, file_name, sperzi_path,stereo_path,gt_path,im,"sperzi",non_occluded, Diogo_weighting =Diogo_weighting, mono_scaling=mono_scaling)
+            DVE_info1 = add_dve_info(DVE_info1, dve_info1);
+            Performance1 += perf_result1;
+            if(np.mod(n_perfs, 10) == 0):
+                print('nocc: ' + str(non_occluded) + ", Diogo_weighting: " +  str(Diogo_weighting) + ", mono_scaling: " + str(mono_scaling))
+                performance.print_performance(Performance1 / n_perfs, name = 'Performance mix_fcn');        
+        merged_mancini_path,fusionconf_mancini_path,perf_result2, dve_info2 = do_merge(dir_name, file_name, mancini_path,stereo_path,gt_path,im, "manchini",non_occluded, Diogo_weighting =Diogo_weighting, mono_scaling=mono_scaling)
+        DVE_info2 = add_dve_info(DVE_info2, dve_info2);
+        Performance2 += perf_result2;
+        if(np.mod(n_perfs, 10) == 0):
+            performance.print_performance(Performance2 / n_perfs, name = 'Performance manchini');
             
-        # n_perfs += 1;
+        n_perfs += 1;
 
-        # do_combine(dir_name, file_name, sperzi_path,mancini_path,stereo_path,conf_path,gt_path, im,merged_sperzi_path,merged_mancini_path,fusionconf_sperzi_path,fusionconf_mancini_path)
+        do_combine(dir_name, file_name, mancini_path,stereo_path,conf_path,gt_path, im,merged_mancini_path,fusionconf_mancini_path)
         
 
-    # make DVE plots:
-    evaluation_utils.plot_dve_info(DVE_info1);
-    evaluation_utils.plot_dve_info(DVE_info2);
     
-    Performance1 = Performance1 / n_perfs
-    filehandler = open("performance_1.pkl","wb")
-    pickle.dump(Performance1, filehandler)
-    filehandler.close()
-    print('nocc: ' + str(non_occluded) + ", Diogo_weighting: " +  str(Diogo_weighting) + ", mono_scaling: " + str(mono_scaling))
-    performance.print_performance(Performance1, name = 'Performance mix_fcn');
+    if not disable_1:
+        Performance1 = Performance1 / n_perfs
+        filehandler = open("performance_1.pkl","wb")
+        pickle.dump(Performance1, filehandler)
+        filehandler.close()
+        print('nocc: ' + str(non_occluded) + ", Diogo_weighting: " +  str(Diogo_weighting) + ", mono_scaling: " + str(mono_scaling))
+        performance.print_performance(Performance1, name = 'Performance mix_fcn');
+
+    
+        filehandler = open("DVE_info_1.pkl","wb")
+        pickle.dump(DVE_info1, filehandler)
+        filehandler.close()
 
     Performance2 = Performance2 / n_perfs
     filehandler = open("performance_2.pkl","wb")
@@ -146,18 +149,18 @@ def generate_maps():
     filehandler.close()
     performance.print_performance(Performance2, name = 'Performance manchini');
     
-    filehandler = open("DVE_info_1.pkl","wb")
-    pickle.dump(DVE_info1, filehandler)
-    filehandler.close()
-
     filehandler = open("DVE_info_2.pkl","wb")
     pickle.dump(DVE_info2, filehandler)
     filehandler.close()
     
+    # make DVE plots:
+    if not disable_1:
+        evaluation_utils.plot_dve_info(DVE_info1);
+    evaluation_utils.plot_dve_info(DVE_info2);
     plt.show()
     
 
-def do_combine(dir_name, file_name, sperzi_path,mancini_path,stereo_path,conf_path,gt_path, im_rgb_path,merged_sperzi_path,merged_mancini_path,fusionconf_sperzi_path,fusionconf_mancini_path):
+def do_combine(dir_name, file_name, mancini_path,stereo_path,conf_path,gt_path, im_rgb_path,merged_mancini_path,fusionconf_mancini_path):
     if not os.path.exists(dir_name  + "/combined/"): 
         os.makedirs(dir_name  + "/combined/")
     combined_path = dir_name + "/combined/" + file_name + "_combined.jpg"
@@ -166,22 +169,22 @@ def do_combine(dir_name, file_name, sperzi_path,mancini_path,stereo_path,conf_pa
         imd = cv2.imread(stereo_path)
         imc = cv2.imread(conf_path)
         img = cv2.imread(gt_path)
-        ims = cv2.imread(sperzi_path)
+        # ims = cv2.imread(sperzi_path)
         imm = cv2.imread(mancini_path)
-        imms = cv2.imread(merged_sperzi_path)
+        # imms = cv2.imread(merged_sperzi_path)
         immm = cv2.imread(merged_mancini_path)
         imfcm = cv2.imread(fusionconf_mancini_path)
-        imfcs = cv2.imread(fusionconf_sperzi_path)
+        # imfcs = cv2.imread(fusionconf_sperzi_path)
 
         #pdb.set_trace()
         img = cv2.applyColorMap(img, cv2.COLORMAP_JET)
         imd = cv2.applyColorMap(imd, cv2.COLORMAP_JET)
-        ims = cv2.applyColorMap(ims, cv2.COLORMAP_JET)
-        ims = cv2.resize(ims,(img.shape[1], img.shape[0]), interpolation = cv2.INTER_CUBIC)
+        # ims = cv2.applyColorMap(ims, cv2.COLORMAP_JET)
+        # ims = cv2.resize(ims,(img.shape[1], img.shape[0]), interpolation = cv2.INTER_CUBIC)
         imm = cv2.applyColorMap(imm, cv2.COLORMAP_JET)
         imm = cv2.resize(imm,(img.shape[1], img.shape[0]), interpolation = cv2.INTER_CUBIC)
-        imms = cv2.applyColorMap(imms, cv2.COLORMAP_JET)
-        imms = cv2.resize(imms,(img.shape[1], img.shape[0]), interpolation = cv2.INTER_CUBIC)
+        # imms = cv2.applyColorMap(imms, cv2.COLORMAP_JET)
+        # imms = cv2.resize(imms,(img.shape[1], img.shape[0]), interpolation = cv2.INTER_CUBIC)
         immm = cv2.applyColorMap(immm, cv2.COLORMAP_JET)
         immm = cv2.resize(immm,(img.shape[1], img.shape[0]), interpolation = cv2.INTER_CUBIC)
         
@@ -192,13 +195,14 @@ def do_combine(dir_name, file_name, sperzi_path,mancini_path,stereo_path,conf_pa
         #merged | merged
         
         visL = np.concatenate((im, img), axis=0)
-        visL = np.concatenate((visL, ims), axis=0)
-        visL = np.concatenate((visL, imms), axis=0)
-        visL = np.concatenate((visL, imfcs), axis=0)
-        
+        #visL = np.concatenate((visL, ims), axis=0)
+        #visL = np.concatenate((visL, imms), axis=0)
+        #visL = np.concatenate((visL, imfcs), axis=0)
+        visL = np.concatenate((visL, imm), axis=0)
+        visL = np.concatenate((visL, imm), axis=0) # tmp
+
         visR = np.concatenate((imc, imd), axis=0)
-        visR = np.concatenate((visR, imm), axis=0) 
-        visR = np.concatenate((visR, immm), axis=0)
+        visR = np.concatenate((visR, immm), axis=0) 
         visR = np.concatenate((visR, imfcm), axis=0)
         
         vis = np.concatenate((visL, visR), axis=1)
@@ -259,13 +263,13 @@ def do_stereo(dir_name, file_name, imgL, imgR):
         
         # calculate the disparities:
         disp = calculate_disparities(imgL, imgR, window_size, min_disp, num_disp);
-        ret,thresh0 = cv2.threshold(disp,0,65535,cv2.THRESH_BINARY);
+        ret,thresh0 = cv2.threshold(disp,0,255,cv2.THRESH_BINARY);
 
         # gradient for certainty:
         grey = cv2.cvtColor(imgL, cv2.COLOR_RGB2GRAY);
         blur = cv2.GaussianBlur(grey,(11,11),0)
         sobelX = cv2.Sobel(blur,cv2.CV_64F,1,0,ksize=5);
-        ret,thresh1 = cv2.threshold(sobelX,175*256,65535,cv2.THRESH_BINARY);
+        ret,thresh1 = cv2.threshold(sobelX,175,255,cv2.THRESH_BINARY);
 
         #mask out unknown pixels in disp map
         # thresh 0 is for uncertain disparities (e.g., left band in left image + bad matches)

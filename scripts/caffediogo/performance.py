@@ -65,12 +65,13 @@ def merge_depth_maps(mono_name = "/home/guido/cnn_depth_tensorflow/tmp/00002.png
         mono /= 255.0 / MAX_DISP; # TODO: is this correct for mancini?
     # mono = cv2.resize(mono, (64, 20), interpolation=cv2.INTER_NEAREST);
 
-    stereo = cv2.imread(stereo_name);
+    stereo = cv2.imread(stereo_name,-1);
+    #pdb.set_trace()
     if(len(stereo.shape) == 3 and stereo.shape[2] > 1):
         stereo = cv2.cvtColor(stereo, cv2.COLOR_RGB2GRAY);        
     if(stereo.dtype == np.uint16):
         stereo.astype(np.float32);
-        stereo /= 16.0;
+        stereo = stereo /16.0
     
     GT = cv2.imread(GT_name);
     if(len(GT.shape) == 3 and GT.shape[2] > 1):
