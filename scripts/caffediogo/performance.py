@@ -26,6 +26,7 @@ from PIL import Image
 #distance_versus_error_info = namedtuple("distance_versus_error_info", "err_mono gt_mono err_stereo gt_stereo err_fusion gt_fusion")
 
 MAX_DISP = 64.0;
+MAX_DEPTH = 80.0;
 
 def print_performance(performance_matrix, name='Performance'):
     print('%s' % name);
@@ -77,9 +78,6 @@ def merge_depth_maps(mono_name = "/home/guido/cnn_depth_tensorflow/tmp/00002.png
     if(mono.shape[0] != stereo.shape[0] or mono.shape[0] != GT.shape[0]):
         H = np.asarray([mono.shape[0]] * 3);
         W = np.asarray([mono.shape[1]] * 3);
-        H[1] = stereo.shape[0];
-        W[1] = stereo.shape[1];
-        H[2] = GT.shape[0];
         W[2] = GT.shape[1];
         TARGET_H = np.min(H);
         TARGET_W = np.min(W);
@@ -108,6 +106,7 @@ def merge_depth_maps(mono_name = "/home/guido/cnn_depth_tensorflow/tmp/00002.png
     
     depth_stereo = evaluation_utils.convert_disps_to_depths_kitti(stereo);
     depth_mono = evaluation_utils.convert_disps_to_depths_kitti(mono);
+    depth_mono[depth_mono > MAX_DEPTH] = MAX_DEPTH;
     depth_GT = GT;
     # depth_GT = evaluation_utils.convert_disps_to_depths_kitti(GT);
     depth_fusion, stereo_confidence = merge.merge_Diogo(depth_stereo, depth_mono, image, graphics = False, Diogo_weighting=Diogo_weighting, scaling=scaling);
@@ -158,7 +157,7 @@ def merge_depth_maps(mono_name = "/home/guido/cnn_depth_tensorflow/tmp/00002.png
 #        axes[3,0].set_title('tmp2');
         #plt.title('Pixel depth error')  
     error_comparison = error_map_stereo - error_map_mono;
-    MAX_DEPTH_PLOT = 40;
+    MAX_DEPTH_PLOT = 15;
     im_errormap = createOverlay(gray_scale,error_comparison, v_min=-MAX_DEPTH_PLOT, v_max=MAX_DEPTH_PLOT)
     
     if(graphics):

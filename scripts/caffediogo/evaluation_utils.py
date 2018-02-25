@@ -73,15 +73,40 @@ def plot_error_vs_distance(gt, error_measure, bin_size_depth_meters=1, color=Non
     errorfill(bins, Stats[0,:], None, ymin=Stats[1,:], ymax=Stats[2,:], color=color, alpha_fill=alpha_fill[1], ax=plt.gca());    
     ax.plot(bins, Stats[0,:], color=color, label=label_name)
 
+def assign_distances_to_stereo_distances(distances, possible_stereo_distances):
+    n_dists = len(distances);
+    for d in range(n_dists):
+        dist = distances[d];
+        diffs = np.abs(possible_stereo_distances - dist);
+        ind = np.argmin(diffs);
+        distances[d] = possible_stereo_distances[ind];
+    return distances;
+
     
-def plot_dve_info(DVE_info):
+def plot_dve_info(DVE_info, collapse_stereo_info=True):
     
     plt.figure();
-    plt.plot(DVE_info[3], DVE_info[2], 'x') 
+    plt.hist(DVE_info[1], bins=80);
+    plt.title('Histogram ground-truth distances');
+    
+    stereo_depths = DVE_info[3]-DVE_info[2];
+    plt.figure();
+    plt.plot(DVE_info[3], stereo_depths, 'x') 
     plt.title('stereo');
+    
+    mono_depths = DVE_info[1] - DVE_info[0];
+    plt.figure();
+    plt.plot(DVE_info[1], mono_depths, 'ro') 
+    plt.title('mono');
+    
     
     plt.figure();
     plot_error_vs_distance(DVE_info[1], DVE_info[0], bin_size_depth_meters=1, color='r', alpha_fill=[0.1, 0.3], label_name='Mono');
+    DVE_info[3] = DVE_info[3][:100000];
+    DVE_info[2] = DVE_info[2][:100000];
+    if(collapse_stereo_info):
+        possible_stereo_distances = np.unique(DVE_info[2]);
+        DVE_info[3] = assign_distances_to_stereo_distances(DVE_info[3], possible_stereo_distances);
     plot_error_vs_distance(DVE_info[3], DVE_info[2], bin_size_depth_meters=1, color='b', alpha_fill=[0.1, 0.3], label_name='Stereo');
     plt.xlabel('Ground-truth depth [m]');
     plt.ylabel('Absolute depth error [m]');
