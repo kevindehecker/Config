@@ -81,7 +81,7 @@ def generate_maps():
     non_occluded = True
     # for the merging process:
     Diogo_weighting = True;
-    mono_scaling = True;
+    mono_scaling = False;
 
     # iterate over the files:
     # for idx, im in enumerate(images_left):
@@ -117,7 +117,7 @@ def generate_maps():
             Performance1 += perf_result1;
             if(np.mod(n_perfs, 10) == 0):
                 print('nocc: ' + str(non_occluded) + ", Diogo_weighting: " +  str(Diogo_weighting) + ", mono_scaling: " + str(mono_scaling))
-                performance.print_performance(Performance1 / n_perfs, name = 'Performance mix_fcn');        
+                performance.print_performance(Performance1 / n_perfs, name = 'Performance sperziboon');        
         merged_mancini_path,fusionconf_mancini_path,perf_result2, dve_info2 = do_merge(dir_name, file_name, mancini_path,stereo_path,gt_path,im, "manchini",non_occluded, Diogo_weighting =Diogo_weighting, mono_scaling=mono_scaling)
         DVE_info2 = add_dve_info(DVE_info2, dve_info2);
         Performance2 += perf_result2;

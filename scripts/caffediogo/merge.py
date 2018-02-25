@@ -150,7 +150,7 @@ def scale_mono_map(stereo_map, mono_map):
     min_mono = np.min(mono_map[:]);
     mono_map -= min_mono;   
     max_mono = np.max(mono_map[:]);
-    print min_mono,max_mono
+    # print min_mono,max_mono
 
     mono_map /= max_mono
     mono_map *= max_stereo - min_stereo
