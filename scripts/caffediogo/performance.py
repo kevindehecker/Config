@@ -110,7 +110,6 @@ def merge_depth_maps(mono_name = "/home/guido/cnn_depth_tensorflow/tmp/00002.png
     
     depth_stereo = evaluation_utils.convert_disps_to_depths_kitti(stereo);
     depth_mono = evaluation_utils.convert_disps_to_depths_kitti(mono);
-    depth_mono[depth_mono > MAX_DEPTH] = MAX_DEPTH;
     depth_GT = GT;
     # depth_GT = evaluation_utils.convert_disps_to_depths_kitti(GT);
     depth_fusion, stereo_confidence = merge.merge_Diogo(depth_stereo, depth_mono, image, graphics = False, Diogo_weighting=Diogo_weighting, scaling=scaling);
@@ -143,6 +142,8 @@ def merge_depth_maps(mono_name = "/home/guido/cnn_depth_tensorflow/tmp/00002.png
     performance = np.zeros([3, 8]);
     abs_rel, sq_rel, rmse, rmse_log, a1, a2, a3, lsi_err, error_map_stereo  = evaluation_utils.compute_errors(depth_GT[:], depth_stereo[:], graphics, name_fig = 'stereo error map', non_occluded=non_occluded);
     performance[0,:] = [abs_rel, sq_rel, rmse, rmse_log, a1, a2, a3, lsi_err];
+    # since the GT is limited to 80 - if you want to clip:
+    # depth_mono[depth_mono > MAX_DEPTH] = MAX_DEPTH;
     abs_rel, sq_rel, rmse, rmse_log, a1, a2, a3, lsi_err, error_map_mono = evaluation_utils.compute_errors(depth_GT[:], depth_mono[:], graphics, name_fig = 'mono error map', non_occluded=non_occluded);
     performance[1,:] = [abs_rel, sq_rel, rmse, rmse_log, a1, a2, a3, lsi_err];
     abs_rel, sq_rel, rmse, rmse_log, a1, a2, a3, lsi_err, error_map_fusion = evaluation_utils.compute_errors(depth_GT[:], depth_fusion[:], graphics, name_fig = 'fusion error map', non_occluded=non_occluded);
