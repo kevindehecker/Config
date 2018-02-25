@@ -20,7 +20,7 @@ from random import *
 
 regen_combined = False
 regen_merged = False
-regen_stereo = False
+regen_stereo = True
 regen_sperzi = False
 regen_mancini = False
 
@@ -111,24 +111,22 @@ def generate_maps():
         gt_path = dir_name + "/../../../data_depth_annotated/val/" + dirdate_name + "/proj_depth/groundtruth/image_02/" + file_name + ".png"        
         stereo_path,conf_path = do_stereo(dir_name, file_name, imgL, imgR)       
 
-        r = random()
-
-        merged_sperzi_path,fusionconf_sperzi_path,perf_result1, dve_info1 = do_merge(dir_name, file_name, sperzi_path,stereo_path,gt_path,im,"sperzi",non_occluded, Diogo_weighting =Diogo_weighting, mono_scaling=mono_scaling)
-        DVE_info1 = add_dve_info(DVE_info1, dve_info1);
-        Performance1 += perf_result1;
-        if(np.mod(n_perfs, 10) == 0):
-            print('nocc: ' + str(non_occluded) + ", Diogo_weighting: " +  str(Diogo_weighting) + ", mono_scaling: " + str(mono_scaling))
-            performance.print_performance(Performance1 / n_perfs, name = 'Performance mix_fcn');
-        plt.show()
-        merged_mancini_path,fusionconf_mancini_path,perf_result2, dve_info2 = do_merge(dir_name, file_name, mancini_path,stereo_path,gt_path,im, "manchini",non_occluded, Diogo_weighting =Diogo_weighting, mono_scaling=mono_scaling)
-        DVE_info2 = add_dve_info(DVE_info2, dve_info2);
-        Performance2 += perf_result2;
-        if(np.mod(n_perfs, 10) == 0):
-            performance.print_performance(Performance2 / n_perfs, name = 'Performance manchini');
+        #   merged_sperzi_path,fusionconf_sperzi_path,perf_result1, dve_info1 = do_merge(dir_name, file_name, sperzi_path,stereo_path,gt_path,im,"sperzi",non_occluded, Diogo_weighting =Diogo_weighting, mono_scaling=mono_scaling)
+        # DVE_info1 = add_dve_info(DVE_info1, dve_info1);
+        # Performance1 += perf_result1;
+        # if(np.mod(n_perfs, 10) == 0):
+        #     print('nocc: ' + str(non_occluded) + ", Diogo_weighting: " +  str(Diogo_weighting) + ", mono_scaling: " + str(mono_scaling))
+        #     performance.print_performance(Performance1 / n_perfs, name = 'Performance mix_fcn');
+        # plt.show()
+        # merged_mancini_path,fusionconf_mancini_path,perf_result2, dve_info2 = do_merge(dir_name, file_name, mancini_path,stereo_path,gt_path,im, "manchini",non_occluded, Diogo_weighting =Diogo_weighting, mono_scaling=mono_scaling)
+        # DVE_info2 = add_dve_info(DVE_info2, dve_info2);
+        # Performance2 += perf_result2;
+        # if(np.mod(n_perfs, 10) == 0):
+        #     performance.print_performance(Performance2 / n_perfs, name = 'Performance manchini');
             
-        n_perfs += 1;
+        # n_perfs += 1;
 
-        do_combine(dir_name, file_name, sperzi_path,mancini_path,stereo_path,conf_path,gt_path, im,merged_sperzi_path,merged_mancini_path,fusionconf_sperzi_path,fusionconf_mancini_path)
+        # do_combine(dir_name, file_name, sperzi_path,mancini_path,stereo_path,conf_path,gt_path, im,merged_sperzi_path,merged_mancini_path,fusionconf_sperzi_path,fusionconf_mancini_path)
         
 
     # make DVE plots:
@@ -261,13 +259,13 @@ def do_stereo(dir_name, file_name, imgL, imgR):
         
         # calculate the disparities:
         disp = calculate_disparities(imgL, imgR, window_size, min_disp, num_disp);
-        ret,thresh0 = cv2.threshold(disp,0,255,cv2.THRESH_BINARY);
+        ret,thresh0 = cv2.threshold(disp,0,65535,cv2.THRESH_BINARY);
 
         # gradient for certainty:
         grey = cv2.cvtColor(imgL, cv2.COLOR_RGB2GRAY);
         blur = cv2.GaussianBlur(grey,(11,11),0)
         sobelX = cv2.Sobel(blur,cv2.CV_64F,1,0,ksize=5);
-        ret,thresh1 = cv2.threshold(sobelX,175,255,cv2.THRESH_BINARY);
+        ret,thresh1 = cv2.threshold(sobelX,175*256,65535,cv2.THRESH_BINARY);
 
         #mask out unknown pixels in disp map
         # thresh 0 is for uncertain disparities (e.g., left band in left image + bad matches)
@@ -275,6 +273,7 @@ def do_stereo(dir_name, file_name, imgL, imgR):
         confidence = cv2.bitwise_and(thresh0.astype(np.uint8),thresh1.astype(np.uint8))
 
         # write all images:
+        disp = disp.astype(np.uint16)
         cv2.imwrite(stereo_path, disp);
         cv2.imwrite(conf_path, confidence);
         
@@ -298,7 +297,7 @@ def calculate_disparities(imgL, imgR, window_size, min_disp, num_disp):
 
     # stereo = cv2.StereoSGBM_create(minDisparity=min_disp, numDisparities = num_disp, blockSize = window_size+1, preFilterCap=10, P1= 4 * 3 * window_size ** 2, P2 = 32 * 3 * window_size ** 2);
     stereo = cv2.StereoSGBM_create(minDisparity=min_disp, numDisparities = num_disp, blockSize = window_size, preFilterCap=0, P1= 4 * 3 * window_size ** 2, P2 = 16 * 3 * window_size ** 2, disp12MaxDiff = 2)
-    disp = stereo.compute(imgL, imgR).astype(np.float32) / 16.0
+    disp = stereo.compute(imgL, imgR) #.astype(np.float32) / 16.0
     return disp
 
 generate_maps()
