@@ -43,9 +43,12 @@ def errorfill(x, y, yerr, ymin = None, ymax = None, color=None, alpha_fill=0.3, 
 #errorfill(x, y_cos, 0.2)
 #plt.show()
     
-def plot_error_vs_distance(gt, error_measure, bin_size_depth_meters=1, color=None, alpha_fill=[0.1, 0.3], label_name='graph'):
+def plot_error_vs_distance(gt, error_measure, bin_size_depth_meters=None, color=None, alpha_fill=[0.1, 0.3], label_name='graph'):
     # create the bin limits
-    bins = np.arange(0.0, MAX_DEPTH, bin_size_depth_meters);
+    if(bin_size_depth_meters is None):
+        bins = np.unique(gt);
+    else:
+        bins = np.arange(0.0, MAX_DEPTH, bin_size_depth_meters);
     n_bins = len(bins);
     # get the bin indices of all samples:
     bin_inds = np.digitize(gt, bins, right=False) - 1;
@@ -102,12 +105,13 @@ def plot_dve_info(DVE_info, collapse_stereo_info=True):
     
     plt.figure();
     plot_error_vs_distance(DVE_info[1], DVE_info[0], bin_size_depth_meters=1, color='r', alpha_fill=[0.1, 0.3], label_name='Mono');
-    DVE_info[3] = DVE_info[3][:100000];
-    DVE_info[2] = DVE_info[2][:100000];
+#    DVE_info[3] = DVE_info[3][:1000000];
+#    DVE_info[2] = DVE_info[2][:1000000];
+    stereo_distances = DVE_info[3] - DVE_info[2];
     if(collapse_stereo_info):
-        possible_stereo_distances = np.unique(DVE_info[2]);
+        possible_stereo_distances = np.unique(stereo_distances);
         DVE_info[3] = assign_distances_to_stereo_distances(DVE_info[3], possible_stereo_distances);
-    plot_error_vs_distance(DVE_info[3], DVE_info[2], bin_size_depth_meters=1, color='b', alpha_fill=[0.1, 0.3], label_name='Stereo');
+    plot_error_vs_distance(DVE_info[3], DVE_info[3]-stereo_distances, color='b', alpha_fill=[0.1, 0.3], label_name='Stereo');
     plt.xlabel('Ground-truth depth [m]');
     plt.ylabel('Absolute depth error [m]');
     plt.legend()

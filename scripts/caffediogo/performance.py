@@ -67,8 +67,11 @@ def merge_depth_maps(mono_name = "/home/guido/cnn_depth_tensorflow/tmp/00002.png
 
     stereo = cv2.imread(stereo_name);
     if(len(stereo.shape) == 3 and stereo.shape[2] > 1):
-        stereo = cv2.cvtColor(stereo, cv2.COLOR_RGB2GRAY);
-
+        stereo = cv2.cvtColor(stereo, cv2.COLOR_RGB2GRAY);        
+    if(stereo.dtype == np.uint16):
+        stereo.astype(np.float32);
+        stereo /= 16.0;
+    
     GT = cv2.imread(GT_name);
     if(len(GT.shape) == 3 and GT.shape[2] > 1):
         GT = cv2.cvtColor(GT, cv2.COLOR_RGB2GRAY);
@@ -217,8 +220,8 @@ def merge_depth_maps(mono_name = "/home/guido/cnn_depth_tensorflow/tmp/00002.png
     return performance, depth_fusion,im_mono_conf, im_errormap, dve_info;
 
 # merge_depth_maps(graphics=True);
-#merge_depth_maps(mono_name = "./tmp/0000000013_sperziboon.png", 
+#merge_depth_maps(mono_name = "./tmp/0000000013_mancini.png", 
 #                     stereo_name = "./tmp/0000000013_disparity.png",
 #                     GT_name = "./tmp/0000000013_GT.png",
 #                     image_name = "./tmp/0000000013_image.png",
-#                     graphics = False, verbose = True)#, method = 'mancini')
+#                     graphics = False, verbose = True, method = 'mancini')
