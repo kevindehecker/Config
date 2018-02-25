@@ -18,7 +18,7 @@ import matplotlib.pyplot as plt
 import evaluation_utils
 from random import *
 
-regen_combined = True
+regen_combined = False
 regen_merged = True
 regen_stereo = False
 regen_sperzi = False
@@ -122,20 +122,24 @@ def generate_maps():
         DVE_info2 = add_dve_info(DVE_info2, dve_info2);
         Performance2 += perf_result2;
         if(np.mod(n_perfs, 10) == 0):
+            if disable_1:
+                print('nocc: ' + str(non_occluded) + ", Diogo_weighting: " +  str(Diogo_weighting) + ", mono_scaling: " + str(mono_scaling))
             performance.print_performance(Performance2 / n_perfs, name = 'Performance manchini');
+            
             
         n_perfs += 1;
 
         do_combine(dir_name, file_name, mancini_path,stereo_path,conf_path,gt_path, im,merged_mancini_path,fusionconf_mancini_path)
         
 
-    
+    pdb.set_trace()    
+    print('nocc: ' + str(non_occluded) + ", Diogo_weighting: " +  str(Diogo_weighting) + ", mono_scaling: " + str(mono_scaling))
     if not disable_1:
         Performance1 = Performance1 / n_perfs
         filehandler = open("performance_1.pkl","wb")
         pickle.dump(Performance1, filehandler)
         filehandler.close()
-        print('nocc: ' + str(non_occluded) + ", Diogo_weighting: " +  str(Diogo_weighting) + ", mono_scaling: " + str(mono_scaling))
+        
         performance.print_performance(Performance1, name = 'Performance mix_fcn');
 
     
