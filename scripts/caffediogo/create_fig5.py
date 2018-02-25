@@ -43,12 +43,12 @@ def do_merge(mono_path,stereo_path,gt_path,rgb_path,method):
 
 fileids = []
 fileids.append('0000000008')
-fileids.append('0000000043')
+fileids.append('0000000005')
 fileids.append('0000000080')
 fileids.append('0000000039')
 fileids.append('0000000057')
 fileids.append('0000000044')
-fileids.append('0000000056')
+fileids.append('0000000049')
 fileids.append('0000000014')
 
 syncids = []
@@ -180,8 +180,8 @@ for i in np.arange(0, len(fileids)):
 
 
 
-Image.fromarray(total1).save('~/hv/Cloud/Google/Guido/fig5a.png')
-Image.fromarray(total).save('~/hv/Cloud/Google/Guido/fig5b.png')
+Image.fromarray(total1).save('/home/houjebek/hv/Cloud/Google/Guido/fig5a.png')
+Image.fromarray(total).save('/home/houjebek/hv/Cloud/Google/Guido/fig5b.png')
 plt.figure()
 plt.imshow(total1)
 plt.axis('off')
