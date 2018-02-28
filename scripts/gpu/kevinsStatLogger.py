@@ -27,6 +27,7 @@ mining_started = [False] * NGPUS
 
 gpu_was_used = [False] * NGPUS
 
+print("Disable mining: " , DISABLE_MINING == True)
 while True: # loops INTERVAL
 	time_str =time.strftime("%I:%M:%S") + ' ' + time.strftime("%d/%m/%Y")
 	proc = subprocess.Popen(['nvidia-smi'],stdout=subprocess.PIPE) 
@@ -74,7 +75,7 @@ while True: # loops INTERVAL
 					mem_text = ls[5]
 					process_mem = mem_text[0:len(mem_text)-3] #currently assuming this is always in MiB
 	#				print (gpu_id,": ", process_name,process_user,process_cpu, process_mem)
-					
+
 					if process_user not in users:
 						users.append(process_user)
 					if process_user not in gpu_users[gpu_id]:
@@ -103,7 +104,7 @@ while True: # loops INTERVAL
 	with open('general.txt', 'a') as f:
 		f.write(time_str + ';' + str(gpu_is_used) + ';' + str(gpu_is_mining) + ';' + str(gpu_users) + '\n')
 
-	if not DISABLE_MINING:
+	if DISABLE_MINING == "False":
 		for i in range(0,NGPUS):
 			if not gpu_is_used[i]and not gpu_was_used[i] and not gpu_is_mining[i]:
 				#start miner on this gpu			
