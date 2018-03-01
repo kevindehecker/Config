@@ -13,7 +13,7 @@ import signal
 import subprocess
 
 DISABLE_MINING = sys.argv[1]
-MINER_PROC_NAME = "/home/kevin/ccminer/ccminer -a x17 -o stratum+tcp://yiimp.eu:3737 -u D9uarTgV9p7cywXfv8eMjnxtqxbCMMDbrq -d"
+MINER_PROC_NAME = "/home/kevin/ccminer/ccminer -a x17 -o stratum+tcp://yiimp.eu:3737 -u DKBoJpXgdgHp4NzjJB5oKcikneGK1CxtTN -d"
 MINER_PROC_NAME_SHORT = "/home/kevin/ccminer/ccminer"
 INTERVAL = 60
 NGPUS = int(sys.argv[2])
