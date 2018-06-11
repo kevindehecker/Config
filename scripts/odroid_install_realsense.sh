@@ -22,6 +22,7 @@ sudo apt-get install libdrm-amdgpu1 libdrm-dev libdrm-etnaviv1 libdrm-exynos1 li
 
 sudo apt-get install git cmake git libssl-dev libusb-1.0-0-dev pkg-config libgtk-3-dev openssh-server libglfw3-dev gedit -y
 sudo apt-get install git-core bash-completion
+sudo apt-get install gstreamer1.0-tools gstreamer1.0-alsa   gstreamer1.0-plugins-base gstreamer1.0-plugins-good gstreamer1.0-plugins-ugly gstreamer1.0-plugins-bad gstreamer1.0-libav -y libgstreamer-plugins-base1.0-* libgstreamer-plugins-bad1.0-* libgstreamer-plugins-good1.0-*
 
 cd ~
 mkdir code -p
