@@ -1,3 +1,4 @@
+OLD!
 #install the ubuntu 16.04 with kernel 4.14 image 
 
 #sudo date --set "24 April 2018 11:26:35" 
