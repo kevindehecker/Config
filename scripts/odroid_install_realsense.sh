@@ -31,7 +31,7 @@ cd librealsense/
 mkdir build -p
 cd build/
 cmake ..
-make -j3
+make -j3 # not more then 3, unless you set up additional swap space
 
 sudo cp config/99-realsense-libusb.rules /etc/udev/rules.d/
 sudo udevadm control --reload-rules && udevadm trigger
