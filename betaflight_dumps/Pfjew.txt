@@ -19,8 +19,11 @@ aux 1 1 0 900 1200 0
 aux 2 13 2 1250 1725 0
 aux 3 28 0 1750 2100 0
 aux 4 35 2 1825 2100 0
+set gyro_lowpass_hz = 120
 set acc_calibration = -129,13,-242
 set min_check = 1075
+set rc_interp_ch = RPYT
+set rc_smoothing_type = FILTER
 set serialrx_provider = SPEK2048
 set motor_pwm_protocol = DSHOT600
 set vbat_scale = 111
@@ -40,6 +43,9 @@ set vtx_low_power_disarm = ON
 set vtx_freq = 5658
 profile 0
 
+set dterm_lowpass_hz = 80
+set dterm_lowpass2_hz = 160
+set iterm_relax = RP
 rateprofile 0
 
 set roll_rc_rate = 175
@@ -403,7 +409,7 @@ set align_gyro = DEFAULT
 set gyro_hardware_lpf = NORMAL
 set gyro_sync_denom = 1
 set gyro_lowpass_type = PT1
-set gyro_lowpass_hz = 100
+set gyro_lowpass_hz = 120
 set gyro_lowpass2_type = PT1
 set gyro_lowpass2_hz = 300
 set gyro_notch1_hz = 0
@@ -431,9 +437,9 @@ set rssi_scale = 100
 set rssi_offset = 0
 set rssi_invert = OFF
 set rc_interp = AUTO
-set rc_interp_ch = RPT
+set rc_interp_ch = RPYT
 set rc_interp_int = 19
-set rc_smoothing_type = INTERPOLATION
+set rc_smoothing_type = FILTER
 set rc_smoothing_input_hz = 0
 set rc_smoothing_derivative_hz = 0
 set rc_smoothing_debug_axis = ROLL
@@ -651,8 +657,8 @@ set rcdevice_init_dev_attempt_interval = 1000
 profile 0
 
 set dterm_lowpass_type = PT1
-set dterm_lowpass_hz = 100
-set dterm_lowpass2_hz = 200
+set dterm_lowpass_hz = 80
+set dterm_lowpass2_hz = 160
 set dterm_notch_hz = 0
 set dterm_notch_cutoff = 160
 set vbat_pid_gain = OFF
@@ -674,7 +680,7 @@ set crash_limit_yaw = 200
 set crash_recovery = OFF
 set iterm_rotation = ON
 set smart_feedforward = OFF
-set iterm_relax = OFF
+set iterm_relax = RP
 set iterm_relax_type = GYRO
 set iterm_relax_cutoff = 11
 set iterm_windup = 40
