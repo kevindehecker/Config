@@ -10,4 +10,5 @@ git config --global alias.s status
 git config --global alias.ss "status --short"
 git config --global alias.ssb "status --short --branch"
 git config --global alias.pr "pull --rebase"
+git config --global alias.cp "cherry-pick"
  
