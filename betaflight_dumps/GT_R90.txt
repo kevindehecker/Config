@@ -4,7 +4,7 @@ diff
 # Betaflight / FURYF4OSD (FY4O) 3.3.0 Mar  2 2018 / 03:46:57 (177472b4f) MSP API: 1.37
 
 # name
-name DIATONE-GT R90
+name GTR90
 
 # resources
 
@@ -16,6 +16,7 @@ name DIATONE-GT R90
 
 
 # feature
+feature LED_STRIP
 feature AIRMODE
 feature ANTI_GRAVITY
 feature DYNAMIC_FILTER
@@ -23,8 +24,7 @@ feature DYNAMIC_FILTER
 # beeper
 beeper -GYRO_CALIBRATED
 beeper -DISARMING
-beeper -ARMING
-beeper -ACC_CALIBRATION
+beeper -ARMING_GPS_FIX
 beeper -ACC_CALIBRATION_FAIL
 beeper -READY_BEEP
 beeper -MULTI_BEEPS
@@ -45,9 +45,8 @@ serial 2 2048 115200 57600 0 115200
 
 # aux
 aux 0 0 0 1900 2100 0
-aux 1 1 2 900 1300 0
-aux 2 13 2 1300 1700 0
-aux 3 35 1 1825 2100 0
+aux 1 1 1 900 1300 0
+aux 2 13 2 1300 2100 0
 
 # adjrange
 adjrange 0 0 2 900 2100 12 2
@@ -62,7 +61,7 @@ adjrange 0 0 2 900 2100 12 2
 set gyro_sync_denom = 2
 set gyro_notch1_hz = 0
 set gyro_notch2_hz = 0
-set rssi_channel = 8
+set rssi_channel = 16
 set max_aux_channels = 12
 set dshot_idle_value = 500
 set motor_pwm_protocol = DSHOT600
@@ -71,23 +70,23 @@ set vbat_warning_cell_voltage = 34
 set current_meter = ADC
 set vbat_scale = 108
 set ibata_offset = 20
-set beeper_dshot_beacon_tone = 3
 set small_angle = 180
 set pid_process_denom = 1
 set osd_cap_alarm = 350
-set osd_vbat_pos = 2497
-set osd_rssi_pos = 2094
+set osd_vbat_pos = 449
+set osd_rssi_pos = 2098
 set osd_tim_1_pos = 438
-set osd_tim_2_pos = 2081
-set osd_flymode_pos = 333
+set osd_tim_2_pos = 2087
+set osd_remaining_time_estimate_pos = 265
+set osd_flymode_pos = 2518
 set osd_throttle_pos = 471
 set osd_vtx_channel_pos = 377
-set osd_crosshairs = 200
+set osd_crosshairs = 2285
 set osd_ah_sbar = 200
 set osd_ah_pos = 200
-set osd_current_pos = 2517
-set osd_mah_drawn_pos = 2487
-set osd_craft_name_pos = 46
+set osd_current_pos = 2473
+set osd_mah_drawn_pos = 2501
+set osd_craft_name_pos = 2105
 set osd_gps_speed_pos = 218
 set osd_gps_lon_pos = 82
 set osd_gps_lat_pos = 65
@@ -102,16 +101,19 @@ set osd_pid_yaw_pos = 487
 set osd_debug_pos = 1
 set osd_power_pos = 321
 set osd_pidrate_profile_pos = 345
-set osd_warnings_pos = 2473
-set osd_avg_cell_voltage_pos = 2465
+set osd_warnings_pos = 425
+set osd_avg_cell_voltage_pos = 2481
 set osd_pit_ang_pos = 257
 set osd_rol_ang_pos = 289
-set osd_battery_usage_pos = 2472
+set osd_battery_usage_pos = 424
 set osd_disarmed_pos = 138
 set osd_nheading_pos = 311
 set osd_nvario_pos = 279
 set osd_esc_tmp_pos = 82
 set osd_esc_rpm_pos = 83
+set osd_rtc_date_time_pos = 297
+set osd_adjustment_range_pos = 329
+set osd_core_temp_pos = 385
 set osd_stat_max_spd = OFF
 set osd_stat_min_rssi = OFF
 set osd_stat_bbox = OFF
@@ -141,10 +143,8 @@ set p_level = 30
 set i_level = 30
 
 # rateprofile
-rateprofile 0
+rateprofile 1
 
-set roll_srate = 75
-set tpa_rate = 20
 
 # dump
 
@@ -152,7 +152,7 @@ set tpa_rate = 20
 # Betaflight / FURYF4OSD (FY4O) 3.3.0 Mar  2 2018 / 03:46:57 (177472b4f) MSP API: 1.37
 
 # name
-name DIATONE-GT R90
+name GTR90
 
 # resources
 resource BEEPER 1 A08
@@ -296,6 +296,7 @@ feature -ESC_SENSOR
 feature -ANTI_GRAVITY
 feature -DYNAMIC_FILTER
 feature RX_SERIAL
+feature LED_STRIP
 feature OSD
 feature AIRMODE
 feature ANTI_GRAVITY
@@ -306,13 +307,13 @@ beeper -GYRO_CALIBRATED
 beeper RX_LOST
 beeper RX_LOST_LANDING
 beeper -DISARMING
-beeper -ARMING
-beeper ARMING_GPS_FIX
+beeper ARMING
+beeper -ARMING_GPS_FIX
 beeper BAT_CRIT_LOW
 beeper BAT_LOW
 beeper GPS_STATUS
 beeper RX_SET
-beeper -ACC_CALIBRATION
+beeper ACC_CALIBRATION
 beeper -ACC_CALIBRATION_FAIL
 beeper -READY_BEEP
 beeper -MULTI_BEEPS
@@ -438,9 +439,9 @@ mode_color 7 0 3
 
 # aux
 aux 0 0 0 1900 2100 0
-aux 1 1 2 900 1300 0
-aux 2 13 2 1300 1700 0
-aux 3 35 1 1825 2100 0
+aux 1 1 1 900 1300 0
+aux 2 13 2 1300 2100 0
+aux 3 0 0 900 900 0
 aux 4 0 0 900 900 0
 aux 5 0 0 900 900 0
 aux 6 0 0 900 900 0
@@ -536,7 +537,7 @@ set acc_trim_roll = 0
 set mid_rc = 1500
 set min_check = 1050
 set max_check = 1900
-set rssi_channel = 8
+set rssi_channel = 16
 set rssi_scale = 41
 set rssi_invert = OFF
 set rc_interp = AUTO
@@ -600,7 +601,7 @@ set ibatv_offset = 0
 set beeper_inversion = ON
 set beeper_od = OFF
 set beeper_frequency = 0
-set beeper_dshot_beacon_tone = 3
+set beeper_dshot_beacon_tone = 0
 set yaw_motors_reversed = OFF
 set 3d_deadband_low = 1406
 set 3d_deadband_high = 1514
@@ -660,20 +661,20 @@ set osd_ah_max_pit = 20
 set osd_ah_max_rol = 40
 set osd_tim1 = 2560
 set osd_tim2 = 2561
-set osd_vbat_pos = 2497
-set osd_rssi_pos = 2094
+set osd_vbat_pos = 449
+set osd_rssi_pos = 2098
 set osd_tim_1_pos = 438
-set osd_tim_2_pos = 2081
-set osd_remaining_time_estimate_pos = 234
-set osd_flymode_pos = 333
+set osd_tim_2_pos = 2087
+set osd_remaining_time_estimate_pos = 265
+set osd_flymode_pos = 2518
 set osd_throttle_pos = 471
 set osd_vtx_channel_pos = 377
-set osd_crosshairs = 200
+set osd_crosshairs = 2285
 set osd_ah_sbar = 200
 set osd_ah_pos = 200
-set osd_current_pos = 2517
-set osd_mah_drawn_pos = 2487
-set osd_craft_name_pos = 46
+set osd_current_pos = 2473
+set osd_mah_drawn_pos = 2501
+set osd_craft_name_pos = 2105
 set osd_gps_speed_pos = 218
 set osd_gps_lon_pos = 82
 set osd_gps_lat_pos = 65
@@ -688,19 +689,19 @@ set osd_pid_yaw_pos = 487
 set osd_debug_pos = 1
 set osd_power_pos = 321
 set osd_pidrate_profile_pos = 345
-set osd_warnings_pos = 2473
-set osd_avg_cell_voltage_pos = 2465
+set osd_warnings_pos = 425
+set osd_avg_cell_voltage_pos = 2481
 set osd_pit_ang_pos = 257
 set osd_rol_ang_pos = 289
-set osd_battery_usage_pos = 2472
+set osd_battery_usage_pos = 424
 set osd_disarmed_pos = 138
 set osd_nheading_pos = 311
 set osd_nvario_pos = 279
 set osd_esc_tmp_pos = 82
 set osd_esc_rpm_pos = 83
-set osd_rtc_date_time_pos = 234
-set osd_adjustment_range_pos = 234
-set osd_core_temp_pos = 234
+set osd_rtc_date_time_pos = 297
+set osd_adjustment_range_pos = 329
+set osd_core_temp_pos = 385
 set osd_stat_max_spd = OFF
 set osd_stat_max_dist = OFF
 set osd_stat_min_batt = ON
@@ -803,7 +804,7 @@ set gps_nav_i = 33
 set gps_nav_d = 83
 
 # rateprofile
-rateprofile 0
+rateprofile 1
 
 set thr_mid = 50
 set thr_expo = 0
@@ -814,10 +815,10 @@ set yaw_rc_rate = 100
 set roll_expo = 0
 set pitch_expo = 0
 set yaw_expo = 0
-set roll_srate = 75
+set roll_srate = 70
 set pitch_srate = 70
 set yaw_srate = 70
-set tpa_rate = 20
+set tpa_rate = 10
 set tpa_breakpoint = 1650
 
 # 
