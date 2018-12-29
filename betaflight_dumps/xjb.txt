@@ -1,7 +1,7 @@
 diff
 
 # version
-# Betaflight / OMNIBUSF4 (OBF4) 3.5.0 Aug 14 2018 / 03:49:19 (1d710afd7) MSP API: 1.40
+# Betaflight / OMNIBUSF4 (OBF4) 3.5.4 Dec 17 2018 / 12:15:55 (66b8ea143) MSP API: 1.40
 
 board_name OMNIBUSF4
 manufacturer_id AIRB
@@ -32,8 +32,8 @@ beeper -ON_USB
 # map
 
 # serial
-serial 0 64 115200 57600 0 115200
 serial 2 8192 115200 57600 0 115200
+serial 5 64 115200 57600 0 115200
 
 # led
 led 0 7,8::C:8
@@ -45,10 +45,10 @@ led 1 8,8::C:8
 
 # aux
 aux 0 0 0 1700 2100 0 0
-aux 1 1 3 900 1200 0 0
+aux 1 1 1 900 1200 0 0
 aux 2 13 2 1700 2100 0 0
 aux 3 15 2 1300 1700 0 0
-aux 4 35 1 1675 2100 0 0
+aux 4 35 3 1675 2100 0 0
 
 # adjrange
 
@@ -61,20 +61,23 @@ aux 4 35 1 1675 2100 0 0
 # master
 set acc_trim_roll = 26
 set acc_calibration = -147,11,50
-set max_check = 2000
+set max_check = 1950
 set rc_smoothing_type = FILTER
-set serialrx_provider = SBUS
+set serialrx_provider = FPORT
+set serialrx_halfduplex = ON
 set min_throttle = 1040
 set motor_pwm_protocol = DSHOT600
 set pid_process_denom = 1
 set osd_warn_core_temp = OFF
 set osd_cap_alarm = 550
-set osd_rssi_pos = 474
+set osd_rssi_pos = 2138
 set osd_tim_1_pos = 460
 set osd_tim_2_pos = 2509
-set osd_flymode_pos = 26
+set osd_flymode_pos = 2521
 set osd_vtx_channel_pos = 0
+set osd_crosshairs_pos = 2253
 set osd_mah_drawn_pos = 418
+set osd_craft_name_pos = 2048
 set osd_avg_cell_voltage_pos = 2498
 set osd_battery_usage_pos = 426
 set osd_stat_battery = ON
@@ -93,7 +96,7 @@ rateprofile 0
 # dump
 
 # version
-# Betaflight / OMNIBUSF4 (OBF4) 3.5.0 Aug 14 2018 / 03:49:19 (1d710afd7) MSP API: 1.40
+# Betaflight / OMNIBUSF4 (OBF4) 3.5.4 Dec 17 2018 / 12:15:55 (66b8ea143) MSP API: 1.40
 
 board_name OMNIBUSF4
 manufacturer_id AIRB
@@ -325,9 +328,9 @@ map AETR1234
 
 # serial
 serial 20 1 115200 57600 0 115200
-serial 0 64 115200 57600 0 115200
+serial 0 0 115200 57600 0 115200
 serial 2 8192 115200 57600 0 115200
-serial 5 0 115200 57600 0 115200
+serial 5 64 115200 57600 0 115200
 
 # led
 led 0 7,8::C:8
@@ -433,10 +436,10 @@ mode_color 7 0 3
 
 # aux
 aux 0 0 0 1700 2100 0 0
-aux 1 1 3 900 1200 0 0
+aux 1 1 1 900 1200 0 0
 aux 2 13 2 1700 2100 0 0
 aux 3 15 2 1300 1700 0 0
-aux 4 35 1 1675 2100 0 0
+aux 4 35 3 1675 2100 0 0
 aux 5 0 0 900 900 0 0
 aux 6 0 0 900 900 0 0
 aux 7 0 0 900 900 0 0
@@ -555,7 +558,7 @@ set baro_cf_vel = 985
 set baro_cf_alt = 965
 set mid_rc = 1500
 set min_check = 1050
-set max_check = 2000
+set max_check = 1950
 set rssi_channel = 0
 set rssi_src_frame_errors = OFF
 set rssi_scale = 100
@@ -572,14 +575,14 @@ set rc_smoothing_input_type = BIQUAD
 set rc_smoothing_derivative_type = BIQUAD
 set fpv_mix_degrees = 0
 set max_aux_channels = 14
-set serialrx_provider = SBUS
+set serialrx_provider = FPORT
 set serialrx_inverted = OFF
 set spektrum_sat_bind = 0
 set spektrum_sat_bind_autoreset = ON
 set airmode_start_throttle_percent = 32
 set rx_min_usec = 885
 set rx_max_usec = 2115
-set serialrx_halfduplex = OFF
+set serialrx_halfduplex = ON
 set adc_device = 2
 set input_filtering_mode = OFF
 set blackbox_p_ratio = 32
@@ -719,21 +722,21 @@ set osd_ah_max_rol = 40
 set osd_tim1 = 2560
 set osd_tim2 = 2561
 set osd_vbat_pos = 234
-set osd_rssi_pos = 474
+set osd_rssi_pos = 2138
 set osd_tim_1_pos = 460
 set osd_tim_2_pos = 2509
 set osd_remaining_time_estimate_pos = 234
-set osd_flymode_pos = 26
+set osd_flymode_pos = 2521
 set osd_anti_gravity_pos = 234
 set osd_g_force_pos = 234
 set osd_throttle_pos = 234
 set osd_vtx_channel_pos = 0
-set osd_crosshairs_pos = 205
+set osd_crosshairs_pos = 2253
 set osd_ah_sbar_pos = 206
 set osd_ah_pos = 78
 set osd_current_pos = 234
 set osd_mah_drawn_pos = 418
-set osd_craft_name_pos = 234
+set osd_craft_name_pos = 2048
 set osd_gps_speed_pos = 234
 set osd_gps_lon_pos = 234
 set osd_gps_lat_pos = 234
@@ -782,8 +785,8 @@ set cpu_overclock = OFF
 set pwr_on_arm_grace = 5
 set vtx_band = 5
 set vtx_channel = 1
-set vtx_power = 1
-set vtx_low_power_disarm = OFF
+set vtx_power = 3
+set vtx_low_power_disarm = ON
 set vtx_freq = 5658
 set vtx_pit_mode_freq = 0
 set vtx_halfduplex = ON
@@ -815,7 +818,7 @@ set pinio_box = 255,255,255,255
 set usb_hid_cdc = OFF
 set usb_msc_pin_pullup = OFF
 set flash_spi_bus = 3
-set rcdevice_init_dev_attempts = 4
+set rcdevice_init_dev_attempts = 6
 set rcdevice_init_dev_attempt_interval = 1000
 
 # profile
