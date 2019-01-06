@@ -1,8 +1,75 @@
 
 
+# diff
+# Betaflight / OMNIBUS (OMNI) 3.2.2 Nov 11 2017 / 00:38:45 (77782e602) MSP API: 1.36
+name Qut65
+
+feature -RX_PPM
+feature RX_SERIAL
+feature MOTOR_STOP
+serial 2 64 115200 57600 0 115200
+aux 0 0 0 1300 2100
+aux 1 1 1 900 1225
+aux 2 28 1 1800 2100
+set acc_trim_pitch = -8
+set acc_trim_roll = -12
+set min_check = 1020
+set max_check = 1980
+set rssi_channel = 9
+set serialrx_provider = SBUS
+set motor_pwm_protocol = BRUSHED
+set vbat_min_cell_voltage = 29
+set vbat_warning_cell_voltage = 29
+set osd_vbat_pos = 34
+set osd_rssi_pos = 2104
+set osd_tim_1_pos = 54
+set osd_tim_2_pos = 2452
+set osd_flymode_pos = 2486
+set osd_throttle_pos = 225
+set osd_vtx_channel_pos = 377
+set osd_ah_sbar = 200
+set osd_ah_pos = 200
+set osd_current_pos = 385
+set osd_mah_drawn_pos = 353
+set osd_craft_name_pos = 2081
+set osd_gps_speed_pos = 218
+set osd_gps_lon_pos = 82
+set osd_gps_lat_pos = 65
+set osd_gps_sats_pos = 51
+set osd_home_dir_pos = 302
+set osd_home_dist_pos = 303
+set osd_compass_bar_pos = 266
+set osd_altitude_pos = 247
+set osd_pid_roll_pos = 423
+set osd_pid_pitch_pos = 455
+set osd_pid_yaw_pos = 487
+set osd_debug_pos = 1
+set osd_power_pos = 321
+set osd_pidrate_profile_pos = 345
+set osd_avg_cell_voltage_pos = 2467
+set osd_pit_ang_pos = 257
+set osd_rol_ang_pos = 289
+set osd_battery_usage_pos = 392
+set osd_disarmed_pos = 2315
+set osd_nheading_pos = 311
+set osd_nvario_pos = 279
+set osd_esc_tmp_pos = 82
+set osd_esc_rpm_pos = 83
+profile 0
+
+set p_roll = 100
+set d_level = 100
+rateprofile 0
+
+set rc_rate = 120
+set rc_rate_yaw = 120
+set roll_srate = 100
+set pitch_srate = 100
+set yaw_srate = 100
+
 # dump
-# Betaflight / OMNIBUS (OMNI) 3.2.0 Sep 28 2017 / 16:38:02 (ceb6f70) MSP API: 1.36
-name -
+# Betaflight / OMNIBUS (OMNI) 3.2.2 Nov 11 2017 / 00:38:45 (77782e602) MSP API: 1.36
+name Qut65
 resource BEEPER 1 C15
 resource MOTOR 1 B08
 resource MOTOR 2 B09
@@ -119,7 +186,8 @@ feature -SOFTSPI
 feature -ESC_SENSOR
 feature -ANTI_GRAVITY
 feature -DYNAMIC_FILTER
-feature RX_PPM
+feature RX_SERIAL
+feature MOTOR_STOP
 feature OSD
 beeper GYRO_CALIBRATED
 beeper RX_LOST
@@ -144,7 +212,7 @@ map AETR1234
 serial 20 1 115200 57600 0 115200
 serial 0 0 115200 57600 0 115200
 serial 1 0 115200 57600 0 115200
-serial 2 0 115200 57600 0 115200
+serial 2 64 115200 57600 0 115200
 led 0 0,0::C:0
 led 1 0,0::C:0
 led 2 0,0::C:0
@@ -241,9 +309,9 @@ mode_color 6 8 0
 mode_color 6 9 0
 mode_color 6 10 0
 mode_color 7 0 3
-aux 0 0 0 900 900
-aux 1 0 0 900 900
-aux 2 0 0 900 900
+aux 0 0 0 1300 2100
+aux 1 1 1 900 1225
+aux 2 28 1 1800 2100
 aux 3 0 0 900 900
 aux 4 0 0 900 900
 aux 5 0 0 900 900
@@ -321,8 +389,8 @@ set moron_threshold = 48
 set align_acc = DEFAULT
 set acc_hardware = AUTO
 set acc_lpf_hz = 10
-set acc_trim_pitch = 0
-set acc_trim_roll = 0
+set acc_trim_pitch = -8
+set acc_trim_roll = -12
 set align_mag = DEFAULT
 set mag_hardware = NONE
 set mag_declination = 0
@@ -339,9 +407,9 @@ set baro_noise_lpf = 600
 set baro_cf_vel = 985
 set baro_cf_alt = 965
 set mid_rc = 1500
-set min_check = 1050
-set max_check = 1900
-set rssi_channel = 0
+set min_check = 1020
+set max_check = 1980
+set rssi_channel = 9
 set rssi_scale = 41
 set rssi_invert = OFF
 set rc_interp = AUTO
@@ -349,7 +417,7 @@ set rc_interp_ch = RP
 set rc_interp_int = 19
 set fpv_mix_degrees = 0
 set max_aux_channels = 14
-set serialrx_provider = SPEK1024
+set serialrx_provider = SBUS
 set sbus_inversion = ON
 set spektrum_sat_bind = 0
 set spektrum_sat_bind_autoreset = ON
@@ -366,7 +434,7 @@ set max_throttle = 2000
 set min_command = 1000
 set dshot_idle_value = 450
 set use_unsynced_pwm = OFF
-set motor_pwm_protocol = ONESHOT125
+set motor_pwm_protocol = BRUSHED
 set motor_pwm_rate = 480
 set motor_pwm_inversion = OFF
 set thr_corr_value = 0
@@ -384,8 +452,8 @@ set gimbal_mode = NORMAL
 set bat_capacity = 0
 set vbat_max_cell_voltage = 43
 set vbat_full_cell_voltage = 41
-set vbat_min_cell_voltage = 33
-set vbat_warning_cell_voltage = 35
+set vbat_min_cell_voltage = 29
+set vbat_warning_cell_voltage = 29
 set vbat_hysteresis = 1
 set current_meter = ADC
 set battery_meter = ADC
@@ -451,43 +519,43 @@ set osd_ah_max_pit = 20
 set osd_ah_max_rol = 40
 set osd_tim1 = 2560
 set osd_tim2 = 2561
-set osd_vbat_pos = 2092
-set osd_rssi_pos = 2088
-set osd_tim_1_pos = 2102
-set osd_tim_2_pos = 2081
-set osd_flymode_pos = 2381
-set osd_throttle_pos = 2273
-set osd_vtx_channel_pos = 2425
+set osd_vbat_pos = 34
+set osd_rssi_pos = 2104
+set osd_tim_1_pos = 54
+set osd_tim_2_pos = 2452
+set osd_flymode_pos = 2486
+set osd_throttle_pos = 225
+set osd_vtx_channel_pos = 377
 set osd_crosshairs = 2248
-set osd_ah_sbar = 2248
-set osd_ah_pos = 2248
-set osd_current_pos = 2433
-set osd_mah_drawn_pos = 2401
-set osd_craft_name_pos = 2410
-set osd_gps_speed_pos = 2266
-set osd_gps_lon_pos = 2130
-set osd_gps_lat_pos = 2113
-set osd_gps_sats_pos = 2099
-set osd_home_dir_pos = 2350
-set osd_home_dist_pos = 2351
-set osd_compass_bar_pos = 2314
-set osd_altitude_pos = 2295
-set osd_pid_roll_pos = 2471
-set osd_pid_pitch_pos = 2503
-set osd_pid_yaw_pos = 2535
-set osd_debug_pos = 2049
-set osd_power_pos = 2369
-set osd_pidrate_profile_pos = 2393
+set osd_ah_sbar = 200
+set osd_ah_pos = 200
+set osd_current_pos = 385
+set osd_mah_drawn_pos = 353
+set osd_craft_name_pos = 2081
+set osd_gps_speed_pos = 218
+set osd_gps_lon_pos = 82
+set osd_gps_lat_pos = 65
+set osd_gps_sats_pos = 51
+set osd_home_dir_pos = 302
+set osd_home_dist_pos = 303
+set osd_compass_bar_pos = 266
+set osd_altitude_pos = 247
+set osd_pid_roll_pos = 423
+set osd_pid_pitch_pos = 455
+set osd_pid_yaw_pos = 487
+set osd_debug_pos = 1
+set osd_power_pos = 321
+set osd_pidrate_profile_pos = 345
 set osd_warnings_pos = 2377
-set osd_avg_cell_voltage_pos = 2124
-set osd_pit_ang_pos = 2305
-set osd_rol_ang_pos = 2337
-set osd_battery_usage_pos = 2440
-set osd_disarmed_pos = 2186
-set osd_nheading_pos = 2359
-set osd_nvario_pos = 2327
-set osd_esc_tmp_pos = 2130
-set osd_esc_rpm_pos = 2131
+set osd_avg_cell_voltage_pos = 2467
+set osd_pit_ang_pos = 257
+set osd_rol_ang_pos = 289
+set osd_battery_usage_pos = 392
+set osd_disarmed_pos = 2315
+set osd_nheading_pos = 311
+set osd_nvario_pos = 279
+set osd_esc_tmp_pos = 82
+set osd_esc_rpm_pos = 83
 set osd_stat_max_spd = ON
 set osd_stat_max_dist = OFF
 set osd_stat_min_batt = ON
@@ -554,7 +622,7 @@ set yaw_lowpass = 0
 set p_pitch = 58
 set i_pitch = 50
 set d_pitch = 35
-set p_roll = 40
+set p_roll = 100
 set i_roll = 40
 set d_roll = 30
 set p_yaw = 70
@@ -563,26 +631,26 @@ set d_yaw = 20
 set p_alt = 50
 set i_alt = 0
 set d_alt = 0
-set p_level = 80
+set p_level = 50
 set i_level = 50
-set d_level = 75
+set d_level = 100
 set p_vel = 55
 set i_vel = 55
 set d_vel = 75
-set level_limit = 70
+set level_limit = 55
 set horizon_tilt_effect = 75
 set horizon_tilt_expert_mode = OFF
 rateprofile 0
 
-set rc_rate = 100
-set rc_rate_yaw = 100
+set rc_rate = 120
+set rc_rate_yaw = 120
 set rc_expo = 0
 set rc_expo_yaw = 0
 set thr_mid = 50
 set thr_expo = 0
-set roll_srate = 70
-set pitch_srate = 70
-set yaw_srate = 70
+set roll_srate = 100
+set pitch_srate = 100
+set yaw_srate = 100
 set tpa_rate = 10
 set tpa_breakpoint = 1650
 
