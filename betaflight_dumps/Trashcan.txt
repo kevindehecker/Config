@@ -38,7 +38,7 @@ aux 0 0 0 1300 2100 0 0
 aux 1 1 1 900 1225 0 0
 aux 2 13 2 1300 1700 0 0
 aux 3 15 3 1775 2100 0 0
-aux 4 28 1 1550 2100 0 0
+aux 4 28 1 1225 2100 0 0
 aux 5 35 2 1550 2100 0 0
 
 # vtxtable
@@ -55,6 +55,14 @@ vtxtable powerlabels 25 100 200
 
 # master
 set gyro_sync_denom = 2
+set gyro_lowpass2_hz = 350
+set dyn_notch_range = LOW
+set dyn_notch_width_percent = 0
+set dyn_notch_q = 250
+set dyn_notch_min_hz = 100
+set dyn_lpf_gyro_min_hz = 280
+set dyn_lpf_gyro_max_hz = 700
+set acc_trim_pitch = 4
 set acc_calibration = 59,1,-151
 set dshot_bidir = ON
 set motor_pwm_protocol = DSHOT300
@@ -81,11 +89,15 @@ set frsky_spi_offset = -52
 set frsky_spi_bind_hop_data = 6,24,44,64,84,104,124,144,164,184,204,224,9,29,49,69,89,109,129,149,169,189,209,229,14,34,54,74,94,114,136,154,174,194,214,234,19,39,59,79,99,119,139,159,179,199,219,0,0,0
 set frsky_x_rx_num = 1
 set gyro_1_align_yaw = 900
+set gyro_rpm_notch_harmonics = 1
 set name = TrashKevin
 
 profile 0
 
 # profile 0
+set dyn_lpf_dterm_min_hz = 98
+set dyn_lpf_dterm_max_hz = 238
+set dterm_lowpass2_hz = 210
 set angle_level_strength = 80
 set level_limit = 80
 
