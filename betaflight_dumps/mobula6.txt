@@ -1,0 +1,131 @@
+# 
+
+# diff
+
+# version
+# Betaflight / CRAZYBEEF4FR (C4FR) 3.5.7 Mar 15 2019 / 21:42:20 (e9130527c) MSP API: 1.40
+
+board_name CRAZYBEEF4FR
+manufacturer_id 
+
+# name
+name Mobula 6
+
+# resources
+
+# mixer
+
+# servo
+
+# servo mix
+
+
+# feature
+feature -TELEMETRY
+feature -ANTI_GRAVITY
+feature MOTOR_STOP
+
+# beeper
+
+# beacon
+beacon RX_LOST
+beacon RX_SET
+
+# map
+
+# serial
+serial 1 2048 115200 57600 0 115200
+
+# led
+
+# color
+
+# mode_color
+
+# aux
+aux 0 0 0 1800 2100 0 0
+aux 1 1 1 900 1200 0 0
+aux 2 28 1 1300 2100 0 0
+aux 3 35 2 1800 2100 0 0
+
+# adjrange
+adjrange 0 0 1 900 1200 12 1 0 0
+adjrange 1 1 1 1200 1800 12 1 0 0
+adjrange 2 2 1 1800 2100 12 1 0 0
+
+# rxrange
+
+# vtx
+
+# rxfail
+
+# master
+set gyro_lowpass2_hz = 0
+set acc_calibration = 0,8,-71
+set rc_smoothing_type = FILTER
+set rx_spi_protocol = FRSKY_D
+set dshot_idle_value = 1000
+set motor_pwm_protocol = DSHOT600
+set vbat_max_cell_voltage = 45
+set vbat_min_cell_voltage = 29
+set vbat_warning_cell_voltage = 30
+set ibata_scale = 1175
+set yaw_motors_reversed = ON
+set small_angle = 180
+set deadband = 1
+set yaw_deadband = 1
+set pid_process_denom = 1
+set osd_warn_batt_not_full = OFF
+set osd_warn_batt_warning = OFF
+set osd_warn_esc_fail = OFF
+set osd_warn_core_temp = OFF
+set osd_rssi_pos = 2107
+set osd_tim_2_pos = 2456
+set osd_flymode_pos = 2080
+set osd_throttle_pos = 2392
+set osd_crosshairs_pos = 2253
+set osd_current_pos = 2336
+set osd_mah_drawn_pos = 2368
+set osd_craft_name_pos = 2059
+set osd_warnings_pos = 2345
+set osd_avg_cell_voltage_pos = 2432
+set osd_disarmed_pos = 2346
+set osd_stat_tim_1 = ON
+set osd_stat_max_spd = OFF
+set osd_stat_battery = ON
+set osd_stat_bbox = OFF
+set osd_stat_bb_no = OFF
+set vtx_band = 5
+set vtx_low_power_disarm = ON
+set vtx_freq = 5658
+set vcd_video_system = NTSC
+set frsky_spi_tx_id = 183,101
+set frsky_spi_offset = 4
+set frsky_spi_bind_hop_data = 6,24,44,64,84,104,124,144,164,184,204,224,9,29,49,69,89,109,129,149,169,189,209,229,14,34,54,74,94,114,136,154,174,194,214,234,19,39,59,79,99,119,139,159,179,199,219,0,0,0
+
+# profile
+profile 0
+
+set dterm_lowpass2_hz = 0
+set dterm_notch_cutoff = 0
+set feedforward_transition = 21
+set iterm_relax = RPY
+set p_pitch = 80
+set i_pitch = 100
+set d_pitch = 85
+set f_pitch = 140
+set p_roll = 85
+set i_roll = 100
+set d_roll = 85
+set f_roll = 140
+set p_yaw = 120
+set i_yaw = 100
+set f_yaw = 140
+
+# rateprofile
+rateprofile 0
+
+set tpa_rate = 30
+set tpa_breakpoint = 1200
+
+# 
