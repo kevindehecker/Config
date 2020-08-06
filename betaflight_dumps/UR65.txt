@@ -1,0 +1,63 @@
+# 
+
+# diff
+# Betaflight / CRAZYBEEF3FR (CBFR) 4.0.6 Sep  1 2019 / 00:25:52 (2a64051a2) MSP API: 1.41 / FEATURE CUT LEVEL 2
+batch start
+name UR65
+
+feature -AIRMODE
+map TAER1234
+serial 2 2048 115200 57600 0 115200
+aux 0 0 0 1400 2100 0 0
+aux 1 1 1 1200 1550 0 0
+aux 2 28 1 1550 2100 0 0
+aux 3 35 2 1500 2100 0 0
+set gyro_lowpass_type = PT1
+set gyro_lowpass_hz = 100
+set gyro_lowpass2_hz = 300
+set airmode_start_throttle_percent = 32
+set rx_spi_protocol = FRSKY_D
+set dshot_idle_value = 450
+set motor_pwm_protocol = DSHOT600
+set vbat_detect_cell_voltage = 30
+set ibata_scale = 1175
+set runaway_takeoff_deactivate_throttle_percent = 25
+set osd_vbat_pos = 2114
+set osd_rssi_pos = 2083
+set osd_tim_1_pos = 54
+set osd_tim_2_pos = 2134
+set osd_flymode_pos = 2425
+set osd_throttle_pos = 2456
+set osd_crosshairs_pos = 2253
+set osd_current_pos = 2433
+set osd_mah_drawn_pos = 2401
+set osd_craft_name_pos = 2446
+set frsky_spi_tx_id = 97,27
+set frsky_spi_offset = -13
+set frsky_spi_bind_hop_data = 4,94,184,39,129,219,74,164,19,109,199,54,144,234,89,179,34,124,214,69,159,14,104,194,49,139,229,84,174,29,119,209,64,154,9,99,189,44,134,224,79,169,24,114,204,59,149,0,0,0
+profile 0
+
+set dterm_lowpass_type = PT1
+set dterm_lowpass_hz = 100
+set dterm_lowpass2_hz = 200
+set iterm_rotation = ON
+set iterm_relax_cutoff = 11
+set iterm_windup = 40
+set iterm_limit = 300
+set p_pitch = 50
+set i_pitch = 50
+set d_pitch = 27
+set f_pitch = 60
+set p_roll = 46
+set i_roll = 45
+set d_roll = 25
+set f_roll = 60
+set p_yaw = 45
+set f_yaw = 100
+rateprofile 0
+
+set tpa_rate = 10
+set tpa_breakpoint = 1650
+batch end
+
+# 
