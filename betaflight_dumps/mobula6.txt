@@ -3,8 +3,7 @@
 # diff
 
 # version
-# Betaflight / STM32F411 (S411) 4.2.1 Jul 19 2020 / 06:18:29 (caa0d683c) MSP API: 1.43
-# config: manufacturer_id: HAMO, board_name: CRAZYBEEF4FR, version: 56f796fb, date: 2019-10-26T09:47:21Z
+# Betaflight / CRAZYBEEF4FR (C4FR) 4.2.1 Aug 11 2020 / 15:52:32 (norevision) MSP API: 1.43
 
 # start the command batch
 batch start
@@ -15,10 +14,8 @@ manufacturer_id HAMO
 # name: Mobula666
 
 # feature
-feature -RX_PARALLEL_PWM
 feature -AIRMODE
 feature MOTOR_STOP
-feature TELEMETRY
 
 # beacon
 beacon RX_SET
@@ -50,7 +47,7 @@ set gyro_lowpass2_hz = 350
 set dyn_lpf_gyro_min_hz = 280
 set dyn_lpf_gyro_max_hz = 700
 set acc_calibration = -54,-96,-73,1
-set rx_spi_protocol = FRSKY_D
+set rx_spi_protocol = REDPINE
 set dshot_idle_value = 500
 set dshot_bidir = ON
 set motor_pwm_protocol = DSHOT300
@@ -73,10 +70,10 @@ set vtx_power = 1
 set vtx_low_power_disarm = ON
 set vtx_freq = 5806
 set vcd_video_system = NTSC
-set frsky_spi_tx_id = 183,101
-set frsky_spi_offset = -41
-set frsky_spi_bind_hop_data = 6,24,44,64,84,104,124,144,164,184,204,224,9,29,49,69,89,109,129,149,169,189,209,229,14,34,54,74,94,114,136,154,174,194,214,234,19,39,59,79,99,119,139,159,179,199,219,0,0,0
-set gyro_1_align_yaw = 900
+set frsky_spi_tx_id = 0,45
+set frsky_spi_offset = -15
+set frsky_spi_bind_hop_data = 11,8,26,196,66,238,163,51,131,175,198,17,154,110,35,64,98,136,186,168,83,166,209,230,57,20,236,128,214,224,101,123,96,32,138,227,220,183,104,142,242,59,87,120,157,255,178,70,144,0
+set frsky_x_rx_num = 42
 set gyro_rpm_notch_harmonics = 2
 set gyro_rpm_notch_q = 600
 set name = Mobula666
